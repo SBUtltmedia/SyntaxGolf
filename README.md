@@ -1,2 +1,1 @@
-# popup-plugin
-Syntax Golf# SyntaxGolf
+# SyntaxGolf

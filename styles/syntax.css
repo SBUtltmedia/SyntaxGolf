@@ -1,0 +1,110 @@
+body {
+	font-family: Helvetica, sans-serif;
+	font-size:20px;
+}
+
+.displayBox{
+	background-color: #efefef;
+	padding:  0px 0px 30px 0px;
+	display: flex;
+	width: 100%;
+
+	
+	
+	
+}
+
+.pop-iems{
+	width:30%;
+}
+.pop-cont{
+	width:10%;
+}
+div{
+	/* flex-grow: 1; */
+	flex-wrap:wrap;
+	display:flex;
+	border:1% solid blue;
+	margin:2%;
+	font-size:1em;
+}
+.hide{
+	visibility: hidden;
+}
+.parse {
+	display: flex;
+	
+
+		flex-wrap: nowrap;
+}
+.header {
+	text-align: center;
+	font-size: 12px;
+	border-bottom: 1px solid #fff;
+	width: 100%;
+	color: #fff;
+	background-color: #130e5a;
+}
+
+.header h1 {
+	margin: 0px;
+	padding: 5px 0px;
+}
+
+div.icon-box-top {
+	margin: 50px 0px 25px 0px;
+	display: block;
+	float: left;
+	clear: both;
+}
+
+div.icon-box {
+	margin: 25px 0px 25px 0px;
+	display: block;
+	float: left;
+	clear: both;
+}
+
+p.icon-text, p.menuText {
+	display: block;
+	margin-left: 45px;
+	margin-bottom: 0px;
+	float: left;
+}
+
+p.menuText {
+	margin-left: 20px !important;
+	margin-top: 0px;
+}
+
+.textPopup {	/*When attaching popups to text menus, style text menu separately*/
+	display: block;
+	font-size: 28px;
+	font-weight: bold;
+	color: #130e5a;
+	margin: 0px 0px 0px 75px;
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box;
+	cursor: pointer;
+	float: left;
+	z-index: 1;
+}
+
+p.textPopup.pressed {
+	color: #02baf2 !important;
+}
+
+div#myPopUp, 
+div#myPopUp2, 
+div#myPopUp3,
+div#myPopUp4 {
+	margin-left: 75px;
+	display: inline-block;
+}
+
+
+
+a {
+	text-decoration: none;
+}
