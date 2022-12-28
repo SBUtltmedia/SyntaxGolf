@@ -305,6 +305,9 @@ currentLine = 0;
 				zIndex: 100,
 
 				popItemClick: function (globalThis) {
+					console.log($(event.target))
+					if($(event.target).is(":visible")){
+				
 					let label = JSON.parse($(`#${elId}`).parent().parent().attr("data-tree")).label
 					var content;
 
@@ -319,14 +322,15 @@ currentLine = 0;
 					}
 
 
-
+				}
 
 				}
+				
 			});
 			$(`#${elId}`).html("?")
 
-		}
-	});
+		}}
+	);
 }(jQuery));
 
 
