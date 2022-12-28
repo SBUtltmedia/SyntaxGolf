@@ -26,7 +26,7 @@ div{
 	display:flex;
 	border:1% solid blue;
 	margin:2%;
-	font-size:1em;
+	font-size:.95em;
 }
 .hide{
 	visibility: hidden;

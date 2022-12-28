@@ -102,7 +102,7 @@ currentLine = 0;
 					$('<div/>', { "id": `${newParent}`, "style": `white-space:nowrap`, "data-tree": JSON.stringify(tree) }).append(
 						[
 						$("<div/>", { "style": "justify-content: center;width:100%" }).append(
-						$("<div/>", { "style": "justify-content: center;width:3em;height:3em;", "id":select})),	
+						$("<div/>", { "style": "justify-content: center;width:1.5em;height:1.5em;", "id":select})),	
 						createSelectionPick(treeToString(tree))
 				
 						]
