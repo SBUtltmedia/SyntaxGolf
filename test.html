@@ -1,0 +1,18 @@
+<form action="index.html">
+<textarea rows="4" cols="50" name="string" id="string"></textarea>
+<input type="submit"/>
+</form>
+<script>
+function parseQuery(queryString) {
+    var query = {};
+    var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '').replaceAll("+"," ");
+    }
+    return query;
+}
+let braketedSentence=parseQuery(window.location.search).string
+document.getElementById("string").value=braketedSentence
+
+</script>

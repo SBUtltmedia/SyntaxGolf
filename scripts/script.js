@@ -1,8 +1,21 @@
 /*jshint multistr: true */
 
 //this is a sample .js file that shows how you might set up the popup menus
-lines = [];
-currentLine = 0; 
+
+
+function parseQuery(queryString) {
+    var query = {};
+    var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '').replaceAll("+"," ");
+    }
+    return query;
+}
+let braketedSentence=parseQuery(window.location.search).string
+console.log(braketedSentence)
+let lines = [];
+let currentLine = 0; 
 (function ($) {
 	$(document).ready(function () {
 
@@ -59,7 +72,7 @@ currentLine = 0;
 		}
 	
 
-		makeTree(tree, "container", 0, 100)
+		makeTree(parse(braketedSentence), "container", 0, 100)
 		$(`#container`).children().find("div").fadeTo(0,0)
 
 		revealText("container_0")
@@ -130,9 +143,34 @@ currentLine = 0;
 			}
 
 		}
+		function createSelectionPick2(sentence, anchorOffset = 0) {
+			let phraseDiv = $('<div/>', {});
+			let wordSpan= sentence.split(" ").map((word,index)=>{
+
+				return  $('<span/>', {"html":`${word} `});
+
+
+			})
+
+			phraseDiv.on('keyup mouseup mouseleave', function (e) {
+				GetSelectedText();
+				let sentence= rangy.getSelection().toString().trim()
+				let tree=JSON.parse($(this).parent().attr('data-tree'))
+		
+				tree.children.forEach((child,index)=>{
+					let childText= treeToString(child).trim()
+					console.log({childText,sentence})
+					if(childText==sentence){
+						console.log($(this).parent().attr("id"),index)
+						revealSelect($(this).parent().attr("id"),index)
+					};
+
+				})
+			});
+			return phraseDiv;
+		}
 
 		function createSelectionPick(sentence, anchorOffset = 0) {
-
 			let phraseDiv = $('<div/>', {
 				"contenteditable": "true",
 				"oncut": "return false",
@@ -158,38 +196,6 @@ currentLine = 0;
 
 				})
 			});
-
-
-
-			
-			// 	let sel = rangy.getSelection();
-			// 	let text = sel.toString();
-			// 	if (text) {
-			// 		let applier = rangy.createClassApplier("hide");
-			// 		applier.toggleSelection()
-			// 		let spans = lines[currentLine].find("span")
-			// 		let added = false;
-			// 		spans.each(function (index) {
-
-			// 			let spanOffset = $(this).data("anchoroffset");
-			// 			//e.log(spanOffset, sel.anchorOffset)
-			// 			if (spanOffset > sel.anchorOffset) {
-			// 				added = true;
-			// 				//console.log("prepend")
-			// 			//	$(this).prepend(createSelectionPick(text, sel.anchorOffset));
-			// 			}
-			// 		});
-			// 		if (!added) {
-			// 			lines[currentLine].append(createSelectionPick(text, sel.anchorOffset))
-			// 		}
-
-			// 		sel.removeAllRanges();
-			// 		let popId = `id_${Date.now()}`
-			// 		//let pop = $("<div/>", { "id": popId }).append($("<i/>", { "class": "fa" }))
-			// 		//lines[currentLine].append(pop)
-			// 		createTypePick(popId)
-			// 	}
-			// });
 			return phraseDiv;
 		}
 		function GetSelectedText() {
