@@ -22,6 +22,14 @@ defaultQuery = `(S
           (N rabbit))))`
 
 let braketedSentence=parseQuery(window.location.search).string || defaultQuery
+// window.location.search = braketedSentence
 document.getElementById("string").value=braketedSentence
+
+if ('URLSearchParams' in window) {
+    var searchParams = new URLSearchParams(window.location.search)
+    searchParams.set("string", braketedSentence);
+    var newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+    history.pushState(null, '', newRelativePathQuery);
+}
 
 </script>
