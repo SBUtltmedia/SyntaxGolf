@@ -12,7 +12,16 @@ function parseQuery(queryString) {
     }
     return query;
 }
-let braketedSentence=parseQuery(window.location.search).string
+
+defaultQuery = `(S
+    (NP Alice)
+    (VP
+       (V chased)
+       (NP
+          (Det the)
+          (N rabbit))))`
+
+let braketedSentence=parseQuery(window.location.search).string || defaultQuery
 document.getElementById("string").value=braketedSentence
 
 </script>
