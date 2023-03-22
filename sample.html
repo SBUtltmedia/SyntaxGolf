@@ -1,0 +1,83 @@
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <!-- <script src="http://code.jquery.com/ui/1.8.17/jquery-ui.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js" integrity="sha512-0bEtK0USNd96MnO4XhH8jhv3nyRF0eK87pJke6pkYf3cM0uDIhNJy9ltuzqgypoIFXw3JSuiy04tVk4AjpZdZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <style> 
+        #oneDiv{
+            color:blueviolet;
+        }
+        .multipleDivs{
+            /* background-color: aquamarine; */
+        }
+        .selected{
+            /* font-weight: bold; */
+            background-color: aquamarine;
+            user-select: none;
+        }
+        span{
+           margin-left: 10px; 
+        }
+    </style>
+    <script> 
+        
+        function makeSelectable(sentence) {
+            sentence.split(' ').forEach((word)=>{
+                console.log(word)
+                let span = $("<span/>", {html:word, class:"multipleDivs"}).on({
+                mousemove: function(e){
+                    console.log(e.buttons)
+                    if (e.buttons == 1) {
+                        // $(this).css("font-weight", "bold");
+                        selected(this);
+                        // TO DO : make this work on mobile emulation with touch events
+                    }
+                },
+                // mouseleave: function(){
+                //     $(this).css("font-weight", "normal");
+                // }
+            });
+                $("body").append(span)
+            })
+        }
+        function selected(el) {
+            $(el).addClass("selected");
+        }
+        $(document).ready(function(){
+            makeSelectable("Mary a had a little lamb");
+            $("body").on({
+                mousedown: function(e){
+                    e.stopPropagation(); 
+                    $(".selected").removeClass("selected");
+                }
+            })
+            $("#twoDiv").on({
+                mouseenter: function(){
+                    $(this).css("color", "red");
+                },  
+                mouseleave: function(){
+                    $(this).css("color", "black");
+                }   
+            });
+            // $(".multipleDivs").on({
+            //     mouseenter: function(){
+            //         $(this).css("font-weight", "bold");
+            //     },
+            //     mouseleave: function(){
+            //         $(this).css("font-weight", "normal");
+            //     }
+            // });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="oneDiv" class="multipleDivs">
+        "Hello world"
+    </div>
+    <div id="twoDiv" class="multipleDivs">
+        "Hello world"
+    </div>
+</body>
+
+</html>
