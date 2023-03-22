@@ -25,7 +25,7 @@ let currentLine = 0;
 						      <a><i>V</i></a><br>
 							  <a><i>N</i></a>
 							  <a><i>PP</i></a>
-							  <a><i>D</i></a><br>
+							  <a><i>Det</i></a><br>
 							  <a><i>P</i></a>
 						  </div>`;
 		const tree = {
