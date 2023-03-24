@@ -1,4 +1,3 @@
-//TO DO: Fix issue of extra empty child at leaves
 
 function parse(sentence = `(S
     (NP Alice)
