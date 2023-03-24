@@ -1,3 +1,5 @@
+//TO DO: Fix issue of extra empty child at leaves
+
 function parse(sentence = `(S
     (NP Alice)
     (VP
@@ -12,7 +14,9 @@ sentence= sentence.replace(/[\r\n]/gm, '');
 sentence =sentence.replaceAll("[","(").replaceAll("]",")");
 console.log(sentence)
 let label= sentence.match(/^\(([^ ]*)/)[1].trim()
+console.log(label)
 let tree={"label":label}
+console.log(tree)
 let parenCount=0
 //let rightParenCount=0
 let leftPlaceHolder=0;
@@ -39,9 +43,11 @@ if (char==")")
 if(tree.children.length==0)
 {
     let [g,...text]=  sentence.split(" ")
-    tree.children=text.join(" ").split(")"[0])
-    console.log() 
+    console.log(text)
+    tree.children=text.join(" ").split(")")[0]
+    console.log(tree) 
 }
+console.log(tree)
 return tree
 }
 
