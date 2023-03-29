@@ -1,63 +1,102 @@
 <html>
+
 <head>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <!-- <script src="http://code.jquery.com/ui/1.8.17/jquery-ui.min.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js" integrity="sha512-0bEtK0USNd96MnO4XhH8jhv3nyRF0eK87pJke6pkYf3cM0uDIhNJy9ltuzqgypoIFXw3JSuiy04tVk4AjpZdZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-    <style> 
-        #oneDiv{
-            color:blueviolet;
+    <style>
+        #oneDiv {
+            color: blueviolet;
         }
-        .multipleDivs{
+
+        .multipleDivs {
             /* background-color: aquamarine; */
         }
-        .selected{
+
+        .selected {
             /* font-weight: bold; */
             background-color: aquamarine;
             user-select: none;
         }
-        span{
-           margin-left: 10px; 
+
+        span {
+            margin-left: 10px;
+        }
+
+        div {
+            display:inline-block;
+            margin-left: 10px;
         }
     </style>
-    <script> 
-        
+    <script>
+
         function makeSelectable(sentence) {
-            sentence.split(' ').forEach((word)=>{
+            sentence.split(' ').forEach((word) => {
                 console.log(word)
-                let span = $("<span/>", {html:word, class:"multipleDivs"}).on({
-                mousemove: function(e){
-                    console.log(e.buttons)
-                    if (e.buttons == 1) {
-                        // $(this).css("font-weight", "bold");
+                let touch = false;
+                let span = $("<div/>", { html: word, class: "multipleDivs" }).on({
+                    mousemove: function (e) {
+                        console.log(e.buttons)
+                        if (e.buttons == 1) {
+                            // $(this).css("font-weight", "bold");
+                            selected(this);
+                        }
+                    },
+                    "touchstart": function(e) {
+                        console.log(e)
                         selected(this);
-                        // TO DO : make this work on mobile emulation with touch events
+                        touch = true
+                    },
+                    "touchend": function(e) {
+                        console.log(e)
+                        touch = false
+                    },
+                    "touchmove": function(e) {
+                        console.log(e)
+                        if (touch == true){
+                            console.log("touch")
+                            console.log(this)
+                            selected(this) 
+                            console.log(e.touches[0].clientX)
+                            console.log( document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY) )
+                            // selected(document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY))
+                            let elem = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)
+                            if (elem.classList.contains("multipleDivs")){
+                                console.log("test")
+                                selected(elem)
+                            }
+                        }
+                        // selected(this);                     
                     }
-                },
-                // mouseleave: function(){
-                //     $(this).css("font-weight", "normal");
-                // }
-            });
-                $("body").append(span)
+                    // mouseleave: function(){
+                    //     $(this).css("font-weight", "normal");
+                    // }
+                });
+                // $("#oneDiv").on("touchstart", function(e){
+                //     console.log(e)
+                // })
+                $("body").prepend(span)
             })
         }
         function selected(el) {
             $(el).addClass("selected");
         }
-        $(document).ready(function(){
-            makeSelectable("Mary a had a little lamb");
+        $(document).ready(function () {
+            makeSelectable("Mary had a little lamb");
             $("body").on({
-                mousedown: function(e){
-                    e.stopPropagation(); 
+                mousedown: function (e) {
+                    e.stopPropagation();
                     $(".selected").removeClass("selected");
                 }
             })
             $("#twoDiv").on({
-                mouseenter: function(){
+                mouseenter: function () {
                     $(this).css("color", "red");
-                },  
-                mouseleave: function(){
+                },
+                mouseleave: function () {
                     $(this).css("color", "black");
-                }   
+                }
             });
             // $(".multipleDivs").on({
             //     mouseenter: function(){
