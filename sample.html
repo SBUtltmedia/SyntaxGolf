@@ -20,54 +20,42 @@
             user-select: none;
         }
 
-        span {
-            margin-left: 10px;
-        }
-
         div {
             display:inline-block;
-            margin-left: 10px;
+            padding: 10px;
         }
     </style>
     <script>
-
+        // console.log = () => {}
         function makeSelectable(sentence) {
             sentence.split(' ').forEach((word) => {
                 console.log(word)
-                let touch = false;
                 let span = $("<div/>", { html: word, class: "multipleDivs" }).on({
+
                     mousemove: function (e) {
                         console.log(e.buttons)
                         if (e.buttons == 1) {
                             // $(this).css("font-weight", "bold");
-                            selected(this);
+                            selected(this)
+                            console.log(this)
+                            //console.log(e.touches)
                         }
                     },
-                    "touchstart": function(e) {
-                        console.log(e)
-                        selected(this);
-                        touch = true
+
+                    "touching": function(e) {
+                        selected(this)
                     },
-                    "touchend": function(e) {
-                        console.log(e)
-                        touch = false
-                    },
+
                     "touchmove": function(e) {
                         console.log(e)
-                        if (touch == true){
-                            console.log("touch")
-                            console.log(this)
-                            selected(this) 
-                            console.log(e.touches[0].clientX)
-                            console.log( document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY) )
-                            // selected(document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY))
-                            let elem = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)
-                            if (elem.classList.contains("multipleDivs")){
-                                console.log("test")
-                                selected(elem)
-                            }
-                        }
-                        // selected(this);                     
+                        console.log(this)
+                        console.log(span)
+                        selected(this) 
+                        console.log(e.touches[0].clientX)
+                        console.log(e.touches)
+                        console.log( document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY) )
+                        let elem = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)
+                        $(elem).trigger("touching")               
                     }
                     // mouseleave: function(){
                     //     $(this).css("font-weight", "normal");
@@ -111,12 +99,12 @@
 </head>
 
 <body>
-    <div id="oneDiv" class="multipleDivs">
+    <!-- <div id="oneDiv" class="multipleDivs">
         "Hello world"
     </div>
     <div id="twoDiv" class="multipleDivs">
         "Hello world"
-    </div>
+    </div> -->
 </body>
 
 </html>
