@@ -73,12 +73,15 @@
                 mousedown: function (e) {
                     e.stopPropagation();
                     // console.log($(".selected"));
-                    console.log(sentenceArrayToSentence($(".selected")))
+                    if ($(".selected").length != 0) {
+                        console.log(sentenceArrayToSentence($(".selected")))
+                        // makeSelectable(sentenceArrayToSentence($(".selected")), sentence)
+                    }
                 }
             }).append(sentenceArray));
         }
         function sentenceArrayToSentence(sentenceArray) {
-            return $.makeArray(sentenceArray).map(wordDiv=>wordDiv.innerHTML)//.join(" ");
+            return $.makeArray(sentenceArray).map(wordDiv=>wordDiv.innerHTML).join(" ");
         }
         function selected(el) {
             $(el).addClass("selected");
