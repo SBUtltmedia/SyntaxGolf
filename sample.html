@@ -20,6 +20,10 @@
             user-select: none;
         }
 
+        .hidden {
+            display:none;
+        }
+
         div {
             display:inline-block;
             padding: 10px;
@@ -73,9 +77,13 @@
                 mousedown: function (e) {
                     e.stopPropagation();
                     // console.log($(".selected"));
-                    if ($(".selected").length != 0) {
+                    if ($(".selected").length) {
                         console.log(sentenceArrayToSentence($(".selected")))
-                        // makeSelectable(sentenceArrayToSentence($(".selected")), sentence)
+                        $("#problemSentence").append($("<br/>"))
+                        let selectedWords = $(".selected")
+                        // $("#problemSentence").append($(<>))
+                        $(".selected").addClass("hidden").removeClass("selected")
+                        makeSelectable(sentenceArrayToSentence(selectedWords), "#problemSentence")
                     }
                 }
             }).append(sentenceArray));
@@ -87,21 +95,21 @@
             $(el).addClass("selected");
         }
         $(document).ready(function () {
-            makeSelectable("Mary had a little lamb", "body");
+            makeSelectable("Mary had a little lamb", "#problemSentence");
             $("body").on({
                 mousedown: function (e) {
                     e.stopPropagation();
                     $(".selected").removeClass("selected");
                 }
             })
-            $("#twoDiv").on({
-                mouseenter: function () {
-                    $(this).css("color", "red");
-                },
-                mouseleave: function () {
-                    $(this).css("color", "black");
-                }
-            });
+            // $("#twoDiv").on({
+            //     mouseenter: function () {
+            //         $(this).css("color", "red");
+            //     },
+            //     mouseleave: function () {
+            //         $(this).css("color", "black");
+            //     }
+            // });
             // $(".multipleDivs").on({
             //     mouseenter: function(){
             //         $(this).css("font-weight", "bold");
@@ -121,6 +129,9 @@
     <div id="twoDiv" class="multipleDivs">
         "Hello world"
     </div> -->
+    <div id="problemSentence">
+
+    </div>
 </body>
 
 </html>
