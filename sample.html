@@ -3,123 +3,15 @@
 <head>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+        <!-- <style>
+            html{font-size: 10px;}
+            #stage{width:100%; height:100%;}
+        </style> -->
+        <script src="scripts/resize.js"></script>
+        <script src="scripts/golf.js"></script>       
+        <link rel="stylesheet" href="styles/style.css">
     <!-- <script src="http://code.jquery.com/ui/1.8.17/jquery-ui.min.js"></script> -->
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js" integrity="sha512-0bEtK0USNd96MnO4XhH8jhv3nyRF0eK87pJke6pkYf3cM0uDIhNJy9ltuzqgypoIFXw3JSuiy04tVk4AjpZdZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-    <style>
-        #oneDiv {
-            color: blueviolet;
-        }
-
-        .multipleDivs {
-            /* background-color: aquamarine; */
-        }
-
-        .selected {
-            /* font-weight: bold; */
-            background-color: aquamarine;
-            user-select: none;
-        }
-
-        .hidden {
-            display:none;
-        }
-
-        div {
-            display:inline-block;
-            padding: 10px;
-        }
-    </style>
-    <script>
-        // console.log = () => {}
-        function makeSelectable(sentence, el) {
-            sentenceArray = []
-
-            sentence.split(' ').forEach((word) => {
-                console.log(word)
-                let wordContainer = $("<div/>", { html: word, class: "multipleDivs" }).on({
-
-                    mousemove: function (e) {
-                        // console.log(e.buttons)
-                        if (e.buttons == 1) {
-                            // $(this).css("font-weight", "bold");
-                            selected(this)
-                            // console.log(this)
-                            //console.log(e.touches)
-                        }
-                    },
-
-                    "touching": function(e) {
-                        selected(this)
-                    },
-
-                    "touchmove": function(e) {
-                        console.log(e)
-                        console.log(this)
-                        console.log(wordContainer)
-                        selected(this) 
-                        console.log(e.touches[0].clientX)
-                        console.log(e.touches)
-                        console.log( document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY) )
-                        let elem = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)
-                        $(elem).trigger("touching")               
-                    }
-                    // mouseleave: function(){
-                    //     $(this).css("font-weight", "normal");
-                    // }
-                });
-                // $("#oneDiv").on("touchstart", function(e){
-                //     console.log(e)
-                // })
-                // $(el).append($("<div/>").append(wordContainer));
-                sentenceArray.push(wordContainer);
-            })
-            $(el).append($("<div/>").on({
-                mousedown: function (e) {
-                    e.stopPropagation();
-                    // console.log($(".selected"));
-                    if ($(".selected").length) {
-                        console.log(sentenceArrayToSentence($(".selected")))
-                        $("#problemSentence").append($("<br/>"))
-                        let selectedWords = $(".selected")
-                        // $("#problemSentence").append($(<>))
-                        $(".selected").addClass("hidden").removeClass("selected")
-                        makeSelectable(sentenceArrayToSentence(selectedWords), "#problemSentence")
-                    }
-                }
-            }).append(sentenceArray));
-        }
-        function sentenceArrayToSentence(sentenceArray) {
-            return $.makeArray(sentenceArray).map(wordDiv=>wordDiv.innerHTML).join(" ");
-        }
-        function selected(el) {
-            $(el).addClass("selected");
-        }
-        $(document).ready(function () {
-            makeSelectable("Mary had a little lamb", "#problemSentence");
-            $("body").on({
-                mousedown: function (e) {
-                    e.stopPropagation();
-                    $(".selected").removeClass("selected");
-                }
-            })
-            // $("#twoDiv").on({
-            //     mouseenter: function () {
-            //         $(this).css("color", "red");
-            //     },
-            //     mouseleave: function () {
-            //         $(this).css("color", "black");
-            //     }
-            // });
-            // $(".multipleDivs").on({
-            //     mouseenter: function(){
-            //         $(this).css("font-weight", "bold");
-            //     },
-            //     mouseleave: function(){
-            //         $(this).css("font-weight", "normal");
-            //     }
-            // });
-        });
-    </script>
 </head>
 
 <body>
@@ -129,8 +21,15 @@
     <div id="twoDiv" class="multipleDivs">
         "Hello world"
     </div> -->
-    <div id="problemSentence">
+    
+    <div id="stage">
+        <svg id="lineContainer">
+            <!-- <rect width="50%" height="100%" tyle="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" /> -->
+            <!-- <circle cx="183" cy="156" r="10" stroke="black" stroke-width="3" fill="red"></circle> -->
+        </svg>
+        <div id="problemConstituent" class="block">
 
+        </div>    
     </div>
 </body>
 

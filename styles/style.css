@@ -1,0 +1,121 @@
+        body {
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        #oneDiv {
+            color: blueviolet;
+        }
+
+        .wordContainer {
+            /* background-color: aquamarine; */
+            font-size: 3rem;
+            display: inline-block
+        }
+
+        .selected {
+            /* font-weight: bold; */
+            background-color: aquamarine;
+            user-select: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .faded {
+            color: grey;
+        }
+
+        div {
+            padding: 1rem;
+        }
+
+        #lineContainer {
+            width: 100%;
+            height: 100%;
+
+        }
+
+        #problemConstituent,
+        #lineContainer,
+        #stage {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        #stage {
+            padding: 0;
+            /* border: 1px solid black; */
+            border: 0px;
+            width: 100%;
+            height: 100%;
+
+        }
+
+        .block {
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .wordContainer {
+            /* background-color: rgba(137, 43, 226, 0.208); */
+
+        }
+
+        .labelDiv {
+            /* position:absolute; */
+            margin: auto;
+            padding: 0;
+            width: 20rem;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background-color: rgba(137, 43, 226, 0.208);
+            text-align: center;
+            font-size: 3rem;
+        }
+
+        .labelMenu {
+            display: flex;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding:0;
+        }
+
+        .labelItem {
+            flex: 33%;
+            font-size:2rem;
+            margin:auto;
+            padding:0;
+            border:0;
+        }
+
+        .bar::after {
+            content: "'"
+        }
+
+        .phrase::after {
+            content: "P"
+        }
+
+        .typeMenu {
+            display: flex;
+            /* position:relative;
+            left:-29rem;
+            top:-11rem; */
+        }
+
+        .typeItem {
+            display: inline-block;
+            width: 50%;
+        }
+
+        .labelItem:hover,
+        .typeItem:hover {
+            cursor: pointer;
+        }

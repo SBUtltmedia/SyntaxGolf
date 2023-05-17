@@ -108,6 +108,7 @@ let currentLine = 0;
 
 		// };
 		function makeTree(tree, parent, index, cssWidth) {
+			console.log(tree, parent, index, cssWidth)
 			let newParent = `${parent}_${index}`
 			let select=`${newParent}_select`
 			$(`#${parent}`).append(
@@ -188,7 +189,7 @@ let currentLine = 0;
 		
 				tree.children.forEach((child,index)=>{
 					let childText= treeToString(child).trim()
-					console.log({childText,sentence})
+					// console.log({childText,sentence})
 					if(childText==sentence){
 						console.log($(this).parent().attr("id"),index)
 						revealSelect($(this).parent().attr("id"),index)
