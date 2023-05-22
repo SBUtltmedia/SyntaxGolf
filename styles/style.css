@@ -108,11 +108,14 @@
             /* position:relative;
             left:-29rem;
             top:-11rem; */
+            padding:0;
+            border:0;
         }
 
         .typeItem {
             display: inline-block;
             width: 50%;
+            font-size:2rem;
         }
 
         .labelItem:hover,
