@@ -26,6 +26,8 @@
 
         .faded {
             color: grey;
+            /* visibility: hidden; */
+            /* display: none; */
         }
 
         div {
@@ -122,3 +124,4 @@
         .typeItem:hover {
             cursor: pointer;
         }
+

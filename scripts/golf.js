@@ -61,6 +61,12 @@ function makeSelectable(sentence, row, blockIndex) {
             if (selectedJQ.length) {
                 let selectedWords = selectedJQ
                 selectedJQ.addClass("faded").removeClass("selected") // eventually should be hidden and/or unable to be selected again
+                console.log(selectedJQ.parent().find(".faded").length)
+                console.log(selectedJQ.parent().children().length)
+                if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
+                    selectedJQ.parent().addClass("hidden")
+                }
+                
                 let constituent = sentenceArrayToSentence(selectedWords)
                 newIndex = blockIndex + parseInt(selectedWords[0].dataset.index)
                 
@@ -75,7 +81,7 @@ function makeSelectable(sentence, row, blockIndex) {
     }).append([
         $("<div/>", {class:"labelDiv", html:"?"}).one({
             "click":generateMenu
-        }), 
+        }).css("cursor", "pointer"), 
         $("<div/>", {class:"constituentContainer"}).append(sentenceArray)])
     
 
@@ -125,21 +131,25 @@ function sentenceArrayToSentence(sentenceArray) {
 function drawLines() {
     // clear current SVG
     $("#lineContainer").empty()
+
     // go through parent child pairs and draw all lines between them
-    // children of foundation
+
+    let callback = function(block){
+        let parent = findParent($(this))
+        drawLine($(this), parent)
+    }
+    traverse(callback)
+
+}
+
+function traverse(callback) {
     $(`${foundation}`).children().each(function(row){
         let rowThis = $(this)
         let rowIndex = parseInt(rowThis.data("row"))
         if (rowIndex > 0) { // skip root node           
-            rowThis.children().each(function(block){
-                let parent = findParent($(this))
-                drawLine($(this), parent)
-            })
-            
-        }
-        
+            rowThis.children().each(callback)            
+        }        
     })
-
 }
 
 function findParent(block) {
@@ -235,6 +245,8 @@ function getCorners(elem) {
 
 function generateMenu() {
 
+    $(this).css("cursor", "auto")
+
     let labels = ["N", "V", "P", "Adj", "Adv", "D", "C", "T", "S"]
 
     let typeMenu = $("<div/>", {class:"typeMenu"}).append(
@@ -245,7 +257,7 @@ function generateMenu() {
     for (i of labels) {
         labelDivArray.push($("<div/>", {html:i, class:"labelItem"}))
     }
-
+    
     $(this).append($("<div/>", {class:"labelMenu"}).append([...labelDivArray, typeMenu]))
 
     drawLines()
@@ -289,3 +301,4 @@ function inverse(obj){
     }
     return retobj;
 }
+
