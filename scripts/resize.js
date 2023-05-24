@@ -42,7 +42,7 @@ else{
   //console.log(stageLeft, stageTop)
   $("html").css("font-size", (stageHeight / baseFontFactor) + "px");
   $("#lineContainer").css({
-    width: paddedStageWidth,
+    width: $("#problemConstituent").width(),
     height: $("#problemConstituent").height()
   });
 
