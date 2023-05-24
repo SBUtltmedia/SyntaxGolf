@@ -3,6 +3,8 @@ let foundation = "#problemConstituent" // this should already exist in HTML
 let sentence = "Mary had a little lamb" // default sentence but can be replaced by input 
 
 $(document).ready(function () {
+    // "Done" button at top, click to generate bracketed syntax to compare and grade
+
     $(`${foundation}`).append($("<div/>", {"data-row":0})) // start with just row 0 div
     makeSelectable(sentence, 0, 0) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({ 
@@ -60,9 +62,8 @@ function makeSelectable(sentence, row, blockIndex) {
             e.stopPropagation();
             if (selectedJQ.length) {
                 let selectedWords = selectedJQ
-                selectedJQ.addClass("faded").removeClass("selected") // eventually should be hidden and/or unable to be selected again
-                console.log(selectedJQ.parent().find(".faded").length)
-                console.log(selectedJQ.parent().children().length)
+                selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
+                // once all words in a block are parsed they disappear
                 if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
                     selectedJQ.parent().addClass("hidden")
                 }
@@ -302,3 +303,55 @@ function inverse(obj){
     return retobj;
 }
 
+function getTree(){
+    // when player clicks "done" 
+    // get bracketed syntax representation of final syntax tree to compare to official answer
+
+    // maps block IDs to list of IDs of its children
+    let parentChildrenMap = getParentChildrenMap()
+
+    // ID of block containing original sentence
+    let root = $(`[data-row="0"]`).children()[0].id
+
+    let tree = treeAtNode(root, parentChildrenMap)
+
+    return tree
+}
+
+function getParentChildrenMap() {
+    let PCM = {}
+    let callback = function(block){
+        let childID = $(this).attr("id")
+        let parentID = findParent($(this)).attr("id")
+        if(!(parentID in PCM)) {
+            PCM[parentID] = []
+        }
+        PCM[parentID].push(childID)
+    }
+    traverse(callback)
+
+    return PCM
+}
+
+function treeAtNode(blockID, PCM) {
+    let node = $(`#${blockID}`)
+    let label = node.find(".labelDiv").text()
+    
+    // base case: child is a string not another tree
+    if(!(blockID in PCM)) {
+        let word = node.find(".constituentContainer").find(".wordContainer").text()
+        let leaf = `(${label} ${word})`
+        return leaf
+    } else {
+        let childrenIDs = PCM[blockID]
+        let children = ""
+        childrenIDs.forEach((childID) => {
+            children = `${children} ${treeAtNode(childID, PCM)}`
+        })
+
+        let tree = `(${label} ${children})`
+
+        return tree
+    }
+
+}
