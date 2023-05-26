@@ -11,11 +11,11 @@ function parse(sentence = `(S
 sentence= sentence.replace(/[\r\n]/gm, '');
 
 sentence =sentence.replaceAll("[","(").replaceAll("]",")");
-console.log(sentence)
+//console.log(sentence)
 let label= sentence.match(/^\(([^ ]*)/)[1].trim()
-console.log(label)
+//console.log(label)
 let tree={"label":label}
-console.log(tree)
+//console.log(tree)
 let parenCount=0
 //let rightParenCount=0
 let leftPlaceHolder=0;
@@ -32,8 +32,8 @@ sentence.split("").forEach((char,index)=>{
     if (hasTrace==true) {
         tree.trace = char
         hasTrace = false
-        console.log("trace")
-        console.log(char)
+        //console.log("trace")
+        //console.log(char)
     }
     
     if (prevChar=="^" & parenCount==1) {
@@ -42,8 +42,8 @@ sentence.split("").forEach((char,index)=>{
         }
         else {
             tree.index = char
-            console.log("index")
-            console.log(char)
+            //console.log("index")
+            //console.log(char)
         }
 
     }
@@ -65,9 +65,9 @@ sentence.split("").forEach((char,index)=>{
         
         }
     }
-    // console.log(prevChar)
+    // //console.log(prevChar)
     prevChar = char
-    // console.log(prevChar)
+    // //console.log(prevChar)
 })
 
 if(tree.children.length==0)
@@ -76,11 +76,11 @@ if(tree.children.length==0)
     if (text.length > 1) {
         text.pop()
     }
-    console.log(text)
+    //console.log(text)
     tree.children=text.join(" ").split(")")[0]
-    console.log(tree) 
+    //console.log(tree) 
 }
-console.log(tree)
+//console.log(tree)
 return tree
 }
 

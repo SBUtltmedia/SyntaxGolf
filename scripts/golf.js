@@ -1,6 +1,25 @@
 
 let foundation = "#problemConstituent" // this should already exist in HTML
-let sentence = "Mary had a little lamb" // default sentence but can be replaced by input 
+
+//let sentence = "Mary had a little lamb" // default sentence but can be replaced by input
+
+function parseQuery(queryString) {
+    var query = {};
+    var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '').replaceAll("+"," ");
+    }
+    return query;
+}
+let bracketedSentence=parseQuery(window.location.search).string || 
+    "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
+//let sentence = treeToString(parse(bracketedSentence))
+let sentence = bracketToString(bracketedSentence)
+
+console.log(bracketedSentence)
+console.log(sentence)
+ 
 
 $(document).ready(function () {
     // "Done" button at top, click to generate bracketed syntax to compare and grade
@@ -67,6 +86,7 @@ function makeSelectable(sentence, row, blockIndex) {
                 if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
                     selectedJQ.parent().addClass("hidden")
                 }
+                console.log(selectedJQ.parent().find(".faded").length, selectedJQ.parent().children().length)
                 
                 let constituent = sentenceArrayToSentence(selectedWords)
                 newIndex = blockIndex + parseInt(selectedWords[0].dataset.index)
@@ -354,4 +374,31 @@ function treeAtNode(blockID, PCM) {
         return tree
     }
 
+}
+
+function treeToString(tree) {
+    if (typeof tree == "string") {
+
+        return tree + ' '
+    }
+    else if (typeof tree.children == "string") {
+
+        return tree.children //+ ' '
+    }
+    else if (Array.isArray(tree.children)) {
+
+        return tree.children.reduce((acc, subtree) => {
+
+
+            return acc + treeToString(subtree)
+        }, "")
+    }
+
+}
+
+function bracketToString(bracket) {
+    return bracket
+    .replace(/  +/g, ' ') // get rid of extra white spaces
+    .replace(/\([^ ]* /g, '') // get rid of left parenthesis and label
+    .replace(/\)/g, '') // get rid of right parenthesis
 }
