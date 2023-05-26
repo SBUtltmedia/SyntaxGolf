@@ -12,7 +12,7 @@ function parseQuery(queryString) {
     }
     return query;
 }
-let bracketedSentence=parseQuery(window.location.search).string || 
+let bracketedSentence=parseQuery(window.location.search).string.replace(/[\r\n]/g,'').replace(/  +/g, ' ') || 
     "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence = bracketToString(bracketedSentence)
@@ -26,7 +26,7 @@ $(document).ready(function () {
     // "check answer" button at top, click to generate bracketed syntax to compare and grade
     $(`${foundation}`).append($("<div/>", {html:"Check Answer", class: "button"}).on({
         "click":function(e){
-            if(getTree().replace(/  +/g, ' ') == bracketedSentence.replace(/  +/g, ' ')) {
+            if(getTree().replace(/  +/g, ' ') == bracketedSentence) {
                 console.log("Correct!") 
                 alert("Correct!")
             } else {
