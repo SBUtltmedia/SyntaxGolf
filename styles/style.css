@@ -121,7 +121,16 @@
         }
 
         .labelItem:hover,
-        .typeItem:hover {
+        .typeItem:hover, 
+        .button:hover {
             cursor: pointer;
+        }
+
+        .button {
+            background-color: rgba(137, 43, 226, 0.208);
+            text-align: center;
+            font-size: 3rem;
+            width:18rem;
+            margin:auto;
         }
 

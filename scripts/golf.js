@@ -22,7 +22,19 @@ console.log(sentence)
  
 
 $(document).ready(function () {
-    // "Done" button at top, click to generate bracketed syntax to compare and grade
+    
+    // "check answer" button at top, click to generate bracketed syntax to compare and grade
+    $(`${foundation}`).append($("<div/>", {html:"Check Answer", class: "button"}).on({
+        "click":function(e){
+            if(getTree().replace(/  +/g, ' ') == bracketedSentence.replace(/  +/g, ' ')) {
+                console.log("Correct!") 
+                alert("Correct!")
+            } else {
+                console.log("Incorrect :(")
+                alert("Incorrect :(")
+            }
+        }
+    }))
 
     $(`${foundation}`).append($("<div/>", {"data-row":0})) // start with just row 0 div
     makeSelectable(sentence, 0, 0) // this will allow highlighting/selecting, parsing through recursion
