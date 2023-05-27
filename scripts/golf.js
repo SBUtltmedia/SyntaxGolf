@@ -12,8 +12,9 @@ function parseQuery(queryString) {
     }
     return query;
 }
-let bracketedSentence=parseQuery(window.location.search).string.replace(/[\r\n]/g,'').replace(/  +/g, ' ') || 
+let bracketedSentence=parseQuery(window.location.search).string || 
     "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
+bracketedSentence = bracketedSentence.replace(/[\r\n]/g,'').replace(/  +/g, ' ')
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence = bracketToString(bracketedSentence)
 
