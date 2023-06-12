@@ -1,37 +1,37 @@
-<!DOCTYPE html>
 <html>
-<!-- This is an example html page to show how the popup menus would look/work -->
-	<head>
-		<meta charset="utf-8">
-		<title>Syntax Golf</title>
-		<link rel="stylesheet" type="text/css" href="styles/Popup-plugin.css">
-		<link rel="stylesheet" type="text/css" href="styles/syntax.css">
 
-		<!--Use either font-awesome icons or Google icons with these links. Other icons could also be used if preferred-->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+        <!-- <style>
+            html{font-size: 10px;}
+            #stage{width:100%; height:100%;}
+        </style> -->
+        <script src="scripts/resize.js"></script>
+        <script src="scripts/parse.js"></script>
+        <script src="scripts/golf.js"></script>
+        <link rel="stylesheet" href="styles/style.css">
+    <!-- <script src="http://code.jquery.com/ui/1.8.17/jquery-ui.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js" integrity="sha512-0bEtK0USNd96MnO4XhH8jhv3nyRF0eK87pJke6pkYf3cM0uDIhNJy9ltuzqgypoIFXw3JSuiy04tVk4AjpZdZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+</head>
 
-	</head>
-	<body>
+<body>
+    <!-- <div id="oneDiv" class="multipleDivs">
+        "Hello world"
+    </div>
+    <div id="twoDiv" class="multipleDivs">
+        "Hello world"
+    </div> -->
+    
+    <div id="stage">
+        <svg id="lineContainer">
+            <!-- <rect width="50%" height="100%" tyle="fill:rgb(0,0,255);stroke-width:3;stroke:rgb(0,0,0)" /> -->
+            <!-- <circle cx="183" cy="156" r="10" stroke="black" stroke-width="3" fill="red"></circle> -->
+        </svg>
+        <div id="problemConstituent" class="block">
 
-		<div  id="container">
+        </div>    
+    </div>
+</body>
 
-		
-				<!-- <div id="myPopUp2">
-					<i class="fa"></i>
-				</div> -->
-				
-		
-
-		</div>
-
-		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/rangy/1.3.1/rangy-core.min.js" integrity="sha512-ZCkgV0SdoJJvBjlkwMpNZFSQzDWtB2ftYwOJQqwQUaXjfVLeUrxIfPMCxSaxVCXfFL82ccmjn6TTbkXjL3w2pA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/rangy/1.3.1/rangy-core.min.js" integrity="sha512-ZCkgV0SdoJJvBjlkwMpNZFSQzDWtB2ftYwOJQqwQUaXjfVLeUrxIfPMCxSaxVCXfFL82ccmjn6TTbkXjL3w2pA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/rangy/1.3.1/rangy-classapplier.js" integrity="sha512-/wLvdp40aHotiITc4yiukhcif1wZIjZb+BLncxhWK1aYJwt1SSWHj5fDMzWQZ7y++iwLX+DctxL/C4+oihCy3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-		<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script> <!-- necessary for the "draggable" ui  -->
-		<script src="scripts/Popup-plugin.js"></script>
-		<script src="scripts/script.js"></script>
-		<script src="scripts/parse.js"></script>
-	</body>
 </html>
