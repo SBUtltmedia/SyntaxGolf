@@ -65,22 +65,22 @@ sentence.split("").forEach((char,index)=>{
         
         }
     }
-    // //console.log(prevChar)
+    // console.log(prevChar)
     prevChar = char
-    // //console.log(prevChar)
+    // console.log(prevChar)
 })
 
 if(tree.children.length==0)
 {
     let [g,...text]=  sentence.split(" ")
     if (text.length > 1) {
-        text.pop()
+        //text.pop() // why?
     }
-    //console.log(text)
+    // console.log(text)
     tree.children=text.join(" ").split(")")[0]
-    //console.log(tree) 
+    // console.log(tree) 
 }
-//console.log(tree)
+// console.log(tree)
 return tree
 }
 

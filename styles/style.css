@@ -72,13 +72,16 @@
             /* position:absolute; */
             margin: auto;
             padding: 0;
-            width: 20rem;
+            width: 5rem;
+            /* min-width: 3rem;
+            max-width: 20rem; */
             height: 100%;
             left: 0;
             top: 0;
-            background-color: rgba(137, 43, 226, 0.208);
+            /* background-color: rgba(137, 43, 226, 0.208); */
             text-align: center;
             font-size: 3rem;
+            border-radius: 10%;
         }
 
         .labelMenu {
@@ -87,6 +90,7 @@
             flex-wrap: wrap;
             justify-content: center;
             padding:0;
+            /* background-color: rgba(137, 43, 226, 0.208); */
         }
 
         .labelItem {
@@ -127,10 +131,23 @@
         }
 
         .button {
-            background-color: rgba(137, 43, 226, 0.208);
             text-align: center;
             font-size: 3rem;
             width:18rem;
             margin:auto;
+            
+        }
+
+        .button, .labelDiv {
+            background-color: rgba(43, 226, 86, 0.208);
+            border-radius: 10%;
+            border: 0.3rem solid rgba(30, 162, 60, 0.208);
+        }
+
+        .branch {
+            /* lines of tree */
+            stroke:#454545;
+            stroke-width:2;
+            stroke-linecap:round;
         }
 

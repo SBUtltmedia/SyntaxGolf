@@ -30,6 +30,9 @@ $(document).ready(function () {
             if(getTree().replace(/  +/g, ' ') == bracketedSentence) {
                 console.log("Correct!") 
                 alert("Correct!")
+            } else if(isValid(treeToRows(parse(bracketedSentence)), getRows())) {
+                console.log("On the right track!")
+                alert("On the right track!")
             } else {
                 console.log("Incorrect :(")
                 alert("Incorrect :(")
@@ -115,7 +118,7 @@ function makeSelectable(sentence, row, blockIndex) {
     }).append([
         $("<div/>", {class:"labelDiv", html:"?"}).one({
             "click":generateMenu
-        }).css("cursor", "pointer"), 
+        }).css({"cursor":"pointer"}), 
         $("<div/>", {class:"constituentContainer"}).append(sentenceArray)])
     
 
@@ -221,7 +224,7 @@ function drawLine(child, parent) {
     // x1 pCenterXPercent, y1 pbottomPercent, x2 cCenterXPercent, y2 ctopPercent
     var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
     $("#lineContainer").append(line);
-	$(line).attr({x1:`${pCenterXPercent}%`, y1:`${pbottomPercent}%`, x2:`${cCenterXPercent}%`, y2:`${ctopPercent}%`, style:"stroke:rgb(255,0,0);stroke-width:2"})
+	$(line).attr({x1:`${pCenterXPercent}%`, y1:`${pbottomPercent}%`, x2:`${cCenterXPercent}%`, y2:`${ctopPercent}%`, syle:"stroke:rgb(255,0,0);stroke-width:2", class:"branch"})
     
 
 }
@@ -279,7 +282,7 @@ function getCorners(elem) {
 
 function generateMenu() {
 
-    $(this).css("cursor", "auto")
+    $(this).css({"cursor":"auto", "width":"20rem"})
 
     let labels = ["N", "V", "P", "Adj", "Adv", "D", "C", "T", "S"]
 
@@ -319,8 +322,12 @@ function generateMenu() {
             let symbol = inverse(symbolMap)[intersect] || ""
             let label = $(this).html() + symbol
             // replace ? with label and close menu
+            $(this).parent().parent().css({"width":"5rem"})
             $(this).parent().parent().text(label)
-            $(this).parent().remove() // cannot be reopened due to .one({})
+            console.log($(this).parent().parent().text()) // why is this not working?
+            console.log($(this).parent())
+            // $(this).parent().parent().css({"width":"3rem"})
+            // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
             drawLines()
 
         }
@@ -372,7 +379,10 @@ function treeAtNode(blockID, PCM) {
     
     // base case: child is a string not another tree
     if(!(blockID in PCM)) {
-        let word = node.find(".constituentContainer").find(".wordContainer").text()
+        // let word = node.find(".constituentContainer").find(".wordContainer").text()
+        // console.log(node.find(".constituentContainer").find(".wordContainer"))
+        let word = node.find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
+        // console.log(word)
         let leaf = `(${label} ${word})`
         return leaf
     } else {
@@ -414,4 +424,109 @@ function bracketToString(bracket) {
     .replace(/  +/g, ' ') // get rid of extra white spaces
     .replace(/\([^ ]* /g, '') // get rid of left parenthesis and label
     .replace(/\)/g, '') // get rid of right parenthesis
+}
+
+function isValidTest() {
+    let tree = parse(`(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))`)
+    //let subtree = JSON.stringify(parse(getTree()))
+    // let subtree = JSON.parse('{"label":"S","children":[{"label":"NP","children":"Mary"}]}')
+    let subtree = JSON.parse('{"label":"S","children":[{"label":"NP","children":"Mary"},{"label":"VP","children":"had a little lamb"}]}')
+    return isValid(tree, subtree)
+
+    // created new file to test all valid subtrees and some invalid ones
+    // this is outdated now
+}
+//isValidTest()
+
+
+function treeToRows(tree, accumulator=[], row=0, index=0) {
+
+    // TO DO modify to include "column"
+
+    // a = {"label":"S","children":[{"label":"NP","children":"Mary"},
+    // {"label":"VP","children":[{"label":"V","children":"had"},{"label":"NP","children":[
+    //     {"label":"D","children":"a"},{"label":"N'","children":[{"label":"Adj","children":"little"},
+    //     {"label":"N","children":"lamb"}]}]}]}]}
+
+    accumulator[row] = accumulator[row] || []
+
+    //base case
+    //string child
+    if (!Array.isArray(tree.children)) {
+        accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
+        console.log(tree.children, index)
+        // console.log(tree.label)
+        return tree.children
+    } else {
+        let constituent = []
+        tree.children.forEach(function(child, i){
+            console.log(child, i)
+            //treeToRows(child, accumulator, row+1)
+            constituent.push(treeToRows(child, accumulator, row+1, i+index))
+            // let word = treeToRows(child, accumulator, row+1)
+            // console.log(word)
+            // constituent.push(word)
+        })
+        accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:index})
+        console.log(constituent.join(" "), index)
+        if(row==0){
+            return accumulator
+        } else {
+            return constituent.join(" ")
+        }
+    }
+    
+}
+
+function getRows() {
+    // makes row structure with labels and constituents from DOM
+    let structure = []
+    $(`${foundation}`).find("[data-row]").each(function(row){
+        structure[row] = []
+        // console.log(row)
+        console.log($(this))
+        $(this).children().each(function(block){
+            // console.log(block)
+            console.log($(this))
+            let label = $(this).find(".labelDiv").text()
+            console.log(label)
+            let constituent = $(this).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
+            console.log(constituent)
+            structure[row].push({label:label, constituent:constituent, column:$(this).data("index")})
+            console.log($(this).data("index"))
+        })
+    })
+    return structure
+}
+
+function isValid(tree, subtree) {
+    //update to take into account columns
+
+    // console.log(tree)
+    // console.log(subtree)
+    let flag = true
+    subtree.forEach(function(row, i){
+        row.forEach(function(c){
+            // check for matching constituent
+            if(!(tree[i].some(x => x.constituent === c.constituent))){
+                flag = false
+                console.log(false)
+                // is there a way to break out of the loops?
+            } 
+            else {
+                // check label
+                console.log(true)
+                tree[i].forEach(function(x) {
+                    if(x.constituent == c.constituent & !(c.label == "?" || x.label == c.label)) {
+                        flag = false
+                        console.log(false, x)
+                        // this method of "wrong label" doesn't work for buffalos
+                    }
+                })
+            }
+            
+        })
+    })
+    return flag
+
 }
