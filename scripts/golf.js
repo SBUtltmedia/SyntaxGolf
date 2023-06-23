@@ -500,15 +500,14 @@ function getRows() {
 }
 
 function isValid(tree, subtree) {
-    //update to take into account columns
 
     // console.log(tree)
     // console.log(subtree)
     let flag = true
     subtree.forEach(function(row, i){
         row.forEach(function(c){
-            // check for matching constituent
-            if(!(tree[i].some(x => x.constituent === c.constituent))){
+            // check for matching constituent, label, column
+            if(!(tree[i].some(x => ((x.constituent === c.constituent) & (c.label == "?" || x.label == c.label) & (x.column === c.column)) ))){
                 flag = false
                 console.log(false)
                 // is there a way to break out of the loops?
@@ -516,13 +515,13 @@ function isValid(tree, subtree) {
             else {
                 // check label
                 console.log(true)
-                tree[i].forEach(function(x) {
-                    if(x.constituent == c.constituent & !(c.label == "?" || x.label == c.label)) {
-                        flag = false
-                        console.log(false, x)
-                        // this method of "wrong label" doesn't work for buffalos
-                    }
-                })
+                // tree[i].forEach(function(x) {
+                //     if(x.constituent == c.constituent & !(c.label == "?" || x.label == c.label)) {
+                //         flag = false
+                //         console.log(false, x)
+                //         // this method of "wrong label" doesn't work for buffalos
+                //     }
+                // })
             }
             
         })
