@@ -476,56 +476,39 @@ function bracketToString(bracket) {
     .replace(/\)/g, '') // get rid of right parenthesis
 }
 
-function isValidTest() {
-    let tree = parse(`(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))`)
-    //let subtree = JSON.stringify(parse(getTree()))
-    // let subtree = JSON.parse('{"label":"S","children":[{"label":"NP","children":"Mary"}]}')
-    let subtree = JSON.parse('{"label":"S","children":[{"label":"NP","children":"Mary"},{"label":"VP","children":"had a little lamb"}]}')
-    return isValid(tree, subtree)
-
-    // created new file to test all valid subtrees and some invalid ones
-    // this is outdated now
-}
-//isValidTest()
-
-
-function treeToRows(tree, accumulator=[], row=0, index=0) {
-
-    // TO DO fix "column" feature to work with multi word constituents on left
-
-    // a = {"label":"S","children":[{"label":"NP","children":"Mary"},
-    // {"label":"VP","children":[{"label":"V","children":"had"},{"label":"NP","children":[
-    //     {"label":"D","children":"a"},{"label":"N'","children":[{"label":"Adj","children":"little"},
-    //     {"label":"N","children":"lamb"}]}]}]}]}
+function treeToRows(tree, accumulator=[], row=0, leaves=[]) {
+    // try having index originate with leaves
+    console.log(leaves)
 
     accumulator[row] = accumulator[row] || []
 
     //base case
     //string child
     if (!Array.isArray(tree.children)) {
+        let index = leaves.length
+        leaves.push(tree.children)
         accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
-        console.log(tree.children, index)
-        // console.log(tree.label)
-        return tree.children
+        return [tree.children, index]
     } else {
         let constituent = []
+        let column = 0
         tree.children.forEach(function(child, i){
             console.log(child, i)
-            //treeToRows(child, accumulator, row+1)
-            constituent.push(treeToRows(child, accumulator, row+1, i+index))
-            // let word = treeToRows(child, accumulator, row+1)
-            // console.log(word)
-            // constituent.push(word)
+            let [word, index] = treeToRows(child, accumulator, row+1, leaves)
+            console.log(word, index)
+            constituent.push(word)
+            if (i==0) { // constituent gets index of first word
+                column = index
+            }
         })
-        accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:index})
-        console.log(constituent.join(" "), index)
+        accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
         if(row==0){
             return accumulator
         } else {
-            return constituent.join(" ")
+            return [constituent.join(" "), column]
         }
     }
-    
+
 }
 
 function getRows() {
@@ -559,19 +542,11 @@ function isValid(tree, subtree) {
             // check for matching constituent, label, column
             if(!(tree[i].some(x => ((x.constituent === c.constituent) & (c.label == "?" || x.label == c.label) & (x.column === c.column)) ))){
                 flag = false
-                console.log(false)
+                // console.log(false)
                 // is there a way to break out of the loops?
             } 
             else {
-                // check label
-                console.log(true)
-                // tree[i].forEach(function(x) {
-                //     if(x.constituent == c.constituent & !(c.label == "?" || x.label == c.label)) {
-                //         flag = false
-                //         console.log(false, x)
-                //         // this method of "wrong label" doesn't work for buffalos
-                //     }
-                // })
+                // console.log(true)
             }
             
         })
