@@ -2,7 +2,15 @@
 <form action="index.html">
 <textarea rows="4" cols="50" name="string" id="string"></textarea>
 <input type="submit"/>
+<fieldset>
+    <legend>Grading Mode:</legend>
+    <div><input type="radio" id="manual" name="mode" value="manual" checked>
+    <label for="manual">Manual</label></div>
+    <div><input type="radio" id="automatic" name="mode" value="automatic">
+    <label for="automatic">Automatic</label></div>
+</fieldset>
 </form>
+
 <script>
 function parseQuery(queryString) {
     var query = {};
@@ -19,7 +27,7 @@ defaultQuery = `(S
     (VP
        (V chased)
        (NP
-          (Det the)
+          (D the)
           (N rabbit))))`
 
 let braketedSentence=parseQuery(window.location.search).string || defaultQuery

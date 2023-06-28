@@ -10,6 +10,7 @@ function parseQuery(queryString) {
         var pair = pairs[i].split('=');
         query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '').replaceAll("+"," ");
     }
+    console.log(query)
     return query;
 }
 let bracketedSentence=parseQuery(window.location.search).string || 
@@ -18,6 +19,9 @@ bracketedSentence = bracketedSentence.replace(/[\r\n]/g,'').replace(/  +/g, ' ')
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence = bracketToString(bracketedSentence)
 
+let mode = parseQuery(window.location.search).mode || 'manual'
+let points = 0
+
 console.log(bracketedSentence)
 console.log(sentence)
  
@@ -25,20 +29,25 @@ console.log(sentence)
 $(document).ready(function () {
     
     // "check answer" button at top, click to generate bracketed syntax to compare and grade
-    $(`${foundation}`).append($("<div/>", {html:"Check Answer", class: "button"}).on({
-        "click":function(e){
-            if(getTree().replace(/  +/g, ' ') == bracketedSentence) {
-                console.log("Correct!") 
-                alert("Correct!")
-            } else if(isValid(treeToRows(parse(bracketedSentence)), getRows())) {
-                console.log("On the right track!")
-                alert("On the right track!")
-            } else {
-                console.log("Incorrect :(")
-                alert("Incorrect :(")
+    // if in this mode (manual checking vs automatic checking)
+    // use config file?
+    if (mode == 'manual') {
+        $(`${foundation}`).append($("<div/>", {html:"Check Answer", class: "button"}).on({
+            "click":function(e){
+                if(getTree().replace(/  +/g, ' ') == bracketedSentence) {
+                    console.log("Correct!") 
+                    alert("Correct!")
+                } else if(isValid(treeToRows(parse(bracketedSentence)), getRows())) {
+                    console.log("On the right track!")
+                    alert("On the right track!")
+                } else {
+                    console.log("Incorrect :(")
+                    alert("Incorrect :(")
+                }
             }
-        }
-    }))
+        }))
+    }
+    
 
     $(`${foundation}`).append($("<div/>", {"data-row":0})) // start with just row 0 div
     makeSelectable(sentence, 0, 0) // this will allow highlighting/selecting, parsing through recursion
@@ -97,17 +106,39 @@ function makeSelectable(sentence, row, blockIndex) {
             e.stopPropagation();
             if (selectedJQ.length) {
                 let selectedWords = selectedJQ
-                selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
-                // once all words in a block are parsed they disappear
-                if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
-                    selectedJQ.parent().addClass("hidden")
-                }
-                console.log(selectedJQ.parent().find(".faded").length, selectedJQ.parent().children().length)
+                // selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
+                // // once all words in a block are parsed they disappear
+                // if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
+                //     selectedJQ.parent().addClass("hidden")
+                // }
                 
                 let constituent = sentenceArrayToSentence(selectedWords)
                 newIndex = blockIndex + parseInt(selectedWords[0].dataset.index)
-                
-                makeSelectable(constituent, row+1, newIndex); 
+
+                // check if constituent is valid before calling recursion
+                // if in automatic checking mode
+                if (mode == 'automatic') {
+                    // parse and give points if correct
+                    if (treeToRows(parse(bracketedSentence))[row+1].some(x => ((x.constituent === constituent) & (x.column === newIndex)))) {
+                        makeSelectable(constituent, row+1, newIndex);
+                        selectedJQ.addClass("faded").removeClass("selected")
+                        if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
+                            selectedJQ.parent().addClass("hidden")
+                        }
+                        points = points + 1
+                    } else { // take away points if incorrect
+                        points = points -1
+                    }
+                    console.log(points)
+                    
+                } else {
+                    makeSelectable(constituent, row+1, newIndex);
+                    selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
+                    // once all words in a block are parsed they disappear
+                    if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
+                        selectedJQ.parent().addClass("hidden")
+                    }                    
+                }
                 
                 resizeWindow()
                 // redraw SVG based on new child
@@ -281,6 +312,21 @@ function getCorners(elem) {
 }
 
 function generateMenu() {
+    console.log($(this))
+    console.log($(this).parent())
+    // console.log($(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" "))
+    let constituent = $(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
+    console.log(constituent)
+    // console.log($(this).parent().parent().data("row"))
+    let row = $(this).parent().parent().data("row")
+    console.log(row)
+    // console.log($(this).parent().data("index"))
+    let column = $(this).parent().data("index")
+    console.log(column)
+
+    let reference = treeToRows(parse(bracketedSentence))[row].find(item => item.constituent === constituent & item.column === column)
+    let goldlabel = reference.label
+    console.log(goldlabel)
 
     $(this).css({"cursor":"auto", "width":"20rem"})
 
@@ -322,13 +368,17 @@ function generateMenu() {
             let symbol = inverse(symbolMap)[intersect] || ""
             let label = $(this).html() + symbol
             // replace ? with label and close menu
-            $(this).parent().parent().css({"width":"5rem"})
-            $(this).parent().parent().text(label)
-            console.log($(this).parent().parent().text()) // why is this not working?
-            console.log($(this).parent())
-            // $(this).parent().parent().css({"width":"3rem"})
-            // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
-            drawLines()
+            if ((mode=='manual') || (mode=='automatic' & label == goldlabel)) {
+                $(this).parent().parent().css({"width":"5rem"})
+                $(this).parent().parent().text(label)
+                // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
+                drawLines()
+                points = points + 1
+            } else {
+                points = points - 1
+            }
+            console.log(points)
+            
 
         }
     })
@@ -441,7 +491,7 @@ function isValidTest() {
 
 function treeToRows(tree, accumulator=[], row=0, index=0) {
 
-    // TO DO modify to include "column"
+    // TO DO fix "column" feature to work with multi word constituents on left
 
     // a = {"label":"S","children":[{"label":"NP","children":"Mary"},
     // {"label":"VP","children":[{"label":"V","children":"had"},{"label":"NP","children":[
