@@ -27,7 +27,10 @@ console.log(sentence)
  
 
 $(document).ready(function () {
-    
+    // $(`${foundation}`).append($("<div/>").append($("<div/>", {html:"TEST", class: "button"})))
+    // setTimeout(x => dragula([document.querySelector('[data-row="0"]')], {copy:true}), 1000)
+
+
     // "check answer" button at top, click to generate bracketed syntax to compare and grade
     // if in this mode (manual checking vs automatic checking)
     // use config file?
@@ -49,11 +52,38 @@ $(document).ready(function () {
     }
     
 
-    $(`${foundation}`).append($("<div/>", {"data-row":0})) // start with just row 0 div
+    $(`${foundation}`).append($("<div/>", {"data-row":0, class:"container"})) // start with just row 0 div
+    let drake = dragula([...document.getElementsByClassName("container")], {
+        isContainer: function (el) {
+            // console.log(el)
+            // console.log($(el).hasClass("container"))
+            if ($(el).hasClass("container")) {
+                return true
+            } else {
+                return false
+            }
+            
+          },
+        moves: function (el, container, handle) {
+            console.log("move")
+            return handle.classList.contains('labelDiv');
+          },
+        copy: true
+    });
+    drake.on("drop", (el, target, source, sibling)=>{
+        console.log(el, target, source, sibling)
+        let destID = $(el).attr("id")
+        $(el).attr("id", Date.now()) // new distinct id
+        let index = $(`[data-trace]`).length + 1
+        $(`#${destID}`).attr("data-destination", index)
+        $(el).attr("data-trace", index)
+        // drawLines() // fix bug where el has no parent in PCM
+        return true
+    })
     makeSelectable(sentence, 0, 0) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({ 
         mousedown: function (e) {
-            e.stopPropagation();
+            // e.stopPropagation();
             $(".selected").removeClass("selected"); // clicking anywhere else deselects
         }
     })
@@ -66,7 +96,9 @@ function makeSelectable(sentence, row, blockIndex) {
     // index is the position in the row, the initial index of the first word
     if (!($(`[data-row="${row}"]`)).length) { 
         // create row div if it doesn't exist
-        $(`${foundation}`).append($("<div/>", {"data-row":row}))
+        $(`${foundation}`).append($("<div/>", {"data-row":row, class:"container"}))
+        //dragula(document.getElementsByTagName("div"), {copy:true, direction: 'horizontal', slideFactorX: 1, slideFactorY: 1})
+        //dragula([...document.getElementsByClassName("container")], {});
     }
 
     let sentenceArray = [] // will fill with words from sentence then be converted to string
@@ -103,7 +135,7 @@ function makeSelectable(sentence, row, blockIndex) {
         mousedown: function (e) {
             let clickedID = $(this).attr("id")
             let selectedJQ = $(`#${clickedID} .selected`)
-            e.stopPropagation();
+            // e.stopPropagation();
             if (selectedJQ.length) {
                 let selectedWords = selectedJQ
                 // selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
@@ -152,6 +184,12 @@ function makeSelectable(sentence, row, blockIndex) {
         }).css({"cursor":"pointer"}), 
         $("<div/>", {class:"constituentContainer"}).append(sentenceArray)])
     
+    // dragula([...document.getElementsByClassName("container")], {
+    //     moves: function (el, container, handle) {
+    //         console.log("move")
+    //         return handle.classList.contains('labelDiv');
+    //         }
+    // });
 
     // testing drawing
     //drawDot(blockDiv)
@@ -222,7 +260,7 @@ function traverse(callback) {
 
 function findParent(block) {
     // row is row before row of block, look there for parent
-    let parent = -1
+    let parent = false
     rowIndex = parseInt(block.parent().data("row"))
     row = $(`[data-row="${rowIndex-1}"]`)
     row.children().each(function(){
@@ -235,7 +273,11 @@ function findParent(block) {
 }
 
 function drawLine(child, parent) {
+    // TO DO: draw from bottom of label
+
     // takes jquery items
+
+    console.log({child, parent})
 
     let containerWidth = $("#lineContainer").width()
     let containerHeight = $("#lineContainer").height()
@@ -255,7 +297,7 @@ function drawLine(child, parent) {
     // x1 pCenterXPercent, y1 pbottomPercent, x2 cCenterXPercent, y2 ctopPercent
     var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
     $("#lineContainer").append(line);
-	$(line).attr({x1:`${pCenterXPercent}%`, y1:`${pbottomPercent}%`, x2:`${cCenterXPercent}%`, y2:`${ctopPercent}%`, syle:"stroke:rgb(255,0,0);stroke-width:2", class:"branch"})
+	$(line).attr({x1:`${pCenterXPercent}%`, y1:`${pbottomPercent}%`, x2:`${cCenterXPercent}%`, y2:`${ctopPercent}%`, class:"branch"})
     
 
 }
@@ -301,6 +343,7 @@ function drawDot(elem) {
 }
 
 function getCorners(elem) {
+    console.log(elem)
     let width = elem[0].offsetWidth
     let height = elem[0].offsetHeight
     let left = elem.position().left
@@ -324,8 +367,9 @@ function generateMenu() {
     let column = $(this).parent().data("index")
     console.log(column)
 
+    // only used in auto mode
     let reference = treeToRows(parse(bracketedSentence))[row].find(item => item.constituent === constituent & item.column === column)
-    let goldlabel = reference.label
+    let goldlabel = reference?.label
     console.log(goldlabel)
 
     $(this).css({"cursor":"auto", "width":"20rem"})
@@ -368,7 +412,7 @@ function generateMenu() {
             let symbol = inverse(symbolMap)[intersect] || ""
             let label = $(this).html() + symbol
             // replace ? with label and close menu
-            if ((mode=='manual') || (mode=='automatic' & label == goldlabel)) {
+            if ((mode=='manual') || (mode=='automatic' && label == goldlabel)) {
                 $(this).parent().parent().css({"width":"5rem"})
                 $(this).parent().parent().text(label)
                 // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
@@ -412,11 +456,18 @@ function getParentChildrenMap() {
     let PCM = {}
     let callback = function(block){
         let childID = $(this).attr("id")
-        let parentID = findParent($(this)).attr("id")
-        if(!(parentID in PCM)) {
-            PCM[parentID] = []
+        let parent = findParent($(this))
+        console.log(parent)
+        if (parent) {
+            let parentID = findParent($(this)).attr("id")
+            if(!(parentID in PCM)) {
+                PCM[parentID] = []
+            }
+            PCM[parentID].push(childID)
+        } else {
+            console.log("Error: parent does not exist")
         }
-        PCM[parentID].push(childID)
+        
     }
     traverse(callback)
 
@@ -427,12 +478,10 @@ function treeAtNode(blockID, PCM) {
     let node = $(`#${blockID}`)
     let label = node.find(".labelDiv").text()
     
-    // base case: child is a string not another tree
+    // base case: child is not a parent and therefore is a leaf
     if(!(blockID in PCM)) {
-        // let word = node.find(".constituentContainer").find(".wordContainer").text()
-        // console.log(node.find(".constituentContainer").find(".wordContainer"))
+        // TODO: if there's an attribute indicating that the word is a trace or destination, include ^ti or ^i
         let word = node.find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
-        // console.log(word)
         let leaf = `(${label} ${word})`
         return leaf
     } else {
@@ -470,15 +519,49 @@ function treeToString(tree) {
 }
 
 function bracketToString(bracket) {
+    
+    // first get rid of trace word(s)
+    let matches = [...bracket.matchAll(/\^t\d+\)/g)]
+    let slices = []
+    console.log(matches)
+    matches.forEach((m) => {
+        console.log(m)
+        let rightIndex = m[0].length + m.index
+        let parenCount = 1
+        for (i = rightIndex-2; i > 0; i--) {
+            if (bracket[i]==")") {
+                parenCount++
+            }
+            if (bracket[i]=="(") {
+                parenCount--
+            }
+            if (parenCount == 0) {
+                let leftIndex = i
+                slices.push(bracket.slice(leftIndex,rightIndex))
+                console.log(slices)
+                break
+            }
+        }
+    })
+    slices.forEach((slice) => {
+        console.log(slice)
+        bracket = bracket.replace(slice, '')
+    })
+    console.log(bracket)
+
     return bracket
-    .replace(/  +/g, ' ') // get rid of extra white spaces
     .replace(/\([^ ]* /g, '') // get rid of left parenthesis and label
     .replace(/\)/g, '') // get rid of right parenthesis
+    .replace(/  +/g, ' ') // get rid of extra white spaces
+    .replace(/ \^[^ ]*/g, '') // get rid of carets
+    .replace(/ $/g, '') // get rid of space at end of line
+
 }
 
 function treeToRows(tree, accumulator=[], row=0, leaves=[]) {
     // try having index originate with leaves
     console.log(leaves)
+    console.log(tree.trace, tree.index)
 
     accumulator[row] = accumulator[row] || []
 
@@ -487,7 +570,15 @@ function treeToRows(tree, accumulator=[], row=0, leaves=[]) {
     if (!Array.isArray(tree.children)) {
         let index = leaves.length
         leaves.push(tree.children)
-        accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
+        // accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
+        let newEntry = {label:tree.label, constituent:tree.children, column:index}
+        if (typeof tree.trace !== 'undefined') {
+            newEntry['trace'] = tree.trace
+        }
+        if (typeof tree.index !== 'undefined') {
+            newEntry['destination'] = tree.index
+        }
+        accumulator[row].push(newEntry)
         return [tree.children, index]
     } else {
         let constituent = []
@@ -501,7 +592,15 @@ function treeToRows(tree, accumulator=[], row=0, leaves=[]) {
                 column = index
             }
         })
-        accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
+        // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
+        let newEntry = {label:tree.label, constituent:constituent.join(" "), column:column}
+        if (typeof tree.trace !== 'undefined') {
+            newEntry['trace'] = tree.trace
+        }
+        if (typeof tree.index !== 'undefined') {
+            newEntry['destination'] = tree.index
+        }
+        accumulator[row].push(newEntry)
         if(row==0){
             return accumulator
         } else {
@@ -533,6 +632,9 @@ function getRows() {
 }
 
 function isValid(tree, subtree) {
+    // TODO: if there are traces, check that either
+    // word in subtree appears once, just in surface position
+    // or word in subtree appears twice with matching index and the pair has both surface and original position
 
     // console.log(tree)
     // console.log(subtree)

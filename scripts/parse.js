@@ -74,7 +74,10 @@ if(tree.children.length==0)
 {
     let [g,...text]=  sentence.split(" ")
     if (text.length > 1) {
-        //text.pop() // why?
+        text.pop() // make this only affect ^ using includes
+        // this causes a bug for parse(getTree())
+        // which is not used now but may be in the future
+        console.log("pop")
     }
     // console.log(text)
     tree.children=text.join(" ").split(")")[0]
