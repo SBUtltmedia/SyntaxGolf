@@ -384,7 +384,6 @@ function generateMenu() {
     console.log(column)
 
     // only used in auto mode
-    console.log(treeToRows(parse(bracketedSentence)))
     let reference = treeToRows(parse(bracketedSentence))[row].find(item => item.constituent === constituent & item.column === column)
     let goldlabel = reference?.label
     console.log(goldlabel)
