@@ -76,15 +76,20 @@ $(document).ready(function () {
         $(el).attr("id", Date.now()) // new distinct id
         let index = $(`[data-trace]`).length + 1
         $(`#${destID}`).attr("data-destination", index)
-        //$(el).attr("data-trace", index)
+        $(el).attr("data-trace", index)
         $(el).data("trace", index)
         console.log($(el).data("index"))
         console.log($(el).prev().data("index"))
-        //$(el).attr("data-index", $(el).prev().data("index") + 1) 
+        $(el).attr("data-index", $(el).prev().data("index") + 1) 
         $(el).data("index", $(el).prev().data("index") + 1)
         console.log($(el).data("index")) 
         // if there are words after this, they may need to be updated
         console.log(findParent($(el)))
+
+        console.log($(el).find(".labelDiv"))
+        $(el).find(".labelDiv").one({
+            "click":generateMenu
+        })
 
         drawLines() 
         return true
@@ -379,6 +384,7 @@ function generateMenu() {
     console.log(column)
 
     // only used in auto mode
+    console.log(treeToRows(parse(bracketedSentence)))
     let reference = treeToRows(parse(bracketedSentence))[row].find(item => item.constituent === constituent & item.column === column)
     let goldlabel = reference?.label
     console.log(goldlabel)
@@ -505,7 +511,7 @@ function treeAtNode(blockID, PCM) {
             leaf = leaf.replace(")", ` ^${node.data("destination")})`)
         }
         console.log(leaf)
-        
+
         return leaf
     } else {
         let childrenIDs = PCM[blockID]
