@@ -491,9 +491,21 @@ function treeAtNode(blockID, PCM) {
     
     // base case: child is not a parent and therefore is a leaf
     if(!(blockID in PCM)) {
-        // TODO: if there's an attribute indicating that the word is a trace or destination, include ^ti or ^i
         let word = node.find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
         let leaf = `(${label} ${word})`
+        console.log(leaf)
+
+        // if there's an attribute indicating that the word is a trace or destination, include ^ti or ^i
+        console.log(node.data("trace"), node.data("destination"))
+        if(node.data("trace")) {
+            leaf = leaf.replace(")", ` ^t${node.data("trace")})`)
+        }
+        // allow for multiple movements? 
+        if(node.data("destination")) {
+            leaf = leaf.replace(")", ` ^${node.data("destination")})`)
+        }
+        console.log(leaf)
+        
         return leaf
     } else {
         let childrenIDs = PCM[blockID]
@@ -503,6 +515,17 @@ function treeAtNode(blockID, PCM) {
         })
 
         let tree = `(${label} ${children})`
+
+        console.log(tree)
+        console.log(node.data("trace"), node.data("destination"))
+
+        if(node.data("trace")) {
+            tree = tree.replace(")", ` ^t${node.data("trace")})`)
+        }
+        if(node.data("destination")) {
+            tree = tree.replace(")", ` ^${node.data("destination")})`)
+        }
+        console.log(tree)
 
         return tree
     }
