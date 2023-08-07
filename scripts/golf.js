@@ -76,8 +76,17 @@ $(document).ready(function () {
         $(el).attr("id", Date.now()) // new distinct id
         let index = $(`[data-trace]`).length + 1
         $(`#${destID}`).attr("data-destination", index)
-        $(el).attr("data-trace", index)
-        // drawLines() // fix bug where el has no parent in PCM
+        //$(el).attr("data-trace", index)
+        $(el).data("trace", index)
+        console.log($(el).data("index"))
+        console.log($(el).prev().data("index"))
+        //$(el).attr("data-index", $(el).prev().data("index") + 1) 
+        $(el).data("index", $(el).prev().data("index") + 1)
+        console.log($(el).data("index")) 
+        // if there are words after this, they may need to be updated
+        console.log(findParent($(el)))
+
+        drawLines() 
         return true
     })
     makeSelectable(sentence, 0, 0) // this will allow highlighting/selecting, parsing through recursion
@@ -264,6 +273,8 @@ function findParent(block) {
     rowIndex = parseInt(block.parent().data("row"))
     row = $(`[data-row="${rowIndex-1}"]`)
     row.children().each(function(){
+        // console.log($(this), $(this).data("index"))
+        // console.log($(block), $(block).data("index"), $(block)[0].dataset.index)
         if($(this).data("index") > $(block).data("index")){
             return false
         }
