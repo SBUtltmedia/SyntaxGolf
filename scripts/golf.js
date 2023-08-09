@@ -80,11 +80,36 @@ $(document).ready(function () {
         $(el).data("trace", index)
         console.log($(el).data("index"))
         console.log($(el).prev().data("index"))
-        $(el).attr("data-index", $(el).prev().data("index") + 1) 
-        $(el).data("index", $(el).prev().data("index") + 1)
+        // updating block index
+        let newBlockIndex = $(el).data("index")
+        if ($(el).prev().data("index")) {
+            console.log("prev exists")
+            newBlockIndex = $(el).prev().data("index") + 1
+        } else {
+            console.log("no prev")
+            newBlockIndex = $(el).next().data("index")
+        }
+        console.log(newBlockIndex)
+        $(el).attr("data-index", newBlockIndex)
+        $(el).data("index", newBlockIndex)
         console.log($(el).data("index")) 
-        // if there are words after this, they may need to be updated
         console.log(findParent($(el)))
+
+        // if there are words after this, they may need to be updated
+        let j = $(el).data("index")
+        $("[data-index].block").filter(function() {
+            return $(this).data("index") >= j
+        }).each((i, e) => {
+            console.log(i, e, $(e).attr("id"))
+            console.log($(e).attr("id") === $(el).attr("id"))
+            console.log(isAncestor($(e), $(el), getParentChildrenMap()))
+            // update all except element itself and its ancestors
+            if (!($(e).attr("id") === $(el).attr("id") || isAncestor($(e), $(el), getParentChildrenMap()))) {
+                $(e).data("index", $(e).data("index") + 1)
+                $(e).attr("data-index", $(e).data("index"))
+                console.log($(e).data("index"), e.dataset.index)
+            }
+        })
 
         console.log($(el).find(".labelDiv"))
         $(el).find(".labelDiv").one({
@@ -157,9 +182,12 @@ function makeSelectable(sentence, row, blockIndex) {
                 // if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
                 //     selectedJQ.parent().addClass("hidden")
                 // }
+
+                blockIndex = $(`#${blockID}`).data("index") // in case it was updated
                 
                 let constituent = sentenceArrayToSentence(selectedWords)
                 newIndex = blockIndex + parseInt(selectedWords[0].dataset.index)
+                console.log(constituent, blockIndex, newIndex)
 
                 // check if constituent is valid before calling recursion
                 // if in automatic checking mode
@@ -694,4 +722,24 @@ function isValid(tree, subtree) {
     })
     return flag
 
+}
+
+function isAncestor(node1, node2, pcm) {
+    // takes jquery objects and map of parents to children
+    // is node 1 an ancestor of node 2
+    let id1 = node1.attr("id")
+    let id2 = node2.attr("id")
+    console.log(id1, id2)
+    if (id1 === id2) {
+        return false
+    } else if (!(id1 in pcm)) {
+        // not ancestor of anything
+        return false
+    } else if (pcm[id1].includes(id2)) {
+        // node 1 is parent of node 2
+        return true
+    } else {
+        // recur
+        return pcm[id1].some(x => isAncestor($(`#${x}`), node2, pcm))
+    }
 }
