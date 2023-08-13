@@ -115,10 +115,12 @@ $(document).ready(function () {
             }
         })
 
+        // reset label
         console.log($(el).find(".labelDiv"))
+        $(el).find(".labelDiv").text("?")
         $(el).find(".labelDiv").one({
             "click":generateMenu
-        })
+        }).css({"cursor":"pointer"})
 
         drawLines() 
         return true
@@ -660,7 +662,12 @@ function treeToRows(tree, accumulator=[], row=0, leaves=[]) {
             console.log(child, i)
             let [word, index] = treeToRows(child, accumulator, row+1, leaves)
             console.log(word, index)
-            constituent.push(word)
+            console.log(child.trace)
+            if (typeof child.trace==='undefined') { // don't include trace words
+                console.log("no trace")
+                constituent.push(word)
+            }
+            // constituent.push(word)
             if (i==0) { // constituent gets index of first word
                 column = index
             }
@@ -697,18 +704,24 @@ function getRows() {
             console.log(label)
             let constituent = $(this).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
             console.log(constituent)
-            structure[row].push({label:label, constituent:constituent, column:$(this).data("index")})
+            // structure[row].push({label:label, constituent:constituent, column:$(this).data("index")})
+            let newEntry = {label:label, constituent:constituent, column:$(this).data("index")}
             console.log($(this).data("index"))
+            console.log($(this).data("destination"), $(this).data("trace"))
+            if ($(this).data("trace")) {
+                newEntry['trace'] = $(this).data("trace")
+            }
+            if ($(this).data("destination")) {
+                newEntry['destination'] = $(this).data("destination")
+            }
+            structure[row].push(newEntry)
         })
     })
     return structure
 }
 
 function isValid(tree, subtree) {
-    // TODO: if there are traces, check that either
-    // word in subtree appears once, just in surface position
-    // or word in subtree appears twice with matching index and the pair has both surface and original position
-
+    
     // console.log(tree)
     // console.log(subtree)
     let flag = true
