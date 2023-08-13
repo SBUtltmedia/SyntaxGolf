@@ -214,7 +214,7 @@ function makeSelectable(sentence, row, blockIndex) {
                     }                    
                 }
                 
-                resizeWindow()
+                //resizeWindow()
                 // redraw SVG based on new child
                 drawLines();
             }
@@ -277,6 +277,8 @@ function sentenceArrayToSentence(sentenceArray) {
 }
 
 function drawLines() {
+    resizeWindow()
+    
     // clear current SVG
     $("#lineContainer").empty()
 
