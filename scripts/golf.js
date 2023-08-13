@@ -72,6 +72,10 @@ $(document).ready(function () {
     });
     drake.on("drop", (el, target, source, sibling)=>{
         console.log(el, target, source, sibling)
+        if(target===null) { // dropped back where it originated
+            console.log("no movement")
+            return
+        }
         let destID = $(el).attr("id")
         $(el).attr("id", Date.now()) // new distinct id
         let index = $(`[data-trace]`).length + 1
