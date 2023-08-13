@@ -555,10 +555,10 @@ function treeAtNode(blockID, PCM) {
         console.log(node.data("trace"), node.data("destination"))
 
         if(node.data("trace")) {
-            tree = tree.replace(")", ` ^t${node.data("trace")})`)
+            tree = tree.replace(/\)$/, ` ^t${node.data("trace")})`)
         }
         if(node.data("destination")) {
-            tree = tree.replace(")", ` ^${node.data("destination")})`)
+            tree = tree.replace(/\)$/, ` ^${node.data("destination")})`)
         }
         console.log(tree)
 
