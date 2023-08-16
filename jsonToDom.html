@@ -1,0 +1,51 @@
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"
+        integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    
+    <script src="scripts/parse.js"></script>
+    <script src="scripts/golf.js"></script>
+    <script src="scripts/jsonToDom.js"></script>
+    <script src="scripts/resize.js"></script>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.css"
+        integrity="sha512-gGkweS4I+MDqo1tLZtHl3Nu3PGY7TU8ldedRnu60fY6etWjQ/twRHRG2J92oDj7GDU2XvX8k6G5mbp0yCoyXCA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        #stage {
+            top:20rem;
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <input type="text" id="json"
+        value={"label":"S","children":[{"label":"NP","children":"Mary"},{"label":"VP","children":[{"label":"V","children":"had"},{"label":"NP","children":[{"label":"D","children":"a"},{"label":"N'","children":[{"label":"Adj","children":"little"},{"label":"N","children":"lamb"}]}]}]}]}>
+    <button onclick="jsonToDom(document.getElementById('json').value)">Show Tree</button>
+
+    <!-- <script>
+        jsonToDom({"label":"S","children":[{"label":"NP","children":"Mary"},{"label":"VP","children":[{"label":"V","children":"had"},{"label":"NP","children":[{"label":"D","children":"a"},{"label":"N'","children":[{"label":"Adj","children":"little"},{"label":"N","children":"lamb"}]}]}]}]})
+    </script> -->
+
+    <div id="stage">
+
+        <svg id="lineContainer">
+        
+        </svg>
+        <div id="problemConstituent" class="block">
+
+        </div>
+        
+    </div>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.js'></script>
+
+</body>
+
+</html>
