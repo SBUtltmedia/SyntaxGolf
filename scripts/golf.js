@@ -199,7 +199,9 @@ function makeSelectable(sentence, row, blockIndex) {
                 // if in automatic checking mode
                 if (mode == 'automatic') {
                     // parse and give points if correct
-                    if (treeToRows(parse(bracketedSentence))[row+1].some(x => ((x.constituent === constituent) & (x.column === newIndex)))) {
+                    let trueRow = treeToRows(parse(bracketedSentence))[row+1]
+                    if (trueRow.some(x => ((x.constituent === constituent) 
+                    && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
                         makeSelectable(constituent, row+1, newIndex);
                         selectedJQ.addClass("faded").removeClass("selected")
                         if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
@@ -728,7 +730,9 @@ function isValid(tree, subtree) {
     subtree.forEach(function(row, i){
         row.forEach(function(c){
             // check for matching constituent, label, column
-            if(!(tree[i].some(x => ((x.constituent === c.constituent) & (c.label == "?" || x.label == c.label) & (x.column === c.column)) ))){
+            if(!(tree[i].some(x => ((x.constituent === c.constituent) 
+            & (c.label == "?" || x.label == c.label) 
+            & (x.column === c.column || tracePad(tree[i], x.column, c.column))) ))){ // or column it could have before trace changes it
                 flag = false
                 // console.log(false)
                 // is there a way to break out of the loops?
@@ -740,6 +744,17 @@ function isValid(tree, subtree) {
         })
     })
     return flag
+
+}
+
+
+function tracePad(row, xCol, cCol) {
+    // x and c actually have equivalent columns if the element at c's column and all elements up to x
+    // are traces
+    console.log(row.filter(n => n.column >= cCol && n.column < xCol))
+    return row.filter(n => n.column >= cCol && n.column < xCol).every(function(n) {
+        return (typeof n.trace !== undefined)
+    })
 
 }
 
