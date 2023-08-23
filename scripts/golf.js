@@ -247,21 +247,29 @@ function makeSelectable(sentence, row, blockIndex) {
     // actually put the constituent on the page
     // prepend to first div whose index is greater
 
-    if ($(`[data-row="${row}"]`).children().length) {
+    let rowJQ = $(`[data-row="${row}"]`)
+
+    if (rowJQ.children().length) {
         let greatest = true
-        $(`[data-row="${row}"]`).children().each(function(item){
+        rowJQ.children().each(function(item){
             if(blockIndex < $(this)[0].dataset.index) {
                 blockDiv.insertBefore($(this))
                 greatest = false
                 return false
             }
             if (greatest) {
-                $(`[data-row="${row}"]`).append(blockDiv)
+                rowJQ.append(blockDiv)
             }
         })
     } else {
-        $(`[data-row="${row}"]`).append(blockDiv)
+        rowJQ.append(blockDiv)
     }
+
+    console.log(rowJQ.children().first())
+    let firstItem = rowJQ.children().first()
+    let firstIndex = firstItem.data("index")
+    rowJQ.children().css({"padding-left":0})
+    firstItem.css({"padding-left":`${firstIndex * 10}rem`})
     
 }
 
@@ -327,7 +335,7 @@ function findParent(block) {
 }
 
 function drawLine(child, parent) {
-    // TO DO: draw from bottom of label
+    // TO DO: draw from label to label
 
     // takes jquery items
 
@@ -335,17 +343,40 @@ function drawLine(child, parent) {
 
     let containerWidth = $("#lineContainer").width()
     let containerHeight = $("#lineContainer").height()
+
+    let topElement = parent.find(".constituentContainer")
     
-    let [pleft, ptop, pright, pbottom] = getCorners(parent)
+    let parentLabel = parent.find(".labelDiv")
+    console.log(parentLabel)
+    // drawDot(parentLabel)
+    // drawDot(parent)
+    let childLabel = child.find(".labelDiv")
+
+    let offset = 3
+    let needsOffset = 0
+
+    console.log(parent.find(".constituentContainer").hasClass("hidden"))
+    console.log(parent.find(".constituentContainer").find(".wordContainer").first())
+
+    if (parent.find(".constituentContainer").hasClass("hidden")) {
+        topElement = parentLabel
+        needsOffset = 1
+    }
+
+    // let [pleft, ptop, pright, pbottom] = getCorners(parent)
+    let [pleft, ptop, pright, pbottom] = getCorners(topElement)
+    console.log({pleft, ptop, pright, pbottom})
     let pCenterX = (pleft+pright) / 2
     let pCenterXPercent = pCenterX / containerWidth * 100
     let pbottomPercent = pbottom / containerHeight * 100
+    pbottomPercent += offset * needsOffset
     // start of line will be (pCenterXPercent, pbottomPercent)
     
-    let [cleft, ctop, cright, cbottom] = getCorners(child)
+    let [cleft, ctop, cright, cbottom] = getCorners(childLabel)
     let cCenterX = (cleft+cright) / 2
     let cCenterXPercent = cCenterX / containerWidth * 100
     let ctopPercent = ctop / containerHeight * 100
+    ctopPercent -= offset
     // end of line will be (cCenterXPercent, ctopPercent)
 
     // x1 pCenterXPercent, y1 pbottomPercent, x2 cCenterXPercent, y2 ctopPercent
@@ -359,7 +390,9 @@ function drawLine(child, parent) {
 function drawDot(elem) {
     let containerWidth = $("#lineContainer").width()
     let containerHeight = $("#lineContainer").height()
-    let {left, top, right, bottom} = getCorners(elem)
+    let [left, top, right, bottom] = getCorners(elem)
+    console.log({left, top, right, bottom})
+    console.log(left)
     let centerX = (left+right) / 2
     let centerY = (top+bottom) / 2
     let centerXPercent = centerX / containerWidth * 100
@@ -369,29 +402,32 @@ function drawDot(elem) {
 
     var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     $("#lineContainer").append(shape);
-	$(shape).attr({cx:`${centerXPercent}%`, cy:`${centerYPercent}%`, r:"0.4%", "data-word":word});
+	$(shape).attr({cx:`${centerXPercent}%`, cy:`${centerYPercent}%`, r:"1%", "data-word":word});
 
     // testing putting dots in upper left and bottom right
     let leftPercent = left / containerWidth * 100
+    console.log(leftPercent, left, containerWidth)
     let topPercent = top / containerHeight * 100
     var shape2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     $("#lineContainer").append(shape2);
-    $(shape2).attr({cx:`${leftPercent}%`, cy:`${topPercent}%`, r:"0.4%", "data-word":word});
+    $(shape2).attr({cx:`${leftPercent}%`, cy:`${topPercent}%`, r:"1%", "data-word":word, fill:"green"});
 
     let rightPercent = right / containerWidth * 100
     let bottomPercent = bottom / containerHeight * 100
     var shape3 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     $("#lineContainer").append(shape3);
-    $(shape3).attr({cx:`${rightPercent}%`, cy:`${bottomPercent}%`, r:"0.4%", "data-word":word});
+    $(shape3).attr({cx:`${rightPercent}%`, cy:`${bottomPercent}%`, r:"1%", "data-word":word, fill:"red"});
 
     // put dots where start and end of lines would be
     // x center, y bottom and x center, y top
     var shape4 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     $("#lineContainer").append(shape4);
-    $(shape4).attr({cx:`${centerXPercent}%`, cy:`${bottomPercent}%`, r:"0.4%", "data-word":word});
+    $(shape4).attr({cx:`${centerXPercent}%`, cy:`${bottomPercent}%`, r:"1%", "data-word":word, fill:"blue"});
     var shape5 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     $("#lineContainer").append(shape5);
-    $(shape5).attr({cx:`${centerXPercent}%`, cy:`${topPercent}%`, r:"0.4%", "data-word":word});
+    $(shape5).attr({cx:`${centerXPercent}%`, cy:`${topPercent}%`, r:"1%", "data-word":word, fill:"yellow"});
+
+    // center black, upper left green, bottom right red, bottom center blue, top center yellow
 
 
 }
