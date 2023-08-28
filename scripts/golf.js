@@ -221,7 +221,8 @@ function makeSelectable(sentence, row, blockIndex) {
                 if (mode == 'automatic') {
                     // parse and give points if correct
                     let trueRow = treeToRows(parse(bracketedSentence))[row+1]
-                    if (trueRow.some(x => ((x.constituent === constituent) 
+                    console.log(trueRow)
+                    if (trueRow && trueRow.some(x => ((x.constituent === constituent) 
                     && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
                         makeSelectable(constituent, row+1, newIndex);
                         selectedJQ.addClass("faded").removeClass("selected")
