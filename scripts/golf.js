@@ -101,6 +101,25 @@ $(document).ready(function () {
         console.log($(el).data("index")) 
         console.log(findParent($(el)))
 
+        // test if this placement is valid for automatic mode
+        if (mode == 'automatic') {
+            let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
+            let row = $(target).data("row")
+            let trueRow = treeToRows(parse(bracketedSentence))[row]
+            console.log(constituent, row)
+            console.log(trueRow)
+            if (trueRow.some(x => ((x.constituent === constituent) 
+            && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))))) {
+                points = points + 1
+            } else {
+                $(el).remove()
+                points = points - 1
+                updatePoints()
+                return
+            }
+            updatePoints()
+        }
+
         // if there are words after this, they may need to be updated
         let j = $(el).data("index")
         $("[data-index].block").filter(function() {
@@ -338,7 +357,6 @@ function findParent(block) {
 }
 
 function drawLine(child, parent) {
-    // TO DO: draw from label to label
 
     // takes jquery items
 
