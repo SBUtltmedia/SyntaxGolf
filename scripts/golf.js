@@ -49,6 +49,8 @@ $(document).ready(function () {
                 }
             }
         }))
+    } else { // display points in automatic mode
+        $(`${foundation}`).append($("<div/>", {html:`Points: ${points}`, id:"points"}))
     }
     
 
@@ -211,6 +213,7 @@ function makeSelectable(sentence, row, blockIndex) {
                     } else { // take away points if incorrect
                         points = points -1
                     }
+                    updatePoints()
                     console.log(points)
                     
                 } else {
@@ -511,6 +514,7 @@ function generateMenu() {
             } else {
                 points = points - 1
             }
+            updatePoints()
             console.log(points)
             
 
@@ -812,4 +816,8 @@ function isAncestor(node1, node2, pcm) {
         // recur
         return pcm[id1].some(x => isAncestor($(`#${x}`), node2, pcm))
     }
+}
+
+function updatePoints() {
+    $("#points").html(`Points: ${points}`)
 }
