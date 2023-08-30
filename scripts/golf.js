@@ -814,9 +814,12 @@ function tracePad(row, xCol, cCol) {
     // are traces
     console.log(xCol, cCol)
     console.log(row.filter(n => n.column >= cCol && n.column < xCol))
-    // false positive for trace in right row before where it's supposed to be
+    
     return row.filter(n => n.column >= cCol && n.column < xCol).every(function(n) {
-        return (typeof n.trace !== undefined)
+        // console.log(typeof n.trace !== undefined)
+        console.log(n.trace)
+        // return (typeof n.trace !== undefined)
+        return n.trace
     })
 
 }
