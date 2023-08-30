@@ -143,6 +143,7 @@ $(document).ready(function () {
             "click":generateMenu
         }).css({"cursor":"pointer"})
 
+        leftPad($(target))
         drawLines() 
         return true
     })
@@ -288,11 +289,12 @@ function makeSelectable(sentence, row, blockIndex) {
         rowJQ.append(blockDiv)
     }
 
-    console.log(rowJQ.children().first())
-    let firstItem = rowJQ.children().first()
-    let firstIndex = firstItem.data("index")
-    rowJQ.children().css({"padding-left":0})
-    firstItem.css({"padding-left":`${firstIndex * 10}rem`})
+    // console.log(rowJQ.children().first())
+    // let firstItem = rowJQ.children().first()
+    // let firstIndex = firstItem.data("index")
+    // rowJQ.children().css({"padding-left":0})
+    // firstItem.css({"padding-left":`${firstIndex * 10}rem`})
+    leftPad(rowJQ)
     
 }
 
@@ -374,7 +376,7 @@ function drawLine(child, parent) {
     // drawDot(parent)
     let childLabel = child.find(".labelDiv")
 
-    let offset = 3
+    let offset = 10
     let needsOffset = 0
 
     console.log(parent.find(".constituentContainer").hasClass("hidden"))
@@ -390,15 +392,15 @@ function drawLine(child, parent) {
     console.log({pleft, ptop, pright, pbottom})
     let pCenterX = (pleft+pright) / 2
     let pCenterXPercent = pCenterX / containerWidth * 100
-    let pbottomPercent = pbottom / containerHeight * 100
-    pbottomPercent += offset * needsOffset
+    let pbottomPercent = (pbottom + offset * needsOffset) / containerHeight * 100
+    // pbottomPercent += offset * needsOffset
     // start of line will be (pCenterXPercent, pbottomPercent)
     
     let [cleft, ctop, cright, cbottom] = getCorners(childLabel)
     let cCenterX = (cleft+cright) / 2
     let cCenterXPercent = cCenterX / containerWidth * 100
-    let ctopPercent = ctop / containerHeight * 100
-    ctopPercent -= offset
+    let ctopPercent = (ctop - offset) / containerHeight * 100
+    // ctopPercent -= offset
     // end of line will be (cCenterXPercent, ctopPercent)
 
     // x1 pCenterXPercent, y1 pbottomPercent, x2 cCenterXPercent, y2 ctopPercent
@@ -810,7 +812,9 @@ function isValid(tree, subtree) {
 function tracePad(row, xCol, cCol) {
     // x and c actually have equivalent columns if the element at c's column and all elements up to x
     // are traces
+    console.log(xCol, cCol)
     console.log(row.filter(n => n.column >= cCol && n.column < xCol))
+    // false positive for trace in right row before where it's supposed to be
     return row.filter(n => n.column >= cCol && n.column < xCol).every(function(n) {
         return (typeof n.trace !== undefined)
     })
@@ -839,4 +843,16 @@ function isAncestor(node1, node2, pcm) {
 
 function updatePoints() {
     $("#points").html(`Points: ${points}`)
+}
+
+function getNumberOfRows() {
+    return treeToRows(parse(bracketedSentence)).length
+}
+
+function leftPad(rowJQ) {
+    console.log(rowJQ.children().first())
+    let firstItem = rowJQ.children().first()
+    let firstIndex = firstItem.data("index")
+    rowJQ.children().css({"padding-left":0})
+    firstItem.css({"padding-left":`${firstIndex * 10}rem`})
 }
