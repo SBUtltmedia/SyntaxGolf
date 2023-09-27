@@ -146,7 +146,7 @@
         .button {
             text-align: center;
             font-size: 3rem;
-            width:18rem;
+            width:10rem;
             margin:auto;
             
         }
@@ -167,5 +167,28 @@
         .container {
             display:flex;
             justify-content: center;
+        }
+
+        #menu {
+            left:0;
+            width:20%;
+            height:100%;
+            /* background-color:aliceblue; */
+        }
+
+        #sentenceContainer {   
+            left:20%;
+            width:80%;
+            height:100%;
+            /* background-color:bisque; */
+        }
+
+        #menu, #sentenceContainer {
+            position: absolute;
+            margin:0;
+            padding:0;
+            border-width: 0 .1em 0 .1em;
+            border-color: black;
+            border-style: solid;
         }
 
