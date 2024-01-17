@@ -1,10 +1,14 @@
 $(window).resize(resizeWindow);
 
 var aspect = 1/ 1;
-var baseFontFactor = 60;
+var numberOfRows = getNumberOfRows();
+console.log(numberOfRows);
+// var baseFontFactor = 0.016; // make this based on number of rows
+var baseFontFactor =  0.02 - numberOfRows * 0.0012;
 var paddingFactor = .9;
 var stageHeight,  stageWidth;
 $(()=>{resizeWindow()})
+
 function resizeWindow() {
   var viewport =  $(window)
   console.log(viewport.width(),$(window).height(), $("#stage").css("height"))
@@ -35,15 +39,15 @@ else{
   let paddedStageHeight = `${stageHeight*paddingFactor}px`
 
   $("#stage").css({
-    // width: paddedStageWidth,
-    // height: paddedStageHeight,
-    // left: stageLeft + "px",
+    width: paddedStageWidth,
+    height: paddedStageHeight,
+    left: stageLeft + "px",
   });
   //console.log(stageLeft, stageTop)
-  $("html").css("font-size", (stageHeight / baseFontFactor) + "px");
+  $("html").css("font-size", (stageHeight * baseFontFactor) + "px");
   $("#lineContainer").css({
     width: $("#problemConstituent").width(),
-    height: $("#problemConstituent").height()
+    height: $("#problemConstituent").height() + 20
   });
 
 }

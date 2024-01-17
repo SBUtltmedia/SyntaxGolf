@@ -22,7 +22,7 @@ function jsonToDom(tree) {
     // $("#stage").append($("<svg/>", {id:"lineContainer", xmlns:"http://www.w3.org/2000/svg"}))
     // .append($("<div/>", {id:"problemConstituent", class:"block"}))
 
-    $("#lineContainer, #problemConstituent").empty()
+    // $("#lineContainer, #problemConstituent").empty()
 
     // making the tree
     tree.forEach((row, i) => {
@@ -57,6 +57,7 @@ function jsonToDom(tree) {
     let pcm = getParentChildrenMap()
     console.log(pcm)
     $(".wordContainer").each((i, word) => {
+        console.log(word)
         // only if there are children
         if ($(word).parent().parent().attr("id") in pcm) {
             let column = $(word).data("index") + $(word).parent().parent().data("index")
@@ -67,7 +68,11 @@ function jsonToDom(tree) {
             // does there exist a child such that there exists a word within it that matches both word and column
             if (children.some(child => child.find(".constituentContainer").find(".wordContainer").toArray()
             .some(wordC => (wordC.innerHTML === word.innerHTML) && 
-            (column === $(wordC).data("index") + $(wordC).parent().parent().data("index"))))) {
+            (column === $(wordC).data("index") + $(wordC).parent().parent().data("index") 
+            // || tracePad(tree[findRowInPCM(child.attr("id"), pcm)], 
+            || tracePad(tree[child.parent().data("row")], 
+                $(wordC).data("index") + $(wordC).parent().parent().data("index"), column)
+            )))) {
                 console.log("faded")
                 $(word).addClass("faded")
             }
@@ -82,7 +87,29 @@ function jsonToDom(tree) {
     })
 
     resizeWindow()
-    drawLines()
+    leftPadAll()
+    drawLines() // this erases defs needed to make arrow point
+
+    // recreate defs
+    //$("#lineContainer").append($("<defs/>", {id:"defs"}))
+    var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs")
+    $("#lineContainer").append(defs)
+
+    // $("#defs").append($("<marker/>", {id:"triangle", viewBox:"0 0 10 10", refX:"1", refY:"5",
+    // markerUnits:"strokeWidth", markerWidth:"10", markerHeight:"10", orient:"auto", href:"#triangle"}))
+    var marker = document.createElementNS("http://www.w3.org/2000/svg", "marker")
+    $(defs).append(marker)
+    $(marker).attr({id:"triangle", viewBox:"0 0 10 10", refX:"1", refY:"5",
+    markerUnits:"strokeWidth", markerWidth:"10", markerHeight:"10", orient:"auto", href:"#triangle"})
+    
+    //$("#triangle").append($("<path/>", {d:"M 0 0 L 10 5 L 0 10 z", fill:"#f00"}))
+    var triangle = document.createElementNS("http://www.w3.org/2000/svg", "path")
+    $("#triangle").append(triangle)
+    $(triangle).attr({d:"M 0 0 L 10 5 L 0 10 z", fill:"#f00"})
+
+    console.log($("#lineContainer").children())
+
+
 
     // draw curves between matching traces and destinations
     // maybe should be part of drawLines() ?
@@ -102,16 +129,32 @@ function jsonToDom(tree) {
         let startCenterX = (startleft+startright) / 2
         console.log(endCenterX, endbottom)
         console.log(startCenterX, startbottom)
+        
         // test by drawing dots
-        var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        $("#lineContainer").append(shape);
-        $(shape).attr({cx:`${endCenterX}px`, cy:`${endbottom}px`, r:"0.4%"});
-        var shape2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        $("#lineContainer").append(shape2);
-        $(shape2).attr({cx:`${startCenterX}px`, cy:`${startbottom}px`, r:"0.4%"});
+        // var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        // $("#lineContainer").append(shape);
+        // $(shape).attr({cx:`${endCenterX}px`, cy:`${endbottom}px`, r:"0.4%"});
+        // var shape2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        // $("#lineContainer").append(shape2);
+        // $(shape2).attr({cx:`${startCenterX}px`, cy:`${startbottom}px`, r:"0.4%"});
+        
+        // draw curves using dots as endpoints
+        var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        $("#lineContainer").append(path);
+        // calculate control point
+        // same y as lowest + fudge factor
+        let controlY = Math.max(endbottom, startbottom) + 20
+        // x is average of both - fudge factor
+        let controlX = ((endCenterX + startCenterX) / 2) - 50
+        $(path).attr({d:`M ${endCenterX} ${endbottom} Q ${controlX} ${controlY} ${startCenterX} ${startbottom}`, 
+        stroke:"black", fill:"transparent", "marker-end":"url(#triangle)"})
+        // $("#lineContainer").append($("<path/>", {d:`M ${endCenterX} ${endbottom} Q ${controlX} ${controlY} ${startCenterX} ${startbottom}`, 
+        // stroke:"black", fill:"transparent", "marker-end":"url(#triangle)"}))
+
+
     })
 
 
-    
+    console.log($("#lineContainer").children())
 
 }
