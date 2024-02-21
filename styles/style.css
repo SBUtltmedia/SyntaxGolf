@@ -157,11 +157,15 @@
             border: 0.3rem solid rgba(30, 162, 60, 0.208);
         }
 
-        .branch {
+        .branch, .arrow {
             /* lines of tree */
             stroke:#454545;
             stroke-width:0.2rem;
             stroke-linecap:round;
+        }
+
+        #triangle {
+            fill:#454545;
         }
 
         .container {
@@ -191,4 +195,14 @@
             border-color: black;
             border-style: solid;
         }
+
+        .first {
+            /* position: relative; */
+            /* width:10rem; */
+        }
+
+        /* .first::before{
+            content:"<img>"
+        } */
+
 

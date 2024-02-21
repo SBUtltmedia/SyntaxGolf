@@ -50,4 +50,7 @@ else{
     height: $("#problemConstituent").height() + 20
   });
 
+  drawLines()
+  drawArrows()
+
 }

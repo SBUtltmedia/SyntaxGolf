@@ -151,7 +151,8 @@ function init() {
         }).css({"cursor":"pointer"})
 
         leftPad($(target))
-        drawLines() 
+        // drawLines() 
+        resizeWindow()
         return true
     })
     makeSelectable(sentence, 0, 0) // this will allow highlighting/selecting, parsing through recursion
@@ -170,6 +171,7 @@ function makeSelectable(sentence, row, blockIndex) {
     if (!($(`[data-row="${row}"]`)).length) { 
         // create row div if it doesn't exist
         $(foundation).append($("<div/>", {"data-row":row, class:"container"}))
+
         //dragula(document.getElementsByTagName("div"), {copy:true, direction: 'horizontal', slideFactorX: 1, slideFactorY: 1})
         //dragula([...document.getElementsByClassName("container")], {});
     }
@@ -255,7 +257,8 @@ function makeSelectable(sentence, row, blockIndex) {
                 
                 //resizeWindow()
                 // redraw SVG based on new child
-                drawLines();
+                // drawLines();
+                resizeWindow()
             }
         }
 
@@ -327,7 +330,7 @@ function sentenceArrayToSentence(sentenceArray) {
 }
 
 function drawLines() {
-    resizeWindow()
+    // resizeWindow()
     
     // clear current SVG
     $("#lineContainer").empty()
@@ -377,8 +380,10 @@ function drawLine(child, parent) {
 
     //console.log({child, parent})
 
-    let containerWidth = $("#lineContainer").width()
-    let containerHeight = $("#lineContainer").height()
+    // let containerWidth = $("#lineContainer").width()
+    // let containerHeight = $("#lineContainer").height()
+
+    [containerWidth, containerHeight] = getSize()
 
     let topElement = parent.find(".constituentContainer")
     
@@ -388,7 +393,7 @@ function drawLine(child, parent) {
     // drawDot(parent)
     let childLabel = child.find(".labelDiv")
 
-    let offset = 10
+    let offset = 2
     let needsOffset = 0
 
     //console.log(parent.find(".constituentContainer").hasClass("hidden"))
@@ -399,21 +404,28 @@ function drawLine(child, parent) {
         needsOffset = 1
     }
 
-    // let [pleft, ptop, pright, pbottom] = getCorners(parent)
-    let [pleft, ptop, pright, pbottom] = getCorners(topElement)
-    //console.log({pleft, ptop, pright, pbottom})
-    let pCenterX = (pleft+pright) / 2
-    let pCenterXPercent = pCenterX / containerWidth * 100
-    let pbottomPercent = (pbottom + offset * needsOffset) / containerHeight * 100
-    // pbottomPercent += offset * needsOffset
-    // start of line will be (pCenterXPercent, pbottomPercent)
+
+    // let [pleft, ptop, pright, pbottom] = getCorners(topElement)
+    // //console.log({pleft, ptop, pright, pbottom})
+    // let pCenterX = (pleft+pright) / 2
+    // let pCenterXPercent = pCenterX / containerWidth * 100
+    // let pbottomPercent = (pbottom + offset * needsOffset) / containerHeight * 100
+    // // pbottomPercent += offset * needsOffset
+    // // start of line will be (pCenterXPercent, pbottomPercent)
     
-    let [cleft, ctop, cright, cbottom] = getCorners(childLabel)
-    let cCenterX = (cleft+cright) / 2
-    let cCenterXPercent = cCenterX / containerWidth * 100
-    let ctopPercent = (ctop - offset) / containerHeight * 100
-    // ctopPercent -= offset
-    // end of line will be (cCenterXPercent, ctopPercent)
+    // let [cleft, ctop, cright, cbottom] = getCorners(childLabel)
+    // let cCenterX = (cleft+cright) / 2
+    // let cCenterXPercent = cCenterX / containerWidth * 100
+    // let ctopPercent = (ctop - offset) / containerHeight * 100
+    // // ctopPercent -= offset
+    // // end of line will be (cCenterXPercent, ctopPercent)
+
+    let [,,,pbottomPercent,pCenterXPercent,] = getCornerPercentages(topElement)
+    let [,ctopPercent,,,cCenterXPercent,] = getCornerPercentages(childLabel)
+    console.log(pbottomPercent, pCenterXPercent, ctopPercent, cCenterXPercent)
+
+    pbottomPercent = pbottomPercent + offset*needsOffset
+    ctopPercent = ctopPercent - offset
 
     // x1 pCenterXPercent, y1 pbottomPercent, x2 cCenterXPercent, y2 ctopPercent
     var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -472,12 +484,16 @@ function getCorners(elem) {
     //console.log(elem)
     let width = elem[0].offsetWidth
     let height = elem[0].offsetHeight
-    let left = elem.position().left
     let top = elem.position().top
+    let left = elem.position().left 
     let right = left + width
     let bottom = top + height
-    
-    return Object.values({left, top, right, bottom})
+    let centerX = (left+right)/2
+    let centerY = (top+bottom)/2
+
+    //return Object.values({left, top, right, bottom})
+    console.log({left, top, right, bottom, centerX, centerY})
+    return [left, top, right, bottom, centerX, centerY]
 }
 
 function generateMenu() {
@@ -513,7 +529,8 @@ function generateMenu() {
     
     $(this).append($("<div/>", {class:"labelMenu"}).append([...labelDivArray, typeMenu]))
 
-    drawLines()
+    // drawLines()
+    resizeWindow()
 
     let symbolMap = {"'":"bar", "P":"phrase"}
 
@@ -542,7 +559,8 @@ function generateMenu() {
                 $(this).parent().parent().css({"width":"5rem"})
                 $(this).parent().parent().text(label)
                 // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
-                drawLines()
+                // drawLines()
+                resizeWindow()
                 points = points + 1
             } else {
                 points = points - 1
@@ -884,9 +902,12 @@ function leftPad(rowJQ) {
     //console.log(rowJQ.children().first())
     console.log(rowJQ)
     let firstItem = rowJQ.children().first()
+    firstItem.addClass("first")
     let firstIndex = firstItem.data("index")
     rowJQ.children().css({"padding-left":0})
     firstItem.css({"padding-left":`${firstIndex * 10}rem`})
+    console.log(firstItem.css("padding-left"))
+
 }
 
 function leftPadAll() {
@@ -944,6 +965,8 @@ function updateIndicesAfterTrace(trace) {
 }
 
 function drawArrows() {
+    // $("#lineContainer").empty()
+
     console.log($(`[data-trace]`), $(`[data-destination]`))
 
     // recreate defs for arrows
@@ -955,23 +978,42 @@ function drawArrows() {
     markerUnits:"strokeWidth", markerWidth:"10", markerHeight:"10", orient:"auto", href:"#triangle"})
     var triangle = document.createElementNS("http://www.w3.org/2000/svg", "path")
     $("#triangle").append(triangle)
-    $(triangle).attr({d:"M 0 0 L 10 5 L 0 10 z", fill:"#000"})
+    $(triangle).attr({d:"M 0 0 L 10 5 L 0 10 z"})
+
+    
+    let [containerWidth, containerHeight] = getSize()
     
     // draw curves
     $(`[data-trace]`).each((i, block) => {
         console.log(i, block)
         console.log($(block).data("trace"))
-        let endPoint = $(block)
+        let endPoint = $(block).find(".constituentContainer")
+
         console.log($(`[data-destination=${$(block).data("trace")}]`)) 
-        let startPoint = $(`[data-destination=${$(block).data("trace")}]`)
+        let startPoint = $(`[data-destination=${$(block).data("trace")}]`).find(".constituentContainer")
+        
+        // drawDot(endPoint)
+        // drawDot(startPoint)
+
+        console.log(endPoint)
+        console.log(startPoint)
+
+        // end point includes padding which is a problem
+        // note: endpoint and startpoint are mixed up?
+        // use constituentContainer instead? yes
+
+
+        
+        
         // how to find control point(s)? 
         // calculate point coordinates
-        let [endleft, endtop, endright, endbottom] = getCorners(endPoint)
-        let endCenterX = (endleft+endright) / 2
-        let [startleft, starttop, startright, startbottom] = getCorners(startPoint)
-        let startCenterX = (startleft+startright) / 2
-        console.log(endCenterX, endbottom)
-        console.log(startCenterX, startbottom)
+        let [,,, endbottom, endCenterX,] = getCorners(endPoint)
+        let [,,, startbottom, startCenterX,] = getCorners(startPoint)
+        // console.log(endCenterX, endbottom)
+        // console.log(startCenterX, startbottom)
+
+        let [,,,endbottomPercent, endCenterXPercent,] = getCornerPercentages(endPoint)
+        let [,,,startbottomPercent, startCenterXPercent,] = getCornerPercentages(startPoint)
         
         // draw curves using those endpoints
         var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -979,10 +1021,44 @@ function drawArrows() {
         // calculate control point
         // same y as lowest + fudge factor
         let controlY = Math.max(endbottom, startbottom) + 20
+        // let controlYPercent = Math.max(endbottomPercent, startbottomPercent) + 4
         // x is average of both - fudge factor
         let controlX = ((endCenterX + startCenterX) / 2) - 50
+        // let controlXPercent = ((endCenterXPercent + startCenterXPercent) / 2) - 10
+        
         $(path).attr({d:`M ${endCenterX} ${endbottom} Q ${controlX} ${controlY} ${startCenterX} ${startbottom}`, 
-        stroke:"black", fill:"transparent", "marker-end":"url(#triangle)"})
+        class:"arrow", fill:"transparent", "marker-end":"url(#triangle)"})
+        
+        // $(path).attr({d:`M ${endCenterXPercent}% ${endbottomPercent}% Q ${controlXPercent}% ${controlYPercent}% ${startCenterXPercent}% ${startbottomPercent}%`, 
+        // class:"arrow", fill:"transparent", "marker-end":"url(#triangle)"})
+        // actually can't use percentages oops
+        // get arrows to scale with resize
+        // why don't they do this anyway
+
 
     })
+}
+
+
+function getSize() {
+    return [$("#lineContainer").width(), $("#lineContainer").height()]
+}
+
+function getCornerPercentages(elem) {
+    let [left, top, right, bottom] = getCorners(elem)
+    console.log(left, top, right, bottom)
+    let [containerWidth, containerHeight] = getSize()
+    console.log(containerWidth, containerHeight)
+    let leftPercent = left / containerWidth * 100
+    let rightPercent = right / containerWidth * 100
+    let topPercent = top / containerHeight * 100
+    let bottomPercent = bottom / containerHeight * 100
+    //return Object.values({leftPercent, topPercent, rightPercent, bottomPercent})
+
+    let centerXPercent = (leftPercent + rightPercent) / 2
+    let centerYPercent = (topPercent + bottomPercent) / 2
+    console.log(leftPercent, topPercent, rightPercent, bottomPercent, centerXPercent, centerYPercent)
+    return [leftPercent, topPercent, rightPercent, bottomPercent, centerXPercent, centerYPercent]
+
+    // replace calculations in drawLine with this
 }
