@@ -2,14 +2,21 @@
 <form action="index.html">
 <textarea rows="4" cols="50" name="string" id="string"></textarea>
 <input type="submit"/>
-<fieldset>
+<fieldset id="grading">
     <legend>Grading Mode:</legend>
     <div><input type="radio" id="manual" name="mode" value="manual" checked>
     <label for="manual">Manual</label></div>
     <div><input type="radio" id="automatic" name="mode" value="automatic">
     <label for="automatic">Automatic</label></div>
 </fieldset>
+<fieldset id="examples">
+    <legend>Example Quick Links:</legend>
+</fieldset>
 </form>
+
+<script src="scripts/bracketToString.js"></script>
+<script src="scripts/generateExamples.js"></script>
+<script>generateExamples()</script>
 
 <script>
 function parseQuery(queryString) {
