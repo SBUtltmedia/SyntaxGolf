@@ -120,13 +120,14 @@ function init() {
             if (trueRow.some(x => ((x.constituent === constituent) 
             && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))))) {
                 points = points + 1
+                updatePoints()
+                return
             } else {
                 $(el).remove()
                 points = points - 1
                 updatePoints()
                 return
             }
-            updatePoints()
         }
 
         // if there are words after this, they may need to be updated
