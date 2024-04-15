@@ -22,6 +22,7 @@ let sentence = bracketToString(bracketedSentence)
 
 let mode = parseQuery(window.location.search).mode || 'manual'
 let points = 0
+let positive_points = 0, negative_points = 0;
 
 //console.log(bracketedSentence)
 //console.log(sentence)
@@ -59,7 +60,7 @@ function init() {
             }
         }))
     } else { // display points in automatic mode
-        $(menu).append($("<div/>", {html:`Points: ${points}`, id:"points"}))
+        $(menu).append($("<div/>", {html:`Positive Points: ${positive_points}<br/>Negative Points: ${negative_points}`, id:"points"}))
     }
     
 
@@ -120,9 +121,11 @@ function init() {
             if (trueRow.some(x => ((x.constituent === constituent) 
             && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))))) {
                 points = points + 1
+                positive_points++
             } else {
                 $(el).remove()
                 points = points - 1
+                negative_points--
                 updatePoints()
                 return
             }
@@ -240,8 +243,10 @@ function makeSelectable(sentence, row, blockIndex) {
                             selectedJQ.parent().addClass("hidden")
                         }
                         points = points + 1
+                        positive_points++
                     } else { // take away points if incorrect
                         points = points -1
+                        negative_points--
                     }
                     updatePoints()
                     //console.log(points)
@@ -562,8 +567,10 @@ function generateMenu() {
                 // drawLines()
                 resizeWindow()
                 points = points + 1
+                positive_points++
             } else {
                 points = points - 1
+                negative_points--
             }
             updatePoints()
             //console.log(points)
@@ -853,7 +860,7 @@ function isAncestor(node1, node2, pcm) {
 }
 
 function updatePoints() {
-    $("#points").html(`Points: ${points}`)
+    $("#points").html(`Positive Points: ${positive_points}<br/>Negative Points: ${negative_points}`)
 }
 
 function getNumberOfRows() {
