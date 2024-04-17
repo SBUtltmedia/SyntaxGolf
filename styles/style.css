@@ -2,6 +2,7 @@
             margin: 0;
             padding: 0;
             border: 0;
+            user-select: none;
         }
 
         #oneDiv {
@@ -30,6 +31,25 @@
             color: grey;
             /* visibility: hidden; */
             /* display: none; */
+        }
+
+        @keyframes animateWrong {
+            0%{
+                background-color: red;
+                transform: scale(1);
+            }
+            50%{
+                transform: scale(1.1);
+            }
+            100%{
+                transform: scale(1);
+                background-color: white;
+            }
+
+        }
+
+        .animateWrong {
+            animation: 0.5s forwards alternate animateWrong;
         }
 
         div {

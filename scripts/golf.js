@@ -238,14 +238,16 @@ function makeSelectable(sentence, row, blockIndex) {
                     && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
                         makeSelectable(constituent, row+1, newIndex);
                         selectedJQ.addClass("faded").removeClass("selected")
-                        if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
-                            selectedJQ.parent().addClass("hidden")
-                        }
                         points = points + 1
                         positive_points++
                     } else { // take away points if incorrect
                         points = points -1
                         negative_points--
+                        selectedJQ.addClass("animateWrong")
+                        selectedJQ[0].addEventListener("animationend", (event) => {
+                            selectedJQ.removeClass("animateWrong")
+                            selectedJQ.removeClass("selected")
+                        });
                     }
                     updatePoints()
                     //console.log(points)
@@ -253,12 +255,13 @@ function makeSelectable(sentence, row, blockIndex) {
                 } else {
                     makeSelectable(constituent, row+1, newIndex);
                     selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
-                    // once all words in a block are parsed they disappear
-                    if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
-                        selectedJQ.parent().addClass("hidden")
-                    }                    
+                    
                 }
                 
+                // once all words in a block are parsed they disappear
+                // if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
+                //     selectedJQ.parent().addClass("hidden")
+                // }                    
                 //resizeWindow()
                 // redraw SVG based on new child
                 // drawLines();
@@ -570,6 +573,11 @@ function generateMenu() {
             } else {
                 points = points - 1
                 negative_points--
+                $(this).parent().parent().addClass("animateWrong")
+                $(this).parent().parent()[0].addEventListener("animationend", (event) => {
+                    $(this).parent().parent().removeClass("animateWrong")
+                    $(this).parent().parent().removeClass("selected")
+                });
             }
             updatePoints()
             //console.log(points)
