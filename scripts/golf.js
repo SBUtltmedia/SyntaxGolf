@@ -9,14 +9,14 @@ function parseQuery(queryString) {
     var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
     for (var i = 0; i < pairs.length; i++) {
         var pair = pairs[i].split('=');
-        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '').replaceAll("+"," ");
+        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '').replaceAll("+", " ");
     }
     //console.log(query)
     return query;
 }
-let bracketedSentence=parseQuery(window.location.search).string || 
+let bracketedSentence = parseQuery(window.location.search).string ||
     "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
-bracketedSentence = bracketedSentence.replace(/[\r\n]/g,'').replace(/  +/g, ' ')
+bracketedSentence = bracketedSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ')
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence = bracketToString(bracketedSentence)
 
@@ -26,7 +26,7 @@ let positive_points = 0, negative_points = 0;
 
 //console.log(bracketedSentence)
 //console.log(sentence)
- 
+
 
 $(document).ready(init)
 
@@ -45,12 +45,12 @@ function init() {
     // if in this mode (manual checking vs automatic checking)
     // use config file?
     if (mode == 'manual') {
-        $(menu).append($("<div/>", {html:"Check Answer", class: "button"}).on({
-            "click":function(e){
-                if(getTree().replace(/  +/g, ' ') == bracketedSentence) {
+        $(menu).append($("<div/>", { html: "Check Answer", class: "button" }).on({
+            "click": function (e) {
+                if (getTree().replace(/  +/g, ' ') == bracketedSentence) {
                     //console.log("Correct!") 
                     alert("Correct!")
-                } else if(isValid(treeToRows(parse(bracketedSentence)), getRows())) {
+                } else if (isValid(treeToRows(parse(bracketedSentence)), getRows())) {
                     //console.log("On the right track!")
                     alert("On the right track!")
                 } else {
@@ -60,11 +60,11 @@ function init() {
             }
         }))
     } else { // display points in automatic mode
-        $(menu).append($("<div/>", {html:`Positive Points: ${positive_points}<br/>Negative Points: ${negative_points}`, id:"points"}))
+        $(menu).append($("<div/>", { html: `Positive Points: ${positive_points}<br/>Negative Points: ${negative_points}`, id: "points" }))
     }
-    
 
-    $(foundation).append($("<div/>", {"data-row":0, class:"container"})) // start with just row 0 div
+
+    $(foundation).append($("<div/>", { "data-row": 0, class: "container" })) // start with just row 0 div
     let drake = dragula([...document.getElementsByClassName("container")], {
         isContainer: function (el) {
             // console.log(el)
@@ -74,17 +74,17 @@ function init() {
             } else {
                 return false
             }
-            
-          },
+
+        },
         moves: function (el, container, handle) {
             //console.log("move")
             return handle.classList.contains('labelDiv');
-          },
+        },
         copy: true
     });
-    drake.on("drop", (el, target, source, sibling)=>{
+    drake.on("drop", (el, target, source, sibling) => {
         //console.log(el, target, source, sibling)
-        if(target===null) { // dropped back where it originated
+        if (target === null) { // dropped back where it originated
             //console.log("no movement")
             return
         }
@@ -113,13 +113,13 @@ function init() {
 
         // test if this placement is valid for automatic mode
         if (mode == 'automatic') {
-            let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
+            let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
             let row = $(target).data("row")
             let trueRow = treeToRows(parse(bracketedSentence))[row]
             //console.log(constituent, row)
             //console.log(trueRow)
-            if (trueRow.some(x => ((x.constituent === constituent) 
-            && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))))) {
+            if (trueRow.some(x => ((x.constituent === constituent)
+                && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))))) {
                 points = points + 1
                 positive_points++
             } else {
@@ -149,8 +149,8 @@ function init() {
         //console.log($(el).find(".labelDiv"))
         $(el).find(".labelDiv").text("?")
         $(el).find(".labelDiv").one({
-            "click":generateMenu
-        }).css({"cursor":"pointer"})
+            "click": generateMenu
+        }).css({ "cursor": "pointer" })
 
         leftPad($(target))
         // drawLines() 
@@ -158,7 +158,7 @@ function init() {
         return true
     })
     makeSelectable(sentence, 0, 0) // this will allow highlighting/selecting, parsing through recursion
-    $("#stage").on({ 
+    $("#stage").on({
         mousedown: function (e) {
             // e.stopPropagation();
             $(".selected").removeClass("selected"); // clicking anywhere else deselects
@@ -170,9 +170,9 @@ function makeSelectable(sentence, row, blockIndex) {
     // sentence is a string of words
     // row is the number of the div to put these words into
     // index is the position in the row, the initial index of the first word
-    if (!($(`[data-row="${row}"]`)).length) { 
+    if (!($(`[data-row="${row}"]`)).length) {
         // create row div if it doesn't exist
-        $(foundation).append($("<div/>", {"data-row":row, class:"container"}))
+        $(foundation).append($("<div/>", { "data-row": row, class: "container" }))
 
         //dragula(document.getElementsByTagName("div"), {copy:true, direction: 'horizontal', slideFactorX: 1, slideFactorY: 1})
         //dragula([...document.getElementsByClassName("container")], {});
@@ -181,7 +181,7 @@ function makeSelectable(sentence, row, blockIndex) {
     let sentenceArray = [] // will fill with words from sentence then be converted to string
     sentence.split(' ').forEach((word, index) => {
         // console.log(blockIndex)
-        let wordContainer = $("<div/>", { html: word, "data-index":index, class: "wordContainer" }).on({
+        let wordContainer = $("<div/>", { html: word, "data-index": index, class: "wordContainer" }).on({
 
             mousemove: function (e) {
                 if (e.buttons == 1) {
@@ -191,13 +191,13 @@ function makeSelectable(sentence, row, blockIndex) {
 
             // for mobile compatibility
 
-            "touching": function(e) {
+            "touching": function (e) {
                 selected(this)
             },
 
-            "touchmove": function(e) {
+            "touchmove": function (e) {
                 let elem = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)
-                $(elem).trigger("touching")               
+                $(elem).trigger("touching")
             }
         });
         sentenceArray.push(wordContainer); // at end of loop, will contain all words in current constituent
@@ -208,7 +208,7 @@ function makeSelectable(sentence, row, blockIndex) {
     // get unique ID from timestamp
     let blockID = Date.now();
 
-    let blockDiv = $("<div/>",{id:blockID, "data-index":blockIndex, class:"block"}).on({
+    let blockDiv = $("<div/>", { id: blockID, "data-index": blockIndex, class: "block" }).on({
 
         mousedown: function (e) {
             let clickedID = $(this).attr("id")
@@ -223,7 +223,7 @@ function makeSelectable(sentence, row, blockIndex) {
                 // }
 
                 blockIndex = $(`#${blockID}`).data("index") // in case it was updated
-                
+
                 let constituent = sentenceArrayToSentence(selectedWords)
                 newIndex = blockIndex + parseInt(selectedWords[0].dataset.index)
                 //console.log(constituent, blockIndex, newIndex)
@@ -232,32 +232,46 @@ function makeSelectable(sentence, row, blockIndex) {
                 // if in automatic checking mode
                 if (mode == 'automatic') {
                     // parse and give points if correct
-                    let trueRow = treeToRows(parse(bracketedSentence))[row+1]
+                    let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
                     //console.log(trueRow)
-                    if (trueRow && trueRow.some(x => ((x.constituent === constituent) 
-                    && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
-                        makeSelectable(constituent, row+1, newIndex);
+                    if (trueRow && trueRow.some(x => ((x.constituent === constituent)
+                        && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
+                        makeSelectable(constituent, row + 1, newIndex);
                         selectedJQ.addClass("faded").removeClass("selected")
                         points = points + 1
                         positive_points++
                     } else { // take away points if incorrect
-                        points = points -1
-                        negative_points--
-                        selectedJQ.addClass("animateWrong")
-                        selectedJQ[0].addEventListener("animationend", (event) => {
-                            selectedJQ.removeClass("animateWrong")
-                            selectedJQ.removeClass("selected")
-                        });
+                        last = false
+                        if (selectedJQ.length == 1) {
+                            last = false
+                            for (let i = 0; i < treeToRows(parse(bracketedSentence))[row].length; i++){
+                                if (treeToRows(parse(bracketedSentence))[row][i] === selectedJQ){
+                                    last = true
+                                }
+                            }
+                                selectedJQ.addClass("faded")
+                                selectedJQ.removeClass("selected")
+                        }
+                        if (last ==false){
+                            points = points - 1
+                            negative_points--
+                            selectedJQ.addClass("animateWrong")
+                            selectedJQ[0].addEventListener("animationend", (event) => {
+                                selectedJQ.removeClass("animateWrong")
+                                selectedJQ.removeClass("selected")
+                            });
+                        }
                     }
                     updatePoints()
                     //console.log(points)
-                    
+
+
                 } else {
-                    makeSelectable(constituent, row+1, newIndex);
+                    makeSelectable(constituent, row + 1, newIndex);
                     selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
-                    
+
                 }
-                
+
                 // once all words in a block are parsed they disappear
                 // if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
                 //     selectedJQ.parent().addClass("hidden")
@@ -270,11 +284,11 @@ function makeSelectable(sentence, row, blockIndex) {
         }
 
     }).append([
-        $("<div/>", {class:"labelDiv", html:"?"}).one({
-            "click":generateMenu
-        }).css({"cursor":"pointer"}), 
-        $("<div/>", {class:"constituentContainer"}).append(sentenceArray)])
-    
+        $("<div/>", { class: "labelDiv", html: "?" }).one({
+            "click": generateMenu
+        }).css({ "cursor": "pointer" }),
+        $("<div/>", { class: "constituentContainer" }).append(sentenceArray)])
+
     // dragula([...document.getElementsByClassName("container")], {
     //     moves: function (el, container, handle) {
     //         //console.log("move")
@@ -292,8 +306,8 @@ function makeSelectable(sentence, row, blockIndex) {
 
     if (rowJQ.children().length) {
         let greatest = true
-        rowJQ.children().each(function(item){
-            if(blockIndex < $(this)[0].dataset.index) {
+        rowJQ.children().each(function (item) {
+            if (blockIndex < $(this)[0].dataset.index) {
                 blockDiv.insertBefore($(this))
                 greatest = false
                 return false
@@ -311,15 +325,15 @@ function makeSelectable(sentence, row, blockIndex) {
     // let firstIndex = firstItem.data("index")
     // rowJQ.children().css({"padding-left":0})
     // firstItem.css({"padding-left":`${firstIndex * 10}rem`})
-    
+
     //leftPad(rowJQ)
     leftPadAll()
-    
+
 }
 
 function selected(el) {
     let thisBlockID = $(el).parent().parent().attr("id")
-    
+
     if ($(".selected").length) {
         selectedID = $($(".selected")[0]).parent().parent().attr("id")
         if (thisBlockID != selectedID) {
@@ -327,24 +341,24 @@ function selected(el) {
         }
 
     }
-    if (!$(el).hasClass("faded")){ 
+    if (!$(el).hasClass("faded")) {
         $(el).addClass("selected"); // highlights in turquoise
-    } 
+    }
 }
 
 function sentenceArrayToSentence(sentenceArray) {
-    return $.makeArray(sentenceArray).map(wordDiv=>wordDiv.innerHTML).join(" ");
+    return $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join(" ");
 }
 
 function drawLines() {
     // resizeWindow()
-    
+
     // clear current SVG
     $("#lineContainer").empty()
 
     // go through parent child pairs and draw all lines between them
 
-    let callback = function(block){
+    let callback = function (block) {
         let parent = findParent($(this))
         drawLine($(this), parent)
     }
@@ -356,12 +370,12 @@ function drawLines() {
 }
 
 function traverse(callback) {
-    $(foundation).children().each(function(row){
+    $(foundation).children().each(function (row) {
         let rowThis = $(this)
         let rowIndex = parseInt(rowThis.data("row"))
         if (rowIndex > 0) { // skip root node           
-            rowThis.children().each(callback)            
-        }        
+            rowThis.children().each(callback)
+        }
     })
 }
 
@@ -369,11 +383,11 @@ function findParent(block) {
     // row is row before row of block, look there for parent
     let parent = false
     rowIndex = parseInt(block.parent().data("row"))
-    row = $(`[data-row="${rowIndex-1}"]`)
-    row.children().each(function(){
+    row = $(`[data-row="${rowIndex - 1}"]`)
+    row.children().each(function () {
         // console.log($(this), $(this).data("index"))
         // console.log($(block), $(block).data("index"), $(block)[0].dataset.index)
-        if($(this).data("index") > $(block).data("index")){
+        if ($(this).data("index") > $(block).data("index")) {
             return false
         }
         parent = $(this)
@@ -393,7 +407,7 @@ function drawLine(child, parent) {
     [containerWidth, containerHeight] = getSize()
 
     let topElement = parent.find(".constituentContainer")
-    
+
     let parentLabel = parent.find(".labelDiv")
     //console.log(parentLabel)
     // drawDot(parentLabel)
@@ -419,7 +433,7 @@ function drawLine(child, parent) {
     // let pbottomPercent = (pbottom + offset * needsOffset) / containerHeight * 100
     // // pbottomPercent += offset * needsOffset
     // // start of line will be (pCenterXPercent, pbottomPercent)
-    
+
     // let [cleft, ctop, cright, cbottom] = getCorners(childLabel)
     // let cCenterX = (cleft+cright) / 2
     // let cCenterXPercent = cCenterX / containerWidth * 100
@@ -427,18 +441,18 @@ function drawLine(child, parent) {
     // // ctopPercent -= offset
     // // end of line will be (cCenterXPercent, ctopPercent)
 
-    let [,,,pbottomPercent,pCenterXPercent,] = getCornerPercentages(topElement)
-    let [,ctopPercent,,,cCenterXPercent,] = getCornerPercentages(childLabel)
+    let [, , , pbottomPercent, pCenterXPercent,] = getCornerPercentages(topElement)
+    let [, ctopPercent, , , cCenterXPercent,] = getCornerPercentages(childLabel)
     console.log(pbottomPercent, pCenterXPercent, ctopPercent, cCenterXPercent)
 
-    pbottomPercent = pbottomPercent + offset*needsOffset
+    pbottomPercent = pbottomPercent + offset * needsOffset
     ctopPercent = ctopPercent - offset
 
     // x1 pCenterXPercent, y1 pbottomPercent, x2 cCenterXPercent, y2 ctopPercent
     var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
     $("#lineContainer").append(line);
-	$(line).attr({x1:`${pCenterXPercent}%`, y1:`${pbottomPercent}%`, x2:`${cCenterXPercent}%`, y2:`${ctopPercent}%`, class:"branch"})
-    
+    $(line).attr({ x1: `${pCenterXPercent}%`, y1: `${pbottomPercent}%`, x2: `${cCenterXPercent}%`, y2: `${ctopPercent}%`, class: "branch" })
+
 
 }
 
@@ -448,8 +462,8 @@ function drawDot(elem) {
     let [left, top, right, bottom] = getCorners(elem)
     //console.log({left, top, right, bottom})
     //console.log(left)
-    let centerX = (left+right) / 2
-    let centerY = (top+bottom) / 2
+    let centerX = (left + right) / 2
+    let centerY = (top + bottom) / 2
     let centerXPercent = centerX / containerWidth * 100
     let centerYPercent = centerY / containerHeight * 100
 
@@ -457,7 +471,7 @@ function drawDot(elem) {
 
     var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     $("#lineContainer").append(shape);
-	$(shape).attr({cx:`${centerXPercent}%`, cy:`${centerYPercent}%`, r:"1%", "data-word":word});
+    $(shape).attr({ cx: `${centerXPercent}%`, cy: `${centerYPercent}%`, r: "1%", "data-word": word });
 
     // testing putting dots in upper left and bottom right
     let leftPercent = left / containerWidth * 100
@@ -465,22 +479,22 @@ function drawDot(elem) {
     let topPercent = top / containerHeight * 100
     var shape2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     $("#lineContainer").append(shape2);
-    $(shape2).attr({cx:`${leftPercent}%`, cy:`${topPercent}%`, r:"1%", "data-word":word, fill:"green"});
+    $(shape2).attr({ cx: `${leftPercent}%`, cy: `${topPercent}%`, r: "1%", "data-word": word, fill: "green" });
 
     let rightPercent = right / containerWidth * 100
     let bottomPercent = bottom / containerHeight * 100
     var shape3 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     $("#lineContainer").append(shape3);
-    $(shape3).attr({cx:`${rightPercent}%`, cy:`${bottomPercent}%`, r:"1%", "data-word":word, fill:"red"});
+    $(shape3).attr({ cx: `${rightPercent}%`, cy: `${bottomPercent}%`, r: "1%", "data-word": word, fill: "red" });
 
     // put dots where start and end of lines would be
     // x center, y bottom and x center, y top
     var shape4 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     $("#lineContainer").append(shape4);
-    $(shape4).attr({cx:`${centerXPercent}%`, cy:`${bottomPercent}%`, r:"1%", "data-word":word, fill:"blue"});
+    $(shape4).attr({ cx: `${centerXPercent}%`, cy: `${bottomPercent}%`, r: "1%", "data-word": word, fill: "blue" });
     var shape5 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
     $("#lineContainer").append(shape5);
-    $(shape5).attr({cx:`${centerXPercent}%`, cy:`${topPercent}%`, r:"1%", "data-word":word, fill:"yellow"});
+    $(shape5).attr({ cx: `${centerXPercent}%`, cy: `${topPercent}%`, r: "1%", "data-word": word, fill: "yellow" });
 
     // center black, upper left green, bottom right red, bottom center blue, top center yellow
 
@@ -492,14 +506,14 @@ function getCorners(elem) {
     let width = elem[0].offsetWidth
     let height = elem[0].offsetHeight
     let top = elem.position().top
-    let left = elem.position().left 
+    let left = elem.position().left
     let right = left + width
     let bottom = top + height
-    let centerX = (left+right)/2
-    let centerY = (top+bottom)/2
+    let centerX = (left + right) / 2
+    let centerY = (top + bottom) / 2
 
     //return Object.values({left, top, right, bottom})
-    console.log({left, top, right, bottom, centerX, centerY})
+    console.log({ left, top, right, bottom, centerX, centerY })
     return [left, top, right, bottom, centerX, centerY]
 }
 
@@ -507,7 +521,7 @@ function generateMenu() {
     //console.log($(this))
     //console.log($(this).parent())
     // console.log($(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" "))
-    let constituent = $(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
+    let constituent = $(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
     //console.log(constituent)
     // console.log($(this).parent().parent().data("row"))
     let row = $(this).parent().parent().data("row")
@@ -521,31 +535,31 @@ function generateMenu() {
     let goldlabel = reference?.label
     //console.log(goldlabel)
 
-    $(this).css({"cursor":"auto", "width":"20rem"})
+    $(this).css({ "cursor": "auto", "width": "20rem" })
 
     let labels = ["N", "V", "P", "Adj", "Adv", "D", "C", "T", "S"]
 
-    let typeMenu = $("<div/>", {class:"typeMenu"}).append(
-        [$("<div/>", {class:"typeItem", html:"'"}), $("<div/>", {class:"typeItem", html:"P"})])
+    let typeMenu = $("<div/>", { class: "typeMenu" }).append(
+        [$("<div/>", { class: "typeItem", html: "'" }), $("<div/>", { class: "typeItem", html: "P" })])
 
     let labelDivArray = []
 
     for (i of labels) {
-        labelDivArray.push($("<div/>", {html:i, class:"labelItem"}))
+        labelDivArray.push($("<div/>", { html: i, class: "labelItem" }))
     }
-    
-    $(this).append($("<div/>", {class:"labelMenu"}).append([...labelDivArray, typeMenu]))
+
+    $(this).append($("<div/>", { class: "labelMenu" }).append([...labelDivArray, typeMenu]))
 
     // drawLines()
     resizeWindow()
 
-    let symbolMap = {"'":"bar", "P":"phrase"}
+    let symbolMap = { "'": "bar", "P": "phrase" }
 
     $(this).find(".typeItem").on({
-        "click":function(e) {
+        "click": function (e) {
             let labelHTML = $(this).html()
             for (symbol of Object.keys(symbolMap)) {
-                if (symbol!=labelHTML) {
+                if (symbol != labelHTML) {
                     $(this).parent().parent().find(".labelItem").removeClass(symbolMap[symbol])
                 }
             }
@@ -555,15 +569,15 @@ function generateMenu() {
     })
 
     $(".labelItem").on({
-        "click":function(e) {
+        "click": function (e) {
             let classes = new Set($(this).attr("class").split(" "))
             let types = new Set(Object.values(symbolMap))
             let intersect = [...classes].filter(i => types.has(i))[0] || ""
             let symbol = inverse(symbolMap)[intersect] || ""
             let label = $(this).html() + symbol
             // replace ? with label and close menu
-            if ((mode=='manual') || (mode=='automatic' && label == goldlabel)) {
-                $(this).parent().parent().css({"width":"5rem"})
+            if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
+                $(this).parent().parent().css({ "width": "5rem" })
                 $(this).parent().parent().text(label)
                 // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
                 // drawLines()
@@ -581,22 +595,22 @@ function generateMenu() {
             }
             updatePoints()
             //console.log(points)
-            
+
 
         }
     })
 
 }
 
-function inverse(obj){
+function inverse(obj) {
     var retobj = {};
-    for(var key in obj){
-      retobj[obj[key]] = key;
+    for (var key in obj) {
+        retobj[obj[key]] = key;
     }
     return retobj;
 }
 
-function getTree(){
+function getTree() {
     // when player clicks "done" 
     // get bracketed syntax representation of final syntax tree to compare to official answer
 
@@ -613,20 +627,20 @@ function getTree(){
 
 function getParentChildrenMap() {
     let PCM = {}
-    let callback = function(block){
+    let callback = function (block) {
         let childID = $(this).attr("id")
         let parent = findParent($(this))
         //console.log(parent)
         if (parent) {
             let parentID = findParent($(this)).attr("id")
-            if(!(parentID in PCM)) {
+            if (!(parentID in PCM)) {
                 PCM[parentID] = []
             }
             PCM[parentID].push(childID)
         } else {
             //console.log("Error: parent does not exist")
         }
-        
+
     }
     traverse(callback)
 
@@ -636,20 +650,20 @@ function getParentChildrenMap() {
 function treeAtNode(blockID, PCM) {
     let node = $(`#${blockID}`)
     let label = node.find(".labelDiv").text()
-    
+
     // base case: child is not a parent and therefore is a leaf
-    if(!(blockID in PCM)) {
-        let word = node.find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
+    if (!(blockID in PCM)) {
+        let word = node.find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
         let leaf = `(${label} ${word})`
         //console.log(leaf)
 
         // if there's an attribute indicating that the word is a trace or destination, include ^ti or ^i
         //console.log(node.data("trace"), node.data("destination"))
-        if(node.data("trace")) {
+        if (node.data("trace")) {
             leaf = leaf.replace(")", ` ^t${node.data("trace")})`)
         }
         // allow for multiple movements? 
-        if(node.data("destination")) {
+        if (node.data("destination")) {
             leaf = leaf.replace(")", ` ^${node.data("destination")})`)
         }
         //console.log(leaf)
@@ -667,10 +681,10 @@ function treeAtNode(blockID, PCM) {
         //console.log(tree)
         //console.log(node.data("trace"), node.data("destination"))
 
-        if(node.data("trace")) {
+        if (node.data("trace")) {
             tree = tree.replace(/\)$/, ` ^t${node.data("trace")})`)
         }
-        if(node.data("destination")) {
+        if (node.data("destination")) {
             tree = tree.replace(/\)$/, ` ^${node.data("destination")})`)
         }
         //console.log(tree)
@@ -702,7 +716,7 @@ function treeToString(tree) {
 
 // function bracket to string was moved to separate file
 
-function treeToRows(tree, accumulator=[], row=0, leaves=[]) {
+function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
     // try having index originate with leaves
     //console.log(leaves)
     //console.log(tree.trace, tree.index)
@@ -715,7 +729,7 @@ function treeToRows(tree, accumulator=[], row=0, leaves=[]) {
         let index = leaves.length
         leaves.push(tree.children)
         // accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
-        let newEntry = {label:tree.label, constituent:tree.children, column:index}
+        let newEntry = { label: tree.label, constituent: tree.children, column: index }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
         }
@@ -727,22 +741,22 @@ function treeToRows(tree, accumulator=[], row=0, leaves=[]) {
     } else {
         let constituent = []
         let column = 0
-        tree.children.forEach(function(child, i){
+        tree.children.forEach(function (child, i) {
             //console.log(child, i)
-            let [word, index] = treeToRows(child, accumulator, row+1, leaves)
+            let [word, index] = treeToRows(child, accumulator, row + 1, leaves)
             //console.log(word, index)
             //console.log(child.trace)
-            if (typeof child.trace==='undefined') { // don't include trace words
+            if (typeof child.trace === 'undefined') { // don't include trace words
                 //console.log("no trace")
                 constituent.push(word)
             }
             // constituent.push(word)
-            if (i==0) { // constituent gets index of first word
+            if (i == 0) { // constituent gets index of first word
                 column = index
             }
         })
         // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
-        let newEntry = {label:tree.label, constituent:constituent.join(" "), column:column}
+        let newEntry = { label: tree.label, constituent: constituent.join(" "), column: column }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
         }
@@ -750,7 +764,7 @@ function treeToRows(tree, accumulator=[], row=0, leaves=[]) {
             newEntry['destination'] = tree.index
         }
         accumulator[row].push(newEntry)
-        if(row==0){
+        if (row == 0) {
             return accumulator
         } else {
             return [constituent.join(" "), column]
@@ -762,19 +776,19 @@ function treeToRows(tree, accumulator=[], row=0, leaves=[]) {
 function getRows() {
     // makes row structure with labels and constituents from DOM
     let structure = []
-    $(foundation).find("[data-row]").each(function(row){
+    $(foundation).find("[data-row]").each(function (row) {
         structure[row] = []
         // //console.log(row)
         //console.log($(this))
-        $(this).children().each(function(block){
+        $(this).children().each(function (block) {
             // //console.log(block)
             //console.log($(this))
             let label = $(this).find(".labelDiv").text()
             //console.log(label)
-            let constituent = $(this).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" ")
+            let constituent = $(this).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
             //console.log(constituent)
             // structure[row].push({label:label, constituent:constituent, column:$(this).data("index")})
-            let newEntry = {label:label, constituent:constituent, column:$(this).data("index")}
+            let newEntry = { label: label, constituent: constituent, column: $(this).data("index") }
             //console.log($(this).data("index"))
             //console.log($(this).data("destination"), $(this).data("trace"))
             if ($(this).data("trace")) {
@@ -790,25 +804,25 @@ function getRows() {
 }
 
 function isValid(tree, subtree) {
-    
+
     // //console.log(tree)
     // //console.log(subtree)
     let flag = true
-    subtree.forEach(function(row, i){
-        row.forEach(function(c){
+    subtree.forEach(function (row, i) {
+        row.forEach(function (c) {
             // check for matching constituent, label, column
-            if(!(tree[i].some(x => ((x.constituent === c.constituent) 
-            & (c.label == "?" || x.label == c.label) 
-            & (x.column === c.column || tracePad(tree[i], x.column, c.column))) ))){ // or column it could have before trace changes it
+            if (!(tree[i].some(x => ((x.constituent === c.constituent)
+                & (c.label == "?" || x.label == c.label)
+                & (x.column === c.column || tracePad(tree[i], x.column, c.column)))))) { // or column it could have before trace changes it
                 flag = false
                 // //console.log(false)
                 // is there a way to break out of the loops?
                 // keep track of where it went wrong to highlight
-            } 
+            }
             else {
                 // //console.log(true)
             }
-            
+
         })
     })
     return flag
@@ -826,7 +840,7 @@ function tracePad(row, xCol, cCol) {
     if (!row) {
         return // avoiding error
     }
-    
+
     // split into variables
     // filterval
     // empty array should be false not true
@@ -837,7 +851,7 @@ function tracePad(row, xCol, cCol) {
         console.log("empty")
         return false
     }
-    return filterval.every(function(n) {
+    return filterval.every(function (n) {
         // //console.log(typeof n.trace !== undefined)
         console.log(n.trace)
         // return (typeof n.trace !== undefined)
@@ -880,14 +894,14 @@ function leftPad(rowJQ) {
     let firstItem = rowJQ.children().first()
     firstItem.addClass("first")
     let firstIndex = firstItem.data("index")
-    rowJQ.children().css({"padding-left":0})
-    firstItem.css({"padding-left":`${firstIndex * 10}rem`})
+    rowJQ.children().css({ "padding-left": 0 })
+    firstItem.css({ "padding-left": `${firstIndex * 10}rem` })
     console.log(firstItem.css("padding-left"))
 
 }
 
 function leftPadAll() {
-    $(foundation).children().each(function(rownum, rowval) {
+    $(foundation).children().each(function (rownum, rowval) {
         console.log(rownum, rowval)
         leftPad($(rowval))
     })
@@ -905,22 +919,22 @@ function findRowInPCM(id, pcm) {
         // or find parent and keep going until it reaches the top and count how many steps
         let parentID = Object.keys(pcm).filter(x => pcm[x].includes(id))[0]
         console.log(parentID)
-        
+
         if (parentID === undefined) {
             console.log(count)
             return count
-        } 
+        }
         else {
             //return count + findRowInPCM(parentID, pcm, count+1)
             //count = count + findRowInPCM2(parentID, count+1)
-            let nextStep = findRowInPCM2(parentID, count+1)
+            let nextStep = findRowInPCM2(parentID, count + 1)
             count += nextStep
             console.log(nextStep)
             console.log(count)
             return count
             // this gets too large
-    }
-    
+        }
+
     }
     return findRowInPCM2(id)
 
@@ -929,15 +943,15 @@ function findRowInPCM(id, pcm) {
 
 function updateIndicesAfterTrace(trace) {
     let j = $(trace).data("index")
-        $("[data-index].block").filter(function() {
-            return $(this).data("index") >= j
-        }).each((i, e) => {
-            // update all except element itself and its ancestors
-            if (!($(e).attr("id") === $(trace).attr("id") || isAncestor($(e), $(trace), getParentChildrenMap()))) {
-                $(e).data("index", $(e).data("index") + 1)
-                $(e).attr("data-index", $(e).data("index"))
-            }
-        })
+    $("[data-index].block").filter(function () {
+        return $(this).data("index") >= j
+    }).each((i, e) => {
+        // update all except element itself and its ancestors
+        if (!($(e).attr("id") === $(trace).attr("id") || isAncestor($(e), $(trace), getParentChildrenMap()))) {
+            $(e).data("index", $(e).data("index") + 1)
+            $(e).attr("data-index", $(e).data("index"))
+        }
+    })
 }
 
 function drawArrows() {
@@ -950,24 +964,26 @@ function drawArrows() {
     $("#lineContainer").append(defs)
     var marker = document.createElementNS("http://www.w3.org/2000/svg", "marker")
     $(defs).append(marker)
-    $(marker).attr({id:"triangle", viewBox:"0 0 10 10", refX:"1", refY:"5",
-    markerUnits:"strokeWidth", markerWidth:"10", markerHeight:"10", orient:"auto", href:"#triangle"})
+    $(marker).attr({
+        id: "triangle", viewBox: "0 0 10 10", refX: "1", refY: "5",
+        markerUnits: "strokeWidth", markerWidth: "10", markerHeight: "10", orient: "auto", href: "#triangle"
+    })
     var triangle = document.createElementNS("http://www.w3.org/2000/svg", "path")
     $("#triangle").append(triangle)
-    $(triangle).attr({d:"M 0 0 L 10 5 L 0 10 z"})
+    $(triangle).attr({ d: "M 0 0 L 10 5 L 0 10 z" })
 
-    
+
     let [containerWidth, containerHeight] = getSize()
-    
+
     // draw curves
     $(`[data-trace]`).each((i, block) => {
         console.log(i, block)
         console.log($(block).data("trace"))
         let endPoint = $(block).find(".constituentContainer")
 
-        console.log($(`[data-destination=${$(block).data("trace")}]`)) 
+        console.log($(`[data-destination=${$(block).data("trace")}]`))
         let startPoint = $(`[data-destination=${$(block).data("trace")}]`).find(".constituentContainer")
-        
+
         // drawDot(endPoint)
         // drawDot(startPoint)
 
@@ -979,18 +995,18 @@ function drawArrows() {
         // use constituentContainer instead? yes
 
 
-        
-        
+
+
         // how to find control point(s)? 
         // calculate point coordinates
-        let [,,, endbottom, endCenterX,] = getCorners(endPoint)
-        let [,,, startbottom, startCenterX,] = getCorners(startPoint)
+        let [, , , endbottom, endCenterX,] = getCorners(endPoint)
+        let [, , , startbottom, startCenterX,] = getCorners(startPoint)
         // console.log(endCenterX, endbottom)
         // console.log(startCenterX, startbottom)
 
-        let [,,,endbottomPercent, endCenterXPercent,] = getCornerPercentages(endPoint)
-        let [,,,startbottomPercent, startCenterXPercent,] = getCornerPercentages(startPoint)
-        
+        let [, , , endbottomPercent, endCenterXPercent,] = getCornerPercentages(endPoint)
+        let [, , , startbottomPercent, startCenterXPercent,] = getCornerPercentages(startPoint)
+
         // draw curves using those endpoints
         var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         $("#lineContainer").append(path);
@@ -1001,10 +1017,12 @@ function drawArrows() {
         // x is average of both - fudge factor
         let controlX = ((endCenterX + startCenterX) / 2) - 50
         // let controlXPercent = ((endCenterXPercent + startCenterXPercent) / 2) - 10
-        
-        $(path).attr({d:`M ${endCenterX} ${endbottom} Q ${controlX} ${controlY} ${startCenterX} ${startbottom}`, 
-        class:"arrow", fill:"transparent", "marker-end":"url(#triangle)"})
-        
+
+        $(path).attr({
+            d: `M ${endCenterX} ${endbottom} Q ${controlX} ${controlY} ${startCenterX} ${startbottom}`,
+            class: "arrow", fill: "transparent", "marker-end": "url(#triangle)"
+        })
+
         // $(path).attr({d:`M ${endCenterXPercent}% ${endbottomPercent}% Q ${controlXPercent}% ${controlYPercent}% ${startCenterXPercent}% ${startbottomPercent}%`, 
         // class:"arrow", fill:"transparent", "marker-end":"url(#triangle)"})
         // actually can't use percentages oops
