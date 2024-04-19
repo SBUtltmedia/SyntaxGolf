@@ -89,7 +89,6 @@ return tree
 
 
 
-
 //let label= sentence.match(/^\(([^\(]*)/)[1].trim()
 //let children= JSON.stringify(sentence.match(/\([^\(]*(\([^\)]*\))/g))
 
