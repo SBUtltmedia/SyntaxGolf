@@ -1,7 +1,7 @@
 
 let foundation = "#problemConstituent"
 let menu = "#menu"
-
+let wrongAnswers=[];
 //let sentence = "Mary had a little lamb" // default sentence but can be replaced by input
 
 function parseQuery(queryString) {
@@ -181,7 +181,7 @@ function makeSelectable(sentence, row, blockIndex) {
     let sentenceArray = [] // will fill with words from sentence then be converted to string
     sentence.split(' ').forEach((word, index) => {
         // console.log(blockIndex)
-        let wordContainer = $("<div/>", { html: word, "data-index": index, class: "wordContainer" }).on({
+        let wordContainer = $("<div/>", { html: word, "data-uid":Math.random(), "data-index": index, class: "wordContainer" }).on({
 
             mousemove: function (e) {
                 if (e.buttons == 1) {
@@ -212,7 +212,13 @@ function makeSelectable(sentence, row, blockIndex) {
 
         mousedown: function (e) {
             let clickedID = $(this).attr("id")
+      
             let selectedJQ = $(`#${clickedID} .selected`)
+            console.log()
+
+            // var tmp = $("<div/>");
+            // tmp.html(selectedJQ);
+            // console.log(tmp.html())
             // e.stopPropagation();
             if (selectedJQ.length) {
                 let selectedWords = selectedJQ
@@ -231,8 +237,10 @@ function makeSelectable(sentence, row, blockIndex) {
                 // check if constituent is valid before calling recursion
                 // if in automatic checking mode
                 if (mode == 'automatic') {
+                 
                     // parse and give points if correct
                     let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
+                    let childRow = treeToRows(parse(bracketedSentence))[row +2]
                     //console.log(trueRow)
                     if (trueRow && trueRow.some(x => ((x.constituent === constituent)
                         && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
@@ -240,27 +248,21 @@ function makeSelectable(sentence, row, blockIndex) {
                         selectedJQ.addClass("faded").removeClass("selected")
                         points = points + 1
                         positive_points++
-                    } else { // take away points if incorrect
-                        last = false
-                        if (selectedJQ.length == 1) {
-                            last = false
-                            for (let i = 0; i < treeToRows(parse(bracketedSentence))[row].length; i++){
-                                if (treeToRows(parse(bracketedSentence))[row][i] === selectedJQ){
-                                    last = true
-                                }
-                            }
-                                selectedJQ.addClass("faded")
-                                selectedJQ.removeClass("selected")
-                        }
-                        if (last ==false){
-                            points = points - 1
-                            negative_points--
-                            selectedJQ.addClass("animateWrong")
-                            selectedJQ[0].addEventListener("animationend", (event) => {
-                                selectedJQ.removeClass("animateWrong")
-                                selectedJQ.removeClass("selected")
-                            });
-                        }
+                    } else { 
+                    let wrongArray=  selectedJQ.toArray().map(item=>$(item).data("uid")).join("") 
+
+                  if(!wrongAnswers.find((item)=>item==wrongArray)){
+                        wrongAnswers.push( wrongArray)
+                        console.log( treeToRows(parse(bracketedSentence))[row + 1])
+                        points = points - 1
+                        negative_points--
+                        selectedJQ.addClass("animateWrong")
+                        selectedJQ[0].addEventListener("animationend", (event) => {
+                            selectedJQ.removeClass("animateWrong")
+                            selectedJQ.removeClass("selected")
+                        });
+                    }
+                        
                     }
                     updatePoints()
                     //console.log(points)
@@ -957,7 +959,7 @@ function updateIndicesAfterTrace(trace) {
 function drawArrows() {
     // $("#lineContainer").empty()
 
-    console.log($(`[data-trace]`), $(`[data-destination]`))
+    // console.log($(`[data-trace]`), $(`[data-destination]`))
 
     // recreate defs for arrows
     var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs")

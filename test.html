@@ -10,7 +10,7 @@
 <body>
     <!-- <form action="index.html"> -->
 <form action="index.html">
-    <textarea name="string" id="string" ></textarea>
+    <textarea cols="100" name="string" id="string" ></textarea>
     <input type="submit"/>
     <fieldset id="grading">
         <legend>Grading Mode:</legend>
@@ -52,14 +52,14 @@
 
     var textarea = document.getElementById("string");
     var limit = 200;
-
-    textarea.oninput = function() {
-    textarea.style.height = "";
-    textarea.style.height = Math.min(textarea.scrollHeight, 300) + "px";
+  function resizeInput(inputEl) {
+    inputEl.style.height = Math.min(textarea.scrollHeight, 3000000) + "px";
+    inputEl.style.width = Math.min(textarea.scrollWidth, 3000000) + "px";
     };
+
     textarea.value=braketedSentence
 
-    
+    resizeInput(textarea);
     if ('URLSearchParams' in window) {
         var searchParams = new URLSearchParams(window.location.search)
         searchParams.set("string", braketedSentence);
