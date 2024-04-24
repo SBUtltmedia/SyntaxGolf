@@ -1,7 +1,7 @@
 
 let foundation = "#problemConstituent"
 let menu = "#menu"
-let wrongAnswers=[];
+let wrongAnswers = [];
 //let sentence = "Mary had a little lamb" // default sentence but can be replaced by input
 
 function parseQuery(queryString) {
@@ -83,9 +83,9 @@ function init() {
         copy: true
     });
     drake.on("drop", (el, target, source, sibling) => {
-        //console.log(el, target, source, sibling)
+        console.log(el, target, source, sibling)
         if (target === null) { // dropped back where it originated
-            //console.log("no movement")
+            console.log("no movement")
             return
         }
         let destID = $(el).attr("id")
@@ -116,19 +116,19 @@ function init() {
             let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
             let row = $(target).data("row")
             let trueRow = treeToRows(parse(bracketedSentence))[row]
-            //console.log(constituent, row)
-            //console.log(trueRow)
+            console.log(constituent, row)
+            // console.log(trueRow)
             if (trueRow.some(x => ((x.constituent === constituent)
                 && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))))) {
                 points = points + 1
                 positive_points++
+                updateIndicesAfterTrace(el)
             } else {
                 $(el).remove()
                 points = points - 1
                 negative_points--
-                updatePoints()
-                return
             }
+            updatePoints()
         }
 
         // if there are words after this, they may need to be updated
@@ -143,14 +143,11 @@ function init() {
         //     }
         // })
         // put in a function to be used outside as well
-        updateIndicesAfterTrace(el)
+
 
         // reset label
         //console.log($(el).find(".labelDiv"))
-        $(el).find(".labelDiv").text("?")
-        $(el).find(".labelDiv").one({
-            "click": generateMenu
-        }).css({ "cursor": "pointer" })
+        $(el).find(".labelDiv").text("?").css({ "cursor": "pointer" })
 
         leftPad($(target))
         // drawLines() 
@@ -159,9 +156,14 @@ function init() {
     })
     makeSelectable(sentence, 0, 0) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({
-        mousedown: function (e) {
-            // e.stopPropagation();
+        mousedown:  function(e){
+          if(e.target.includes(  "labeldiv")){return
+
+            }
+           if($(this).hasClass("labelDiv")){return}
+           // e.stopPropagation();
             $(".selected").removeClass("selected"); // clicking anywhere else deselects
+            removeMenu()
         }
     })
 }
@@ -181,7 +183,7 @@ function makeSelectable(sentence, row, blockIndex) {
     let sentenceArray = [] // will fill with words from sentence then be converted to string
     sentence.split(' ').forEach((word, index) => {
         // console.log(blockIndex)
-        let wordContainer = $("<div/>", { html: word, "data-uid":Math.random(), "data-index": index, class: "wordContainer" }).on({
+        let wordContainer = $("<div/>", { html: word, "data-uid": Math.random(), "data-index": index, class: "wordContainer" }).on({
 
             mousemove: function (e) {
                 if (e.buttons == 1) {
@@ -212,7 +214,7 @@ function makeSelectable(sentence, row, blockIndex) {
 
         mousedown: function (e) {
             let clickedID = $(this).attr("id")
-      
+
             let selectedJQ = $(`#${clickedID} .selected`)
             console.log()
 
@@ -237,10 +239,10 @@ function makeSelectable(sentence, row, blockIndex) {
                 // check if constituent is valid before calling recursion
                 // if in automatic checking mode
                 if (mode == 'automatic') {
-                 
+
                     // parse and give points if correct
                     let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
-                    let childRow = treeToRows(parse(bracketedSentence))[row +2]
+                    let childRow = treeToRows(parse(bracketedSentence))[row + 2]
                     //console.log(trueRow)
                     if (trueRow && trueRow.some(x => ((x.constituent === constituent)
                         && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
@@ -248,21 +250,21 @@ function makeSelectable(sentence, row, blockIndex) {
                         selectedJQ.addClass("faded").removeClass("selected")
                         points = points + 1
                         positive_points++
-                    } else { 
-                    let wrongArray=  selectedJQ.toArray().map(item=>$(item).data("uid")).join("") 
+                    } else {
+                        let wrongArray = selectedJQ.toArray().map(item => $(item).data("uid")).join("")
 
-                  if(!wrongAnswers.find((item)=>item==wrongArray)){
-                        wrongAnswers.push( wrongArray)
-                        console.log( treeToRows(parse(bracketedSentence))[row + 1])
-                        points = points - 1
-                        negative_points--
+                        if (!wrongAnswers.find((item) => item == wrongArray)) {
+                            wrongAnswers.push(wrongArray)
+                            console.log(treeToRows(parse(bracketedSentence))[row + 1])
+                            points = points - 1
+                            negative_points--
+                        }
                         selectedJQ.addClass("animateWrong")
                         selectedJQ[0].addEventListener("animationend", (event) => {
                             selectedJQ.removeClass("animateWrong")
                             selectedJQ.removeClass("selected")
                         });
-                    }
-                        
+
                     }
                     updatePoints()
                     //console.log(points)
@@ -286,7 +288,7 @@ function makeSelectable(sentence, row, blockIndex) {
         }
 
     }).append([
-        $("<div/>", { class: "labelDiv", html: "?" }).one({
+        $("<div/>", { class: "labelDiv", html: "?" }).on({
             "click": generateMenu
         }).css({ "cursor": "pointer" }),
         $("<div/>", { class: "constituentContainer" }).append(sentenceArray)])
@@ -520,6 +522,12 @@ function getCorners(elem) {
 }
 
 function generateMenu() {
+    console.log($(".labelMenu").length) 
+    if ($(".labelMenu").length) {
+        console.log("menu  exists")
+        $('.labelDiv').css({ "width": "5rem" })
+        return;
+    }
     //console.log($(this))
     //console.log($(this).parent())
     // console.log($(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" "))
@@ -579,11 +587,7 @@ function generateMenu() {
             let label = $(this).html() + symbol
             // replace ? with label and close menu
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
-                $(this).parent().parent().css({ "width": "5rem" })
-                $(this).parent().parent().text(label)
-                // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
-                // drawLines()
-                resizeWindow()
+                removeMenu($(this).parent().parent(), label)
                 points = points + 1
                 positive_points++
             } else {
@@ -602,6 +606,20 @@ function generateMenu() {
         }
     })
 
+}
+
+function removeMenu(labelItem = $(".labelDiv"), label = "?") {
+
+    $('.labelMenu').remove()
+    // if (label == "?"){
+    //     labelItem.one({
+    //             "click": generateMenu
+    //         }).css({ "cursor": "pointer" })
+    // // }
+    // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
+    // $(this).parent().parent()
+    // drawLines()
+    resizeWindow()
 }
 
 function inverse(obj) {
@@ -896,8 +914,11 @@ function leftPad(rowJQ) {
     let firstItem = rowJQ.children().first()
     firstItem.addClass("first")
     let firstIndex = firstItem.data("index")
+    rowJQ.css({ "padding-left": `${firstIndex * 10}rem` })
+
     rowJQ.children().css({ "padding-left": 0 })
-    firstItem.css({ "padding-left": `${firstIndex * 10}rem` })
+    //rowJQ.prepend($("<img/>"))
+    // firstItem.css({ "padding-left": `${firstIndex * 10}rem` })
     console.log(firstItem.css("padding-left"))
 
 }
