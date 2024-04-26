@@ -156,14 +156,12 @@ function init() {
     })
     makeSelectable(sentence, 0, 0) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({
-        mousedown:  function(e){
-          if(e.target.includes(  "labeldiv")){return
-
-            }
-           if($(this).hasClass("labelDiv")){return}
-           // e.stopPropagation();
+        mousedown: function (e) {
+            // console.log($(e))
+            const labelList = ["labelDiv", "labelItem", "labelMenu", "typeMenu", "typeItem"]
             $(".selected").removeClass("selected"); // clicking anywhere else deselects
-            removeMenu()
+            if (!labelList.some(el => $(e.target).hasClass(el))) { removeMenu() }
+            // e.stopPropagation();
         }
     })
 }
@@ -216,7 +214,7 @@ function makeSelectable(sentence, row, blockIndex) {
             let clickedID = $(this).attr("id")
 
             let selectedJQ = $(`#${clickedID} .selected`)
-            console.log()
+            // console.log()
 
             // var tmp = $("<div/>");
             // tmp.html(selectedJQ);
@@ -521,11 +519,12 @@ function getCorners(elem) {
     return [left, top, right, bottom, centerX, centerY]
 }
 
-function generateMenu() {
-    console.log($(".labelMenu").length) 
+function generateMenu(e) {
+    // let clickedOnQuestion = $(e.target).hasClass("labelDiv")
+    if ($(e.target).text() != "?") { return }
+    // if(!clickedOnQuestion) {return}
+    // if ($(e.target)){return false}
     if ($(".labelMenu").length) {
-        console.log("menu  exists")
-        $('.labelDiv').css({ "width": "5rem" })
         return;
     }
     //console.log($(this))
@@ -587,9 +586,9 @@ function generateMenu() {
             let label = $(this).html() + symbol
             // replace ? with label and close menu
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
-                removeMenu($(this).parent().parent(), label)
                 points = points + 1
                 positive_points++
+                removeMenu($(this).parent().parent(), label)
             } else {
                 points = points - 1
                 negative_points--
@@ -609,13 +608,9 @@ function generateMenu() {
 }
 
 function removeMenu(labelItem = $(".labelDiv"), label = "?") {
-
+    labelItem.css({ "width": "5rem" })
+    if (label != "?"){labelItem.text(label)}
     $('.labelMenu').remove()
-    // if (label == "?"){
-    //     labelItem.one({
-    //             "click": generateMenu
-    //         }).css({ "cursor": "pointer" })
-    // // }
     // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
     // $(this).parent().parent()
     // drawLines()
