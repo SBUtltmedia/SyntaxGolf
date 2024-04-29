@@ -16,6 +16,7 @@ function parseQuery(queryString) {
 }
 let bracketedSentence = parseQuery(window.location.search).string ||
     "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
+    bracketedSentence =bracketedSentence.replaceAll("[","(").replaceAll("]",")");
 bracketedSentence = bracketedSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ')
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence = bracketToString(bracketedSentence)
@@ -147,7 +148,9 @@ function init() {
 
         // reset label
         //console.log($(el).find(".labelDiv"))
-        $(el).find(".labelDiv").text("?").css({ "cursor": "pointer" })
+        $(el).find(".labelDiv").text("?").css({ "cursor": "pointer" }).on({
+            "click": generateMenu
+        })
 
         leftPad($(target))
         // drawLines() 
@@ -1073,4 +1076,16 @@ function getCornerPercentages(elem) {
     return [leftPercent, topPercent, rightPercent, bottomPercent, centerXPercent, centerYPercent]
 
     // replace calculations in drawLine with this
+}
+
+function getPar(){
+    let str = bracketedSentence
+    let par = 0
+    for (let i = 0; i < str.length; i++) {
+        if (str.charAt(i) == "("){
+            par++
+        }
+      }
+    par = par *2 -1;
+    return par
 }
