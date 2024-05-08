@@ -3,8 +3,9 @@
             padding: 0;
             border: 0;
             user-select: none;
+        
         }
-
+        .gu-transit { display: none }
         #oneDiv {
             color: blueviolet;
         }
@@ -12,13 +13,15 @@
         .wordContainer {
             /* background-color: aquamarine; */
             font-size: 3rem;
-            display: inline-block
+            display: inline-block;
+            color: #eeeeee;
         }
 
         .selected {
             /* font-weight: bold; */
             background-color: aquamarine;
             user-select: none;
+            color:#333;
         }
 
         .hidden {
@@ -28,7 +31,7 @@
         }
 
         .faded {
-            color: grey;
+            color: #8caf8c;
             /* visibility: hidden; */
             /* display: none; */
         }
@@ -40,12 +43,13 @@
             }
 
             50% {
+                background-color: red;
                 transform: scale(1.1);
             }
 
             100% {
+                background-color: red;
                 transform: scale(1);
-                background-color: white;
             }
 
         }
@@ -72,6 +76,7 @@
             position: absolute;
             left: 0;
             top: 0;
+            border-radius: 2%;
         }
 
         #stage {
@@ -80,11 +85,13 @@
             border: 0px;
             width: 100%;
             height: 100%;
+            background-color: #009900;
 
         }
 
         #problemConstituent {
             flex-flow: column wrap;
+            width: 80%;
         }
 
         .block {
@@ -117,6 +124,7 @@
             text-align: center;
             font-size: 3rem;
             border-radius: 10%;
+            color:#eeeeee;
         }
 
         .labelMenu {
@@ -175,16 +183,16 @@
 
         .button,
         .labelDiv {
-            background-color: rgba(43, 226, 86, 0.208);
+            background-color: rgba(88, 226, 186, 0.208);
             border-radius: 10%;
-            border: 0.3rem solid rgba(30, 162, 60, 0.208);
+            border: .8rem solid rgba(255, 255, 255, .8);
         }
 
         .branch,
         .arrow {
             /* lines of tree */
-            stroke: #454545;
-            stroke-width: 0.2rem;
+            stroke: #eeeeee;
+            stroke-width: 0.5rem;
             stroke-linecap: round;
         }
 
@@ -201,6 +209,11 @@
             left: 0;
             width: 20%;
             height: 100%;
+            color:#eeeeee;
+            font-size: 3rem;
+            border-width: 0 .1em 0 0;
+            border-color: #eee;
+            border-style: solid;
             /* background-color:aliceblue; */
         }
 
@@ -216,10 +229,9 @@
             position: absolute;
             margin: 0;
             padding: 0;
-            border-width: 0 .1em 0 .1em;
-            border-color: black;
-            border-style: solid;
+           
         }
+
 
         .first {
             /* position: relative; */

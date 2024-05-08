@@ -22,8 +22,9 @@ bracketedSentence = bracketedSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' '
 let sentence = bracketToString(bracketedSentence)
 
 let mode = parseQuery(window.location.search).mode || 'manual'
-let points = 0
-let positive_points = 0, negative_points = 0;
+let steps = 0
+let par = getPar()
+let positivePoint = 0
 
 //console.log(bracketedSentence)
 //console.log(sentence)
@@ -60,8 +61,8 @@ function init() {
                 }
             }
         }))
-    } else { // display points in automatic mode
-        $(menu).append($("<div/>", { html: `Positive Points: ${positive_points}<br/>Negative Points: ${negative_points}`, id: "points" }))
+    } else { // display steps in automatic mode
+        $(menu).append($("<div/>", { html: `Par: ${par}<br/>Steps Used: ${steps}`, id: "points" }))
     }
 
 
@@ -83,7 +84,9 @@ function init() {
         },
         copy: true
     });
-    drake.on("drop", (el, target, source, sibling) => {
+    // drake.on("out",resizeWindow)
+    // drake.on("shadow",resizeWindow)
+    drake.on("drop", (el, target, source, sibling) => {resizeWindow()
         console.log(el, target, source, sibling)
         if (target === null) { // dropped back where it originated
             console.log("no movement")
@@ -119,15 +122,13 @@ function init() {
             let trueRow = treeToRows(parse(bracketedSentence))[row]
             console.log(constituent, row)
             // console.log(trueRow)
+            ++steps
             if (trueRow.some(x => ((x.constituent === constituent)
                 && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))))) {
-                points = points + 1
-                positive_points++
                 updateIndicesAfterTrace(el)
+                ++positivePoint
             } else {
                 $(el).remove()
-                points = points - 1
-                negative_points--
             }
             updatePoints()
         }
@@ -161,6 +162,16 @@ function init() {
     $("#stage").on({
         mousedown: function (e) {
             // console.log($(e))
+            if (positivePoint == par){
+                if (steps == par) {
+                    //console.log("Correct!") 
+                    alert("Wonderful! You meet the par!")
+                } else if (steps > par) {
+                    //console.log("On the right track!")
+                    alert("On the right track! But take too many steps!")
+                }
+                location.reload()
+            }
             const labelList = ["labelDiv", "labelItem", "labelMenu", "typeMenu", "typeItem"]
             $(".selected").removeClass("selected"); // clicking anywhere else deselects
             if (!labelList.some(el => $(e.target).hasClass(el))) { removeMenu() }
@@ -241,7 +252,7 @@ function makeSelectable(sentence, row, blockIndex) {
                 // if in automatic checking mode
                 if (mode == 'automatic') {
 
-                    // parse and give points if correct
+                    // parse and give steps if correct
                     let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
                     let childRow = treeToRows(parse(bracketedSentence))[row + 2]
                     //console.log(trueRow)
@@ -249,16 +260,15 @@ function makeSelectable(sentence, row, blockIndex) {
                         && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
                         makeSelectable(constituent, row + 1, newIndex);
                         selectedJQ.addClass("faded").removeClass("selected")
-                        points = points + 1
-                        positive_points++
+                        ++steps
+                        ++positivePoint
                     } else {
                         let wrongArray = selectedJQ.toArray().map(item => $(item).data("uid")).join("")
 
                         if (!wrongAnswers.find((item) => item == wrongArray)) {
                             wrongAnswers.push(wrongArray)
                             console.log(treeToRows(parse(bracketedSentence))[row + 1])
-                            points = points - 1
-                            negative_points--
+                            ++steps
                         }
                         selectedJQ.addClass("animateWrong")
                         selectedJQ[0].addEventListener("animationend", (event) => {
@@ -588,13 +598,11 @@ function generateMenu(e) {
             let symbol = inverse(symbolMap)[intersect] || ""
             let label = $(this).html() + symbol
             // replace ? with label and close menu
+            ++steps
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
-                points = points + 1
-                positive_points++
                 removeMenu($(this).parent().parent(), label)
+                ++positivePoint
             } else {
-                points = points - 1
-                negative_points--
                 $(this).parent().parent().addClass("animateWrong")
                 $(this).parent().parent()[0].addEventListener("animationend", (event) => {
                     $(this).parent().parent().removeClass("animateWrong")
@@ -899,7 +907,7 @@ function isAncestor(node1, node2, pcm) {
 }
 
 function updatePoints() {
-    $("#points").html(`Positive Points: ${positive_points}<br/>Negative Points: ${negative_points}`)
+    $("#points").html(`Par: ${par}<br/>Steps Used: ${steps}`)
 }
 
 function getNumberOfRows() {

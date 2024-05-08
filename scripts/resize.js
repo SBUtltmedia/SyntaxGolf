@@ -44,7 +44,7 @@ else{
     left: stageLeft + "px",
   });
   //console.log(stageLeft, stageTop)
-  $("html").css("font-size", (stageHeight * baseFontFactor) + "px");
+  $("html").css("font-size", (stageHeight * baseFontFactor)*.5 + "px");
   $("#lineContainer").css({
     width: $("#problemConstituent").width(),
     height: $("#problemConstituent").height() + 20
