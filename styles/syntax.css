@@ -1,11 +1,11 @@
 body {
 	font-family: Helvetica, sans-serif;
-	font-size:40px;
+	/* font-size:40rem; */
 }
 
 .displayBox{
 	background-color: #efefef;
-	padding:  0px 0px 30px 0px;
+	padding:  0rem 0rem 30rem 0rem;
 	display: flex;
 	width: 100%;
 
@@ -26,7 +26,7 @@ div{
 	display:flex;
 	border:1% solid blue;
 	margin:2%;
-	font-size:.95em;
+	font-size:.95rem;
 }
 .hide{
 	visibility: hidden;
@@ -39,27 +39,27 @@ div{
 }
 .header {
 	text-align: center;
-	font-size: 12px;
-	border-bottom: 1px solid #fff;
+	font-size: 12rem;
+	border-bottom: 1rem solid #fff;
 	width: 100%;
 	color: #fff;
 	background-color: #130e5a;
 }
 
 .header h1 {
-	margin: 0px;
-	padding: 5px 0px;
+	margin: 0rem;
+	padding: 5rem 0rem;
 }
 
 div.icon-box-top {
-	margin: 50px 0px 25px 0px;
+	margin: 50rem 0rem 25rem 0rem;
 	display: block;
 	float: left;
 	clear: both;
 }
 
 div.icon-box {
-	margin: 25px 0px 25px 0px;
+	margin: 25rem 0rem 25rem 0rem;
 	display: block;
 	float: left;
 	clear: both;
@@ -67,22 +67,22 @@ div.icon-box {
 
 p.icon-text, p.menuText {
 	display: block;
-	margin-left: 45px;
-	margin-bottom: 0px;
+	margin-left: 45rem;
+	margin-bottom: 0rem;
 	float: left;
 }
 
 p.menuText {
-	margin-left: 20px !important;
-	margin-top: 0px;
+	margin-left: 20rem !important;
+	margin-top: 0rem;
 }
 
 .textPopup {	/*When attaching popups to text menus, style text menu separately*/
 	display: block;
-	font-size: 28px;
+	font-size: 28rem;
 	font-weight: bold;
 	color: #130e5a;
-	margin: 0px 0px 0px 75px;
+	margin: 0rem 0rem 0rem 75rem;
 	-webkit-box-sizing: content-box;
 	-moz-box-sizing: content-box;
 	box-sizing: content-box;
@@ -99,7 +99,7 @@ div#myPopUp,
 div#myPopUp2, 
 div#myPopUp3,
 div#myPopUp4 {
-	margin-left: 75px;
+	margin-left: 75rem;
 	display: inline-block;
 }
 

@@ -4,7 +4,8 @@ var aspect = 1/ 1;
 var numberOfRows = getNumberOfRows();
 console.log(numberOfRows);
 // var baseFontFactor = 0.016; // make this based on number of rows
-var baseFontFactor =  0.02 - numberOfRows * 0.0012;
+// var baseFontFactor =  .02 - numberOfRows * 0.002;
+let baseFontFactor = .02;
 var paddingFactor = .9;
 var stageHeight,  stageWidth;
 $(()=>{resizeWindow()})
