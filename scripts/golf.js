@@ -86,7 +86,7 @@ function init() {
     });
     // drake.on("out",resizeWindow)
     // drake.on("shadow",resizeWindow)
-    drake.on("drop", (el, target, source, sibling) => {resizeWindow()
+    drake.on("drop", (el, target, source, sibling) => {//resizeWindow()
         console.log(el, target, source, sibling)
         if (target === null) { // dropped back where it originated
             console.log("no movement")
@@ -995,7 +995,7 @@ function drawArrows() {
     $(defs).append(marker)
     $(marker).attr({
         id: "triangle", viewBox: "0 0 10 10", refX: "1", refY: "5",
-        markerUnits: "strokeWidth", markerWidth: "10", markerHeight: "10", orient: "auto", href: "#triangle"
+        markerUnits: "strokeWidth", markerWidth: "5", markerHeight: "5", orient: "auto", href: "#triangle"
     })
     var triangle = document.createElementNS("http://www.w3.org/2000/svg", "path")
     $("#triangle").append(triangle)

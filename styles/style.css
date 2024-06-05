@@ -5,23 +5,35 @@
             user-select: none;
         
         }
+
+        :root {
+            --highlight: #A4AC86;
+            --background: #254336;
+            --line: #C2C5AA;
+            --word: #DAD3BE;
+            --shadow: #414833;
+            --faded: #8caf8c; 
+            --wrong: #790909;
+            --label:rgba(88, 226, 186, 0.208);
+          }
+
         .gu-transit { display: none }
-        #oneDiv {
+        /* #oneDiv {
             color: blueviolet;
-        }
+        } */
 
         .wordContainer {
             /* background-color: aquamarine; */
             font-size: 3rem;
             display: inline-block;
-            color: #eeeeee;
+            color: var(--word);
         }
 
         .selected {
             /* font-weight: bold; */
-            background-color: aquamarine;
+            background-color: var(--highlight);
             user-select: none;
-            color:#333;
+            color:var(--shadow);
         }
 
         .hidden {
@@ -31,24 +43,24 @@
         }
 
         .faded {
-            color: #8caf8c;
+            color: var(--faded);
             /* visibility: hidden; */
             /* display: none; */
         }
 
         @keyframes animateWrong {
             0% {
-                background-color: red;
+                background-color: var(--wrong);
                 transform: scale(1);
             }
 
             50% {
-                background-color: red;
+                background-color: var(--wrong);
                 transform: scale(1.1);
             }
 
             100% {
-                background-color: red;
+                background-color: var(--wrong);
                 transform: scale(1);
             }
 
@@ -67,7 +79,6 @@
         #lineContainer {
             width: 100%;
             height: 100%;
-
         }
 
         #problemConstituent,
@@ -85,7 +96,7 @@
             border: 0px;
             width: 100%;
             height: 100%;
-            background-color: #009900;
+            background-color: var(--background);
 
         }
 
@@ -188,16 +199,17 @@
             border: .8rem solid rgba(255, 255, 255, .8);
         }
 
+          
         .branch,
         .arrow {
             /* lines of tree */
-            stroke: #eeeeee;
-            stroke-width: 0.5rem;
+            stroke: var(--line);
+            stroke-width: 0.4rem;
             stroke-linecap: round;
         }
 
         #triangle {
-            fill: #454545;
+            fill: var(--line);
         }
 
         .container {
@@ -222,6 +234,10 @@
             width: 80%;
             height: 100%;
             /* background-color:bisque; */
+        }
+
+        #points {
+            font-size:2.5rem;
         }
 
         #menu,
