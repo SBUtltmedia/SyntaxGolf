@@ -66,11 +66,15 @@ function init() {
     }
 
 
-    $(foundation).append($("<div/>", { "data-row": 0, class: "container" })) // start with just row 0 div
+    // $(foundation).append($("<div/>", { "data-row": 99, class: "container first-row" })) // start with just row 0 div
     let drake = dragula([...document.getElementsByClassName("container")], {
         isContainer: function (el) {
-            // console.log(el)
+            console.log(el)
+            console.log($(el).data("row"))
             // console.log($(el).hasClass("container"))
+            if ($(el).data("row") == "0"){
+                return false
+            }
             if ($(el).hasClass("container")) {
                 return true
             } else {
@@ -80,7 +84,7 @@ function init() {
         },
         moves: function (el, container, handle) {
             //console.log("move")
-            return handle.classList.contains('labelDiv');
+            return (handle.classList.contains('labelDiv') && !($(el).hasClass("traced")));
         },
         copy: true
     });
@@ -93,6 +97,7 @@ function init() {
             return
         }
         let destID = $(el).attr("id")
+        console.log(destID)
         $(el).attr("id", Date.now()) // new distinct id
         let index = $(`[data-trace]`).length + 1
         $(`#${destID}`).attr("data-destination", index)
@@ -120,35 +125,20 @@ function init() {
             let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
             let row = $(target).data("row")
             let trueRow = treeToRows(parse(bracketedSentence))[row]
-            console.log(constituent, row)
-            // console.log(trueRow)
+            console.log({constituent, row})
+            console.log({trueRow})
             ++steps
             if (trueRow.some(x => ((x.constituent === constituent)
                 && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))))) {
                 updateIndicesAfterTrace(el)
                 ++positivePoint
+                $(el).addClass("traced")
+                $(`#${destID}`).addClass("traced")
             } else {
                 $(el).remove()
             }
             updatePoints()
         }
-
-        // if there are words after this, they may need to be updated
-        // let j = $(el).data("index")
-        // $("[data-index].block").filter(function() {
-        //     return $(this).data("index") >= j
-        // }).each((i, e) => {
-        //     // update all except element itself and its ancestors
-        //     if (!($(e).attr("id") === $(el).attr("id") || isAncestor($(e), $(el), getParentChildrenMap()))) {
-        //         $(e).data("index", $(e).data("index") + 1)
-        //         $(e).attr("data-index", $(e).data("index"))
-        //     }
-        // })
-        // put in a function to be used outside as well
-
-
-        // reset label
-        //console.log($(el).find(".labelDiv"))
         $(el).find(".labelDiv").text("?").css({ "cursor": "pointer" }).on({
             "click": generateMenu
         })
