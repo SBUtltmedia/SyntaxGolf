@@ -38,7 +38,7 @@ $(document).ready(() => {
 // functions
 
 // ready function
-function init(initialState) {
+function init() {
     document.getElementById('sentenceContainer').innerHTML = initialState
     //foundation = $("#problemConstituent")
     // this causes problems with other functions that use foundation
