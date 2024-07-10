@@ -1,4 +1,3 @@
-
 let foundation = "#problemConstituent"
 let menu = "#menu"
 let wrongAnswers = [];
@@ -29,13 +28,18 @@ let positivePoint = 0
 //console.log(bracketedSentence)
 //console.log(sentence)
 
+let initialState
 
-$(document).ready(init)
+$(document).ready(() => {
+    initialState = document.getElementById('sentenceContainer').innerHTML
+    init(initialState)
+})
 
 // functions
 
 // ready function
-function init() {
+function init(initialState) {
+    document.getElementById('sentenceContainer').innerHTML = initialState
     //foundation = $("#problemConstituent")
     // this causes problems with other functions that use foundation
 
