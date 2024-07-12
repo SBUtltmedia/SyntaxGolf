@@ -21,6 +21,7 @@ bracketedSentence = bracketedSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' '
 let sentence = bracketToString(bracketedSentence)
 
 let mode = parseQuery(window.location.search).mode || 'manual'
+let index = parseQuery(window.location.search).index || 0
 let steps = 0
 let par = getPar()
 let positivePoint = 0
@@ -31,15 +32,19 @@ let positivePoint = 0
 let initialState
 
 $(document).ready(() => {
-    initialState = document.getElementById('sentenceContainer').innerHTML
-    init(initialState)
+    initialState = document.getElementById('stage').innerHTML
+    if (ast[index]) {
+        bracketedSentence = ast[index]
+    }
+    init(bracketedSentence)
 })
 
 // functions
 
 // ready function
-function init() {
-    document.getElementById('sentenceContainer').innerHTML = initialState
+function init(bracketedSentence) {
+    sentence = bracketToString(bracketedSentence)
+    document.getElementById('stage').innerHTML = initialState
     //foundation = $("#problemConstituent")
     // this causes problems with other functions that use foundation
 
@@ -69,6 +74,10 @@ function init() {
         $(menu).append($("<div/>", { html: `Par: ${par}<br/>Steps Used: ${steps}`, id: "points" }))
     }
 
+    ast.forEach((example, i) => {
+        $(menu).append(Object.assign(document.createElement("a"), {innerHTML:bracketToString(example), href:`javascript:init(ast[${i}])`}))
+        $(menu).append(document.createElement("br"))
+    })
 
     // $(foundation).append($("<div/>", { "data-row": 99, class: "container first-row" })) // start with just row 0 div
     let drake = dragula([...document.getElementsByClassName("container")], {
