@@ -74,6 +74,12 @@
             animation: 0.5s forwards alternate animateWrong;
         }
 
+        #problemInfo {
+            position: absolute;
+            border-radius: 0.1rem;
+            background-color: var(--highlight);
+        }
+
         div {
             padding: 1rem;
             /* border: 0.1rem solid black; */

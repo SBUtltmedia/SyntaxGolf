@@ -14,17 +14,16 @@ function parseQuery(queryString) {
     //console.log(query)
     return query;
 }
-let bracketedSentence = parseQuery(window.location.search).string ||
+let startingSentence = parseQuery(window.location.search).string ||
     "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
-    bracketedSentence =bracketedSentence.replaceAll("[","(").replaceAll("]",")");
-bracketedSentence = bracketedSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ')
+    startingSentence = startingSentence.replaceAll("[","(").replaceAll("]",")");
+    startingSentence = startingSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ')
 //let sentence = treeToString(parse(bracketedSentence))
-let sentence = bracketToString(bracketedSentence)
-
+let sentence
 let mode = parseQuery(window.location.search).mode || 'manual'
-let steps = 0
-let par = getPar()
-let positivePoint = 0
+let steps
+let par
+let positivePoint
 
 //console.log(bracketedSentence)
 //console.log(sentence)
@@ -32,20 +31,17 @@ let positivePoint = 0
 
 $(document).ready(init)
 
-// functions
-
-// ready function
 function init() {
-    //foundation = $("#problemConstituent")
-    // this causes problems with other functions that use foundation
+    let problemSet = parseQuery(window.location.search).problemSet || 1
+    fetch(new Request(`problem_${problemSet}.json`))
+      .then((response) => response.json())
+      .then((data) => {
+        loadMenu(data)
+        loadSentence(startingSentence)
+      })
+}
 
-    // foundation.append($("<div/>").append($("<div/>", {html:"TEST", class: "button"})))
-    // setTimeout(x => dragula([document.querySelector('[data-row="0"]')], {copy:true}), 1000)
-
-
-    // "check answer" button at top, click to generate bracketed syntax to compare and grade
-    // if in this mode (manual checking vs automatic checking)
-    // use config file?
+function loadMenu(problemJSON) {
     if (mode == 'manual') {
         $(menu).append($("<div/>", { html: "Check Answer", class: "button" }).on({
             "click": function (e) {
@@ -62,9 +58,45 @@ function init() {
             }
         }))
     } else { // display steps in automatic mode
-        $(menu).append($("<div/>", { html: `Par: ${par}<br/>Steps Used: ${steps}`, id: "points" }))
+        $(menu).append($("<div/>", {id: "points"}))
     }
+    let flagMapping = {"completed": "green"}
+    problemJSON.forEach((problem, i) => { 
+        let progress = flagMapping[problem.progress] || "yellow";
+        // let flag = $(document.createElementNS("http://www.w3.org/2000/svg", 'svg'))
+        // let flag = $("<svg/>", {style:"width:2rem", xmlns:"http://www.w3.org/2000/svg"})
+        // .append($("<use/>", {"xlink:href":"images/flag.svg#flag", "style":`--color_fill: ${progress}`}))
+        let flag = `${i}<svg style="width:2rem;"> 
+        <use xlink:href="images/flag.svg#flag" style="--color_fill: ${progress};"></use>
+        </svg>`
+        let link = $("<a/>", {href: `javascript: loadSentence("${problem.sentence}")`}).append(flag)
+        .on("mouseover", ((e) => (showProblem(e, problem))))
+        $(menu).append([link, $("<br/>")])
+    })
+}
 
+// functions
+
+// ready function
+function loadSentence(bracketedSentence) {
+    steps = 0
+    par = getPar(bracketedSentence)
+    positivePoint = 0
+    sentence = bracketToString(bracketedSentence)
+    getNumberOfRows(bracketedSentence)
+    console.log(sentence)
+    updatePoints()
+    $("#problemConstituent, #lineContainer").html("")
+    //foundation = $("#problemConstituent")
+    // this causes problems with other functions that use foundation
+
+    // foundation.append($("<div/>").append($("<div/>", {html:"TEST", class: "button"})))
+    // setTimeout(x => dragula([document.querySelector('[data-row="0"]')], {copy:true}), 1000)
+
+
+    // "check answer" button at top, click to generate bracketed syntax to compare and grade
+    // if in this mode (manual checking vs automatic checking)
+    // use config file?
 
     // $(foundation).append($("<div/>", { "data-row": 99, class: "container first-row" })) // start with just row 0 div
     let drake = dragula([...document.getElementsByClassName("container")], {
@@ -148,7 +180,7 @@ function init() {
         resizeWindow()
         return true
     })
-    makeSelectable(sentence, 0, 0) // this will allow highlighting/selecting, parsing through recursion
+    makeSelectable(sentence, 0, 0, bracketedSentence) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({
         mousedown: function (e) {
             // console.log($(e))
@@ -170,7 +202,7 @@ function init() {
     })
 }
 
-function makeSelectable(sentence, row, blockIndex) {
+function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
     // sentence is a string of words
     // row is the number of the div to put these words into
     // index is the position in the row, the initial index of the first word
@@ -245,10 +277,10 @@ function makeSelectable(sentence, row, blockIndex) {
                     // parse and give steps if correct
                     let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
                     let childRow = treeToRows(parse(bracketedSentence))[row + 2]
-                    //console.log(trueRow)
+                    console.log(trueRow)
                     if (trueRow && trueRow.some(x => ((x.constituent === constituent)
                         && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
-                        makeSelectable(constituent, row + 1, newIndex);
+                        makeSelectable(constituent, row + 1, newIndex, bracketedSentence);
                         selectedJQ.addClass("faded").removeClass("selected")
                         ++steps
                         ++positivePoint
@@ -272,7 +304,7 @@ function makeSelectable(sentence, row, blockIndex) {
 
 
                 } else {
-                    makeSelectable(constituent, row + 1, newIndex);
+                    makeSelectable(constituent, row + 1, newIndex, bracketedSentence);
                     selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
 
                 }
@@ -710,6 +742,11 @@ function treeAtNode(blockID, PCM) {
 
 }
 
+function showProblem(event, problem) {
+    console.log(event.clientY)
+    $(menu).append($("<div/>", {id:"problemInfo", html:bracketToString(problem.sentence)}))
+}
+
 function treeToString(tree) {
     if (typeof tree == "string") {
 
@@ -900,8 +937,8 @@ function updatePoints() {
     $("#points").html(`Par: ${par}<br/>Steps Used: ${steps}`)
 }
 
-function getNumberOfRows() {
-    return treeToRows(parse(bracketedSentence)).length
+function getNumberOfRows(bracketedSentence) {
+    $(menu).data("currentNumberOfRows", treeToRows(parse(bracketedSentence)).length)
 }
 
 function leftPad(rowJQ) {
@@ -1076,7 +1113,7 @@ function getCornerPercentages(elem) {
     // replace calculations in drawLine with this
 }
 
-function getPar(){
+function getPar(bracketedSentence){
     let str = bracketedSentence
     let par = 0
     for (let i = 0; i < str.length; i++) {

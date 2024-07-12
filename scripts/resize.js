@@ -1,7 +1,7 @@
 $(window).resize(resizeWindow);
 
 var aspect = 1/ 1;
-var numberOfRows = getNumberOfRows();
+var numberOfRows = $(menu).data("currentNumberOfRows");
 console.log(numberOfRows);
 // var baseFontFactor = 0.016; // make this based on number of rows
 // var baseFontFactor =  .02 - numberOfRows * 0.002;
