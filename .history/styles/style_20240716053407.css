@@ -87,16 +87,9 @@
 
         }
 
-        .problemList {
+        #problemList {
             display: flex;
-            flex-direction: row;
-            
-        }
-
-        .hole {
-            text-decoration: none;
-            color: var(--word);
-            font-size: 2rem;
+            flex-direction: column;
         }
 
         #lineContainer {

@@ -948,11 +948,12 @@ function finishAlarm() {
     if (positivePoint == par) {
         if (steps == par) {
             //console.log("Correct!") 
-            console.log("Wonderful! You meet the par!")
+            alert("Wonderful! You meet the par!")
         } else if (steps > par) {
             //console.log("On the right track!")
-            console.log("On the right track! But take too many steps!")
+            alert("On the right track! But take too many steps!")
         }
+        location.reload()
     }
 }
 

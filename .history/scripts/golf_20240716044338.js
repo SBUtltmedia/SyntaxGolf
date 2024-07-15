@@ -36,7 +36,7 @@ function init() {
     fetch(new Request(`problem_${problemSet}.json`))
       .then((response) => response.json())
       .then((data) => {
-        loadMenu(data, startingSentence)
+        loadMenu(data)
         loadSentence(startingSentence)
       })
 }
@@ -66,15 +66,12 @@ function loadMenu(problemJSON) {
         // let flag = $(document.createElementNS("http://www.w3.org/2000/svg", 'svg'))
         // let flag = $("<svg/>", {style:"width:2rem", xmlns:"http://www.w3.org/2000/svg"})
         // .append($("<use/>", {"xlink:href":"images/flag.svg#flag", "style":`--color_fill: ${progress}`}))
-        let flag = `<div class=problemList> 
-        <svg style="width:2rem;" viewBox="0 0 208 334">
+        let flag = `${i}<svg style="width:2rem;"> 
         <use xlink:href="images/flag.svg#flag" style="--color_fill: ${progress};"></use>
-        </svg>
-        <div style="font-size:1em">hole ${i+1} Par: ${getPar(problem.sentence)}</div>
-        </div>`
-        let link = $("<a/>", {class:"hole", href: `javascript: loadSentence("${problem.sentence}")`}).append(flag)
+        </svg>`
+        let link = $("<a/>", {href: `javascript: loadSentence("${problem.sentence}")`}).append(flag)
         .on("mouseover", ((e) => (showProblem(e, problem))))
-        $(menu).append([link])
+        $(menu).append([link, $("<t/>")])
     })
 }
 
@@ -82,7 +79,6 @@ function loadMenu(problemJSON) {
 
 // ready function
 function loadSentence(bracketedSentence) {
-    $("#sentenceContainer").data("bracketedSentence", bracketedSentence)
     steps = 0
     par = getPar(bracketedSentence)
     positivePoint = 0
@@ -174,10 +170,10 @@ function loadSentence(bracketedSentence) {
                 $(el).remove()
             }
             updatePoints()
-            // finishAlarm()
+            finishAlarm()
         }
         $(el).find(".labelDiv").text("?").css({ "cursor": "pointer" }).on({
-            "click": generateMenu
+            "click": generateMenu({bracketedSentences:"bracketedSentence"})
         })
 
         leftPad($(target))
@@ -317,7 +313,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
 
     }).append([
         $("<div/>", { class: "labelDiv", html: "?" }).on({
-            "click": generateMenu
+            "click": generateMenu({bracketedSentences:"bracketedSentence"})
         }).css({ "cursor": "pointer" }),
         $("<div/>", { class: "constituentContainer" }).append(sentenceArray)])
 
@@ -556,8 +552,7 @@ function getCorners(elem) {
     return [left, top, right, bottom, centerX, centerY]
 }
 
-function generateMenu(e) {
-    let bracketedSentence = $("#sentenceContainer").data("bracketedSentence")
+function generateMenu(e, bracketedSentences) {
     // let clickedOnQuestion = $(e.target).hasClass("labelDiv")
     if ($(e.target).text() != "?") { return }
     // if(!clickedOnQuestion) {return}
@@ -565,14 +560,14 @@ function generateMenu(e) {
     if ($(".labelMenu").length) {
         return;
     }
-    console.log($(this))
+    //console.log($(this))
     //console.log($(this).parent())
     // console.log($(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" "))
     let constituent = $(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
     //console.log(constituent)
     // console.log($(this).parent().parent().data("row"))
     let row = $(this).parent().parent().data("row")
-    // console.log($(this).parent().parent())
+    //console.log(row)
     // //console.log($(this).parent().data("index"))
     let column = $(this).parent().data("index")
     //console.log(column)
@@ -627,7 +622,6 @@ function generateMenu(e) {
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
                 removeMenu($(this).parent().parent(), label)
                 ++positivePoint
-                finishAlarm()
             } else {
                 $(this).parent().parent().addClass("animateWrong")
                 $(this).parent().parent()[0].addEventListener("animationend", (event) => {
@@ -646,14 +640,13 @@ function generateMenu(e) {
 
 function removeMenu(labelItem = $(".labelDiv"), label = "?") {
     labelItem.css({ "width": "5rem" })
-    if (label != "?"){
-        labelItem.text(label)
-    }
+    if (label != "?"){labelItem.text(label)}
     $('.labelMenu').remove()
     // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
     // $(this).parent().parent()
     // drawLines()
     resizeWindow()
+    finishAlarm()
 }
 
 function inverse(obj) {
@@ -944,15 +937,15 @@ function updatePoints() {
 }
 
 function finishAlarm() {
-    console.log(positivePoint, par)
     if (positivePoint == par) {
         if (steps == par) {
             //console.log("Correct!") 
-            console.log("Wonderful! You meet the par!")
+            alert("Wonderful! You meet the par!")
         } else if (steps > par) {
             //console.log("On the right track!")
-            console.log("On the right track! But take too many steps!")
+            alert("On the right track! But take too many steps!")
         }
+        location.reload()
     }
 }
 

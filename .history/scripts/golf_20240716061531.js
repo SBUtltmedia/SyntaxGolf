@@ -174,7 +174,7 @@ function loadSentence(bracketedSentence) {
                 $(el).remove()
             }
             updatePoints()
-            // finishAlarm()
+            finishAlarm()
         }
         $(el).find(".labelDiv").text("?").css({ "cursor": "pointer" }).on({
             "click": generateMenu
@@ -627,7 +627,6 @@ function generateMenu(e) {
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
                 removeMenu($(this).parent().parent(), label)
                 ++positivePoint
-                finishAlarm()
             } else {
                 $(this).parent().parent().addClass("animateWrong")
                 $(this).parent().parent()[0].addEventListener("animationend", (event) => {
@@ -646,14 +645,13 @@ function generateMenu(e) {
 
 function removeMenu(labelItem = $(".labelDiv"), label = "?") {
     labelItem.css({ "width": "5rem" })
-    if (label != "?"){
-        labelItem.text(label)
-    }
+    if (label != "?"){labelItem.text(label)}
     $('.labelMenu').remove()
     // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
     // $(this).parent().parent()
     // drawLines()
     resizeWindow()
+    finishAlarm()
 }
 
 function inverse(obj) {
@@ -944,15 +942,15 @@ function updatePoints() {
 }
 
 function finishAlarm() {
-    console.log(positivePoint, par)
     if (positivePoint == par) {
         if (steps == par) {
             //console.log("Correct!") 
-            console.log("Wonderful! You meet the par!")
+            alert("Wonderful! You meet the par!")
         } else if (steps > par) {
             //console.log("On the right track!")
-            console.log("On the right track! But take too many steps!")
+            alert("On the right track! But take too many steps!")
         }
+        location.reload()
     }
 }
 

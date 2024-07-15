@@ -36,7 +36,7 @@ function init() {
     fetch(new Request(`problem_${problemSet}.json`))
       .then((response) => response.json())
       .then((data) => {
-        loadMenu(data, startingSentence)
+        loadMenu(data)
         loadSentence(startingSentence)
       })
 }
@@ -66,15 +66,12 @@ function loadMenu(problemJSON) {
         // let flag = $(document.createElementNS("http://www.w3.org/2000/svg", 'svg'))
         // let flag = $("<svg/>", {style:"width:2rem", xmlns:"http://www.w3.org/2000/svg"})
         // .append($("<use/>", {"xlink:href":"images/flag.svg#flag", "style":`--color_fill: ${progress}`}))
-        let flag = `<div class=problemList> 
-        <svg style="width:2rem;" viewBox="0 0 208 334">
+        let flag = `${i}<svg style="width:2rem;"> 
         <use xlink:href="images/flag.svg#flag" style="--color_fill: ${progress};"></use>
-        </svg>
-        <div style="font-size:1em">hole ${i+1} Par: ${getPar(problem.sentence)}</div>
-        </div>`
-        let link = $("<a/>", {class:"hole", href: `javascript: loadSentence("${problem.sentence}")`}).append(flag)
+        </svg>`
+        let link = $("<a/>", {href: `javascript: loadSentence("${problem.sentence}")`}).append(flag)
         .on("mouseover", ((e) => (showProblem(e, problem))))
-        $(menu).append([link])
+        $(menu).append([link, $("<br/>")])
     })
 }
 
@@ -82,7 +79,6 @@ function loadMenu(problemJSON) {
 
 // ready function
 function loadSentence(bracketedSentence) {
-    $("#sentenceContainer").data("bracketedSentence", bracketedSentence)
     steps = 0
     par = getPar(bracketedSentence)
     positivePoint = 0
@@ -174,7 +170,6 @@ function loadSentence(bracketedSentence) {
                 $(el).remove()
             }
             updatePoints()
-            // finishAlarm()
         }
         $(el).find(".labelDiv").text("?").css({ "cursor": "pointer" }).on({
             "click": generateMenu
@@ -189,6 +184,16 @@ function loadSentence(bracketedSentence) {
     $("#stage").on({
         mousedown: function (e) {
             // console.log($(e))
+            if (positivePoint == par){
+                if (steps == par) {
+                    //console.log("Correct!") 
+                    alert("Wonderful! You meet the par!")
+                } else if (steps > par) {
+                    //console.log("On the right track!")
+                    alert("On the right track! But take too many steps!")
+                }
+                location.reload()
+            }
             const labelList = ["labelDiv", "labelItem", "labelMenu", "typeMenu", "typeItem"]
             $(".selected").removeClass("selected"); // clicking anywhere else deselects
             if (!labelList.some(el => $(e.target).hasClass(el))) { removeMenu() }
@@ -365,15 +370,8 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
 
 function selected(el) {
     let thisBlockID = $(el).parent().parent().attr("id")
-    let allSelected = $('.selected')
-    if (allSelected.length) {
-        let firstSelected = $(allSelected[0]).data("index")
-        let lastSelected = $(allSelected.slice(-1)).data("index")
-        for (i = firstSelected; i < lastSelected; i++) {
-            $(allSelected[0]).parent().find("[data-index").each(function() {
-                if ($(this).data("index") == i) { $(this).addClass("selected")}
-            })
-        }
+
+    if ($(".selected").length) {
         selectedID = $($(".selected")[0]).parent().parent().attr("id")
         if (thisBlockID != selectedID) {
             return
@@ -557,7 +555,6 @@ function getCorners(elem) {
 }
 
 function generateMenu(e) {
-    let bracketedSentence = $("#sentenceContainer").data("bracketedSentence")
     // let clickedOnQuestion = $(e.target).hasClass("labelDiv")
     if ($(e.target).text() != "?") { return }
     // if(!clickedOnQuestion) {return}
@@ -565,14 +562,14 @@ function generateMenu(e) {
     if ($(".labelMenu").length) {
         return;
     }
-    console.log($(this))
+    //console.log($(this))
     //console.log($(this).parent())
     // console.log($(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" "))
     let constituent = $(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
     //console.log(constituent)
     // console.log($(this).parent().parent().data("row"))
     let row = $(this).parent().parent().data("row")
-    // console.log($(this).parent().parent())
+    //console.log(row)
     // //console.log($(this).parent().data("index"))
     let column = $(this).parent().data("index")
     //console.log(column)
@@ -627,7 +624,6 @@ function generateMenu(e) {
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
                 removeMenu($(this).parent().parent(), label)
                 ++positivePoint
-                finishAlarm()
             } else {
                 $(this).parent().parent().addClass("animateWrong")
                 $(this).parent().parent()[0].addEventListener("animationend", (event) => {
@@ -646,9 +642,7 @@ function generateMenu(e) {
 
 function removeMenu(labelItem = $(".labelDiv"), label = "?") {
     labelItem.css({ "width": "5rem" })
-    if (label != "?"){
-        labelItem.text(label)
-    }
+    if (label != "?"){labelItem.text(label)}
     $('.labelMenu').remove()
     // $(this).parent().remove() // cannot be reopened due to .one({}) // redundant?
     // $(this).parent().parent()
@@ -941,19 +935,6 @@ function isAncestor(node1, node2, pcm) {
 
 function updatePoints() {
     $("#points").html(`Par: ${par}<br/>Steps Used: ${steps}`)
-}
-
-function finishAlarm() {
-    console.log(positivePoint, par)
-    if (positivePoint == par) {
-        if (steps == par) {
-            //console.log("Correct!") 
-            console.log("Wonderful! You meet the par!")
-        } else if (steps > par) {
-            //console.log("On the right track!")
-            console.log("On the right track! But take too many steps!")
-        }
-    }
 }
 
 function getNumberOfRows(bracketedSentence) {
