@@ -14,9 +14,9 @@ function resizeWindow() {
   var viewport =  $(window)
   console.log(viewport.width(),$(window).height(), $("#stage").css("height"))
 
-var w= viewport.width() ;
-var h= viewport.height();
-
+  var w = window.innerWidth;
+  var h = window.innerHeight;
+console.log(w,h)
 
 
   var calcw = w;
