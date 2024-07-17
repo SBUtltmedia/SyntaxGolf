@@ -1,0 +1,16 @@
+{
+  "name": "syntaxgolf",
+  "version": "1.0.0",
+  "description": "https://sbutltmedia.github.io/SyntaxGolf/   https://sbutltmedia.github.io/SyntaxGolf/test.html",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
