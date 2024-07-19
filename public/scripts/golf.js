@@ -34,7 +34,11 @@ $(document).ready(init)
 
 function init() {
     let problem_id = parseQuery(window.location.search).problem_id || 1
-    fetch(new Request(`problem_set/?problem_id=${problem_id}`))
+    let URL = `problem_set/?problem_id=${problem_id}`
+    if (window.location.href.includes("github.io")) {
+        URL = `problem_sets/problem_${problem_id}.json`
+    }
+    fetch(new Request(URL))
         .then((response) => response.json())
         .then((data) => {
             problemJSON = data
@@ -958,7 +962,12 @@ function finishAlarm() {
         } else if (steps > par) {
             //console.log("On the right track!")
             console.log("On the right track! But take too many steps!")
+            problemJSON[currentSentenceID].progress = "again"
+        } else if (step < par) {
+            console.log("Wonderful!")
+            problemJSON[currentSentenceID].progress = "wonderful"
         }
+        flagColor()
         fetch(`/saveData?problem_id=${parseQuery(window.location.search).problem_id}`,
             {
                 method: "POST",
@@ -966,6 +975,22 @@ function finishAlarm() {
             })
             // .then(function (res) { return res.json(); })
             // .then(function (data) { alert(JSON.stringify(data)) })
+    }
+}
+
+function flagColor() {
+    progress = problemJSON[currentSentenceID].progress
+    if (progress == "complete") {
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: green;")
+    }
+    else if (progress == "again") {
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: red;")
+    }
+    else if (progress == "wonderful") {
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: blue;")
+    }
+    else {
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: yellor;")
     }
 }
 
@@ -1154,5 +1179,6 @@ function getPar(bracketedSentence) {
         }
     }
     par = par * 2 - 1;
-    return par
+    $("#sentenceContainer").data("par", par)
+    return parseInt(par * 1.1)
 }

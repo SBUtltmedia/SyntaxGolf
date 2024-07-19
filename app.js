@@ -6,9 +6,13 @@ const port = process.env.PORT || 3000
 let netID = "LIU36".toLowerCase()
 app.use(express.static('public'))
 app.post('/saveData', function(request, respond) {
+    let userDir = `./public/userData/${netID}`
+    if (!fs.existsSync(userDir)) {
+        fs.mkdir(userDir)
+    }
     var body = '';
     let problem_id = request.query.problem_id||1
-    let filePath = `./public/userData/${netID}/${problem_id}.json`
+    let filePath = `${userDir}/${problem_id}.json`
     request.on('data', function(data) {
         body += data;
     });
