@@ -15,11 +15,9 @@ function parseQuery(queryString) {
     return query;
 }
 let startingSentence = parseQuery(window.location.search).string 
-// || "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
-if (startingSentence) {
+|| "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
 startingSentence = startingSentence.replaceAll("[", "(").replaceAll("]", ")");
 startingSentence = startingSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ')
-}
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence
 let mode = parseQuery(window.location.search).mode || 'automatic'
@@ -72,8 +70,9 @@ function loadMenu(problemJSON) {
     } else { // display steps in automatic mode
         $(menu).append($("<div/>", { id: "points" }))
     }
+    let flagMapping = { "completed": "green" }
     problemJSON.forEach((problem, i) => {
-        let progress = flagColor(problem.progress) || "yellow"
+        let progress = flagMapping[problem.progress] || "yellow";
         // let flag = $(document.createElementNS("http://www.w3.org/2000/svg", 'svg'))
         // let flag = $("<svg/>", {style:"width:2rem", xmlns:"http://www.w3.org/2000/svg"})
         // .append($("<use/>", {"xlink:href":"images/flag.svg#flag", "style":`--color_fill: ${progress}`}))
@@ -81,7 +80,7 @@ function loadMenu(problemJSON) {
         <svg style="width:2rem;" viewBox="0 0 208 334">
         <use xlink:href="images/flag.svg#flag" id="${i}" style="--color_fill: ${progress};"></use>
         </svg>
-        <div style="font-size:1em">hole ${i + 1} Par: ${parseInt(getPar(problem.sentence)*1.1)}</div>
+        <div style="font-size:1em">hole ${i + 1} Par: ${getPar(problem.sentence)}</div>
         </div>`
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem))))
@@ -178,7 +177,6 @@ function loadSentence(sentenceID) {
             console.log({ trueRow })
             ++steps
             console.log(treeToRows(parse(bracketedSentence)))
-            
             if (trueRow.some(x => ((x.constituent === constituent)
                 && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))))) {
                 updateIndicesAfterTrace(el)
@@ -955,29 +953,26 @@ function isAncestor(node1, node2, pcm) {
 }
 
 function updatePoints() {
-    $("#points").html(`Par: ${parseInt(par*1.1)}<br/>Steps Used: ${steps}`)
+    $("#points").html(`Par: ${par}<br/>Steps Used: ${steps}`)
 }
 
 function finishAlarm() {
-    console.log(positivePoint,par)
-    let good = parseInt(par*1.1)
-    let progress = "yellow"
+    console.log(positivePoint, par)
     if (positivePoint == par) {
-        if (steps == good) {
+        if (steps == par) {
+            problemJSON[currentSentenceID].progress = "completed"
             //console.log("Correct!") 
             console.log("Wonderful! You meet the par!")
-            progress = flagColor("competed")
-        } else if (steps > good) {
+            $(`#${currentSentenceID}`).attr("style", "--color_fill: green;")
+        } else if (steps > par) {
             //console.log("On the right track!")
             console.log("On the right track! But take too many steps!")
-            progress = flagColor("again")
-        } else if (steps < good) {
+            problemJSON[currentSentenceID].progress = "again"
+        } else if (step < par) {
             console.log("Wonderful!")
-            progress = flagColor("wonderful")
+            problemJSON[currentSentenceID].progress = "wonderful"
         }
-        color = `--color_fill: ${progress};`
-        console.log(color)
-        $(`#${currentSentenceID}`).attr("style", color)
+        flagColor()
         fetch(`/saveData?problem_id=${parseQuery(window.location.search).problem_id}`,
             {
                 method: "POST",
@@ -988,22 +983,19 @@ function finishAlarm() {
     }
 }
 
-function flagColor(status) {
-    if (currentSentenceID == undefined) {
-        currentSentenceID = 0
+function flagColor() {
+    progress = problemJSON[currentSentenceID].progress
+    if (progress == "complete") {
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: green;")
     }
-    problemJSON[currentSentenceID].progress = status
-    if (status == "completed") {
-        return "green"
+    else if (progress == "again") {
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: red;")
     }
-    else if (status == "again") {
-        return "red"
-    }
-    else if (status == "wonderful") {
-        return "blue"
+    else if (progress == "wonderful") {
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: blue;")
     }
     else {
-        return "yellow"
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: yellor;")
     }
 }
 
@@ -1192,5 +1184,6 @@ function getPar(bracketedSentence) {
         }
     }
     par = par * 2 - 1;
-    return par
+    $("#sentenceContainer").data("par", par)
+    return parseInt(par * 1.1)
 }

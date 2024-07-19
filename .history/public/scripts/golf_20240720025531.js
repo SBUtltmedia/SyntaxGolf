@@ -971,7 +971,7 @@ function finishAlarm() {
             //console.log("On the right track!")
             console.log("On the right track! But take too many steps!")
             progress = flagColor("again")
-        } else if (steps < good) {
+        } else if (step < good) {
             console.log("Wonderful!")
             progress = flagColor("wonderful")
         }
@@ -989,10 +989,8 @@ function finishAlarm() {
 }
 
 function flagColor(status) {
-    if (currentSentenceID == undefined) {
-        currentSentenceID = 0
-    }
-    problemJSON[currentSentenceID].progress = status
+    if (currentSentenceID)
+        problemJSON[currentSentenceID].progress = status
     if (status == "completed") {
         return "green"
     }

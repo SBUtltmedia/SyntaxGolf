@@ -971,7 +971,7 @@ function finishAlarm() {
             //console.log("On the right track!")
             console.log("On the right track! But take too many steps!")
             progress = flagColor("again")
-        } else if (steps < good) {
+        } else if (step < good) {
             console.log("Wonderful!")
             progress = flagColor("wonderful")
         }

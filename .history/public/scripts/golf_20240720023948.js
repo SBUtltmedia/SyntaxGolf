@@ -15,11 +15,9 @@ function parseQuery(queryString) {
     return query;
 }
 let startingSentence = parseQuery(window.location.search).string 
-// || "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
-if (startingSentence) {
+|| "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
 startingSentence = startingSentence.replaceAll("[", "(").replaceAll("]", ")");
 startingSentence = startingSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ')
-}
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence
 let mode = parseQuery(window.location.search).mode || 'automatic'
@@ -971,13 +969,11 @@ function finishAlarm() {
             //console.log("On the right track!")
             console.log("On the right track! But take too many steps!")
             progress = flagColor("again")
-        } else if (steps < good) {
+        } else if (step < good) {
             console.log("Wonderful!")
             progress = flagColor("wonderful")
         }
-        color = `--color_fill: ${progress};`
-        console.log(color)
-        $(`#${currentSentenceID}`).attr("style", color)
+        $(`#${currentSentenceID}`).attr("style", "--color_fill:${progress};")
         fetch(`/saveData?problem_id=${parseQuery(window.location.search).problem_id}`,
             {
                 method: "POST",
@@ -989,10 +985,12 @@ function finishAlarm() {
 }
 
 function flagColor(status) {
-    if (currentSentenceID == undefined) {
-        currentSentenceID = 0
+    if (currentSentenceID)
+    if (problemJSON[currentSentenceID].includes("progress")) {
+        problemJSON[currentSentenceID].progress = status
+    } else {
+        problemJSON[currentSentenceID].append(progress = "in process")
     }
-    problemJSON[currentSentenceID].progress = status
     if (status == "completed") {
         return "green"
     }

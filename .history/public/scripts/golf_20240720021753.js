@@ -15,11 +15,9 @@ function parseQuery(queryString) {
     return query;
 }
 let startingSentence = parseQuery(window.location.search).string 
-// || "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
-if (startingSentence) {
+|| "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
 startingSentence = startingSentence.replaceAll("[", "(").replaceAll("]", ")");
 startingSentence = startingSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ')
-}
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence
 let mode = parseQuery(window.location.search).mode || 'automatic'
@@ -72,8 +70,9 @@ function loadMenu(problemJSON) {
     } else { // display steps in automatic mode
         $(menu).append($("<div/>", { id: "points" }))
     }
+    let flagMapping = { "completed": "green" }
     problemJSON.forEach((problem, i) => {
-        let progress = flagColor(problem.progress) || "yellow"
+        let progress = flagMapping[problem.progress] || "yellow";
         // let flag = $(document.createElementNS("http://www.w3.org/2000/svg", 'svg'))
         // let flag = $("<svg/>", {style:"width:2rem", xmlns:"http://www.w3.org/2000/svg"})
         // .append($("<use/>", {"xlink:href":"images/flag.svg#flag", "style":`--color_fill: ${progress}`}))
@@ -959,25 +958,20 @@ function updatePoints() {
 }
 
 function finishAlarm() {
-    console.log(positivePoint,par)
     let good = parseInt(par*1.1)
-    let progress = "yellow"
     if (positivePoint == par) {
         if (steps == good) {
             //console.log("Correct!") 
             console.log("Wonderful! You meet the par!")
-            progress = flagColor("competed")
+            flagColor("competed")
         } else if (steps > good) {
             //console.log("On the right track!")
             console.log("On the right track! But take too many steps!")
-            progress = flagColor("again")
-        } else if (steps < good) {
+            flagColor("again")
+        } else if (step < good) {
             console.log("Wonderful!")
-            progress = flagColor("wonderful")
+            flagColor("wonderful")
         }
-        color = `--color_fill: ${progress};`
-        console.log(color)
-        $(`#${currentSentenceID}`).attr("style", color)
         fetch(`/saveData?problem_id=${parseQuery(window.location.search).problem_id}`,
             {
                 method: "POST",
@@ -989,21 +983,18 @@ function finishAlarm() {
 }
 
 function flagColor(status) {
-    if (currentSentenceID == undefined) {
-        currentSentenceID = 0
-    }
     problemJSON[currentSentenceID].progress = status
     if (status == "completed") {
-        return "green"
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: green;")
     }
     else if (status == "again") {
-        return "red"
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: red;")
     }
     else if (status == "wonderful") {
-        return "blue"
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: blue;")
     }
     else {
-        return "yellow"
+        $(`#${currentSentenceID}`).attr("style", "--color_fill: yellor;")
     }
 }
 

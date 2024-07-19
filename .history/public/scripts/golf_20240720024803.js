@@ -971,12 +971,11 @@ function finishAlarm() {
             //console.log("On the right track!")
             console.log("On the right track! But take too many steps!")
             progress = flagColor("again")
-        } else if (steps < good) {
+        } else if (step < good) {
             console.log("Wonderful!")
             progress = flagColor("wonderful")
         }
-        color = `--color_fill: ${progress};`
-        console.log(color)
+        color = '--color_fill: ${progress}'
         $(`#${currentSentenceID}`).attr("style", color)
         fetch(`/saveData?problem_id=${parseQuery(window.location.search).problem_id}`,
             {
@@ -989,10 +988,12 @@ function finishAlarm() {
 }
 
 function flagColor(status) {
-    if (currentSentenceID == undefined) {
-        currentSentenceID = 0
+    if (currentSentenceID)
+    if (problemJSON[currentSentenceID].includes("progress")) {
+        problemJSON[currentSentenceID].progress = status
+    } else {
+        problemJSON[currentSentenceID].append(progress = "in process")
     }
-    problemJSON[currentSentenceID].progress = status
     if (status == "completed") {
         return "green"
     }
