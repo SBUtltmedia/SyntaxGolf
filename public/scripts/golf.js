@@ -139,8 +139,14 @@ function loadSentence(sentenceID) {
     });
     // drake.on("out",resizeWindow)
     // drake.on("shadow",resizeWindow)
+    drake.on("drag", (el, source)=> {
+        if (getTraceInfo(el, source).destination) {
+            let destNum = getTraceInfo(el, source).destination
+            $(el).attr("data-dest", destNum)
+        }
+    })
     drake.on("drop", (el, target, source, sibling) => {//resizeWindow()
-        console.log(el, target, source, sibling)
+        console.log({el, target, source, sibling})
         if (target === null) { // dropped back where it originated
             console.log("no movement")
             return
@@ -152,7 +158,6 @@ function loadSentence(sentenceID) {
         $(`#${destID}`).attr("data-destination", index)
         $(el).attr("data-trace", index)
         $(el).data("trace", index)
-        //console.log($(el).data("index"))
         //console.log($(el).prev().data("index"))
         // updating block index
         let newBlockIndex = $(el).data("index")
@@ -168,19 +173,24 @@ function loadSentence(sentenceID) {
         $(el).data("index", newBlockIndex)
         //console.log($(el).data("index")) 
         //console.log(findParent($(el)))
+        if (getTraceInfo(el, target).trace) {
+            let traceNum = getTraceInfo(el, target).trace
+            $(el).attr("data-trac", traceNum)
+        }
 
         // test if this placement is valid for automatic mode
         if (mode == 'automatic') {
+            let sourceRow = $(source).data("row")
+            let sourceColumn = $(source).data("index")
             let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
             let row = $(target).data("row")
             let trueRow = treeToRows(parse(bracketedSentence))[row]
-            console.log({ constituent, row })
-            console.log({ trueRow })
             ++steps
             console.log(treeToRows(parse(bracketedSentence)))
-            
+
             if (trueRow.some(x => ((x.constituent === constituent)
-                && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))))) {
+                && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))
+                && ($(el).data("trac") == $(`#${destID}`).data("dest"))))) {
                 updateIndicesAfterTrace(el)
                 ++positivePoint
                 $(el).addClass("traced")
@@ -210,6 +220,14 @@ function loadSentence(sentenceID) {
             // e.stopPropagation();
         }
     })
+}
+
+function getTraceInfo(el, source){
+    let row = $(source).data("row")
+    let index = $(el).data("index")
+    let rows = treeToRows(parse(bracketedSentence)) 
+    let moveThing = rows[row].find(x => x.column == index)
+    return moveThing
 }
 
 function makeSelectable(sentence, row, blockIndex, bracketedSentence) {

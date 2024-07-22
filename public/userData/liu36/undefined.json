@@ -3,4 +3,9 @@
     "sentence": "(S (NP Alice) (VP (V chased) (NP (D the) (N rabbit))))",
     "progress": "wonderful"
   }
+][
+  {
+    "sentence": "(S (NP Alice) (VP (V chased) (NP (D the) (N rabbit))))",
+    "progress": "again"
+  }
 ]
