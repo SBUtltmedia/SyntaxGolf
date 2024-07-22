@@ -1,0 +1,28 @@
+AuthType shibboleth
+ShibRequestSetting requireSession 1
+require valid-user
+
+#For now, we comment out that we require our visitor be a student of stony brook university.
+# require affiliation student@stonybrook.edu
+DirectoryIndex index.html
+# RewriteCond %{HTTPS} !=on [NC]
+# RewriteRule ^stocki(.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
+# Uncomment to display php errors in the log
+# php_flag display_startup_errors on
+# php_flag display_errors on
+# php_flag html_errors on
+#php_flag log_errors on
+#php_value error_log PHP_errors.log
+ #php_flag display_startup_errors on
+#  php_flag display_errors on
+#  php_flag html_errors on
+#  php_flag log_errors on
+#  php_value error_log PHP_errors.log
+#  php_value upload_max_filesize 11000M
+#  php_value post_max_size 11000M
+#  php_value max_execution_time 500
+#  php_value max_input_time 500
+#  php_value date.timezone 'America/New_York'
+ # php_value memory_limit 512M
+
