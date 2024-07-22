@@ -1,1 +1,0 @@
-(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))

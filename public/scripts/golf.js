@@ -40,6 +40,9 @@ function init() {
     if (window.location.href.includes("github.io")) {
         URL = `problem_sets/problem_${problem_id}.json`
     }
+    if (window.location.href.includes("stonybrook")) {
+	URL= `problem_set.php?id=${problem_id}`	
+    }
     fetch(new Request(URL))
         .then((response) => response.json())
         .then((data) => {
@@ -978,7 +981,11 @@ function finishAlarm() {
         color = `--color_fill: ${progress};`
         console.log(color)
         $(`#${currentSentenceID}`).attr("style", color)
-        fetch(`/saveData?problem_id=${parseQuery(window.location.search).problem_id}`,
+	let URL = `/saveData?problem_id=${parseQuery(window.location.search).problem_id}`
+	if (window.location.href.includes("stonybrook")) {
+        URL= `problem_set.php?id=${parseQuery(window.location.search).problem_id}`
+    	}
+        fetch(URL,
             {
                 method: "POST",
                 body: JSON.stringify(problemJSON, null, 2)
