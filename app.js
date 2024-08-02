@@ -18,7 +18,7 @@ app.post('/saveData', function(request, respond) {
     });
 
     request.on('end', function (){
-        fs.appendFile(filePath, body, function() {
+        fs.writeFile(filePath, body, function() {
             respond.end();
         });
     });

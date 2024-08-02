@@ -28,6 +28,7 @@ let par
 let positivePoint
 let problemJSON
 let currentSentenceID
+let progress
 //console.log(bracketedSentence)
 //console.log(sentence)
 
@@ -48,8 +49,9 @@ function init() {
         .then((data) => {
             problemJSON = data
             if (startingSentence) {
-                problemJSON[0].sentence = startingSentence
-                problemJSON = [problemJSON[0]]
+                problemJSON.holes[0].expression = startingSentence
+                problemJSON.holes = [problemJSON.holes[0]]
+                problemJSON.description = "tests"
             }
             loadMenu(problemJSON)
             loadSentence(0)
@@ -75,16 +77,19 @@ function loadMenu(problemJSON) {
     } else { // display steps in automatic mode
         $(menu).append($("<div/>", { id: "points" }))
     }
-    problemJSON.forEach((problem, i) => {
-        let progress = flagColor(problem.progress) || "yellow"
+    problemJSON.holes.forEach((problem, i) => {
+        console.log(problem.process)
+        let parFactor = Math.max(getMinStep(problem.expression)*0.1, 1)
+        let weightedPar = parseInt(getMinStep(problem.expression)+parFactor)
+        let progress = flagColor(problem.progress, weightedPar)
         // let flag = $(document.createElementNS("http://www.w3.org/2000/svg", 'svg'))
         // let flag = $("<svg/>", {style:"width:2rem", xmlns:"http://www.w3.org/2000/svg"})
         // .append($("<use/>", {"xlink:href":"images/flag.svg#flag", "style":`--color_fill: ${progress}`}))
         let flag = `<div class=problemList> 
-        <svg style="width:2rem;" viewBox="0 0 208 334">
+        <svg style="width:1.2rem;" viewBox="0 0 208 334">
         <use xlink:href="images/flag.svg#flag" id="${i}" style="--color_fill: ${progress};"></use>
         </svg>
-        <div style="font-size:1em">hole ${i + 1} Par: ${parseInt(getPar(problem.sentence)*1.1)}</div>
+        <div style="font-size:1em">hole ${i + 1} <br/> Par: ${weightedPar}</div>
         </div>`
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem))))
@@ -96,17 +101,18 @@ function loadMenu(problemJSON) {
 
 // ready function
 function loadSentence(sentenceID) {
-    bracketedSentence = problemJSON[sentenceID].sentence
+    bracketedSentence = problemJSON.holes[sentenceID].expression
     currentSentenceID = sentenceID
     $("#sentenceContainer").data("bracketedSentence", bracketedSentence)
     steps = 0
-    par = getPar(bracketedSentence)
+    par = getMinStep(bracketedSentence)
     positivePoint = 0
     sentence = bracketToString(bracketedSentence)
     getNumberOfRows(bracketedSentence)
     console.log(sentence)
     updatePoints()
     $("#problemConstituent, #lineContainer").html("")
+    resizeWindow()
     //foundation = $("#problemConstituent")
     // this causes problems with other functions that use foundation
 
@@ -489,7 +495,7 @@ function drawLine(child, parent) {
     // drawDot(parent)
     let childLabel = child.find(".labelDiv")
 
-    let offset = 2
+    let offset = .5
     let needsOffset = 0
 
     //console.log(parent.find(".constituentContainer").hasClass("hidden"))
@@ -618,7 +624,7 @@ function generateMenu(e) {
     let goldlabel = reference?.label
     //console.log(goldlabel)
 
-    $(this).css({ "cursor": "auto", "width": "20rem" })
+    $(this).css({ "cursor": "auto"})
 
     let labels = ["N", "V", "P", "Adj", "Adv", "D", "C", "T", "S"]
 
@@ -681,7 +687,8 @@ function generateMenu(e) {
 }
 
 function removeMenu(labelItem = $(".labelDiv"), label = "?") {
-    labelItem.css({ "width": "5rem" })
+    // labelItem.css({ "width": "1.5em" })
+    labelItem.removeAttr("style")
     if (label != "?") {
         labelItem.text(label)
     }
@@ -786,7 +793,8 @@ function treeAtNode(blockID, PCM) {
 
 function showProblem(event, problem) {
     console.log(event.clientY)
-    $(menu).append($("<div/>", { id: "problemInfo", html: bracketToString(problem.sentence) }))
+    $("#problemInfo").remove()
+    $(menu).append($("<div/>", { id: "problemInfo", html: bracketToString(problem.expression) }))
 }
 
 function treeToString(tree) {
@@ -976,27 +984,26 @@ function isAncestor(node1, node2, pcm) {
 }
 
 function updatePoints() {
-    $("#points").html(`Par: ${parseInt(par*1.1)}<br/>Steps Used: ${steps}`)
+    parFactor = Math.max(par*0.1, 1)
+    $("#points").html(`Par: ${parseInt(par+parFactor)}<br/>Steps Used: ${steps}`)
 }
 
 function finishAlarm() {
     console.log(positivePoint,par)
     let good = parseInt(par*1.1)
-    let progress = "yellow"
+    let fColor = "yellow"
     if (positivePoint == par) {
         if (steps == good) {
             //console.log("Correct!") 
             console.log("Wonderful! You meet the par!")
-            progress = flagColor("competed")
         } else if (steps > good) {
             //console.log("On the right track!")
             console.log("On the right track! But take too many steps!")
-            progress = flagColor("again")
         } else if (steps < good) {
             console.log("Wonderful!")
-            progress = flagColor("wonderful")
         }
-        color = `--color_fill: ${progress};`
+        fColor = flagColor(steps, parseInt(par*1.1))
+        color = `--color_fill: ${fColor};`
         console.log(color)
         $(`#${currentSentenceID}`).attr("style", color)
 	let URL = `/saveData?problem_id=${parseQuery(window.location.search).problem_id}`
@@ -1013,18 +1020,39 @@ function finishAlarm() {
     }
 }
 
-function flagColor(status) {
+function flagColor(steps, weightedPar) {
+    let best;
     if (currentSentenceID == undefined) {
         currentSentenceID = 0
     }
-    problemJSON[currentSentenceID].progress = status
-    if (status == "completed") {
+    console.log(steps)
+    if (steps == undefined) {
+        return "yellow"
+    }
+    if (problemJSON.holes[currentSentenceID].progress == undefined) {
+        problemJSON.holes[currentSentenceID].progress = []
+    }
+    if (typeof steps == 'number') {
+        best = steps;
+        problemJSON.holes[currentSentenceID].progress.push(steps);
+    } else {
+        best = steps[0];
+    }
+    console.log(best)
+    let progressArray = problemJSON.holes[currentSentenceID].progress
+    for (let i = 0; i < progressArray.length; i++) {
+        if (best >= progressArray[i]) {
+            best = progressArray[i];
+        }
+    }
+    console.log(best)
+    if (best == weightedPar) {
         return "green"
     }
-    else if (status == "again") {
+    else if (best > weightedPar) {
         return "red"
     }
-    else if (status == "wonderful") {
+    else if (best < weightedPar) {
         return "blue"
     }
     else {
@@ -1033,7 +1061,9 @@ function flagColor(status) {
 }
 
 function getNumberOfRows(bracketedSentence) {
-    $(menu).data("currentNumberOfRows", treeToRows(parse(bracketedSentence)).length)
+    let currentNumberOfRows = treeToRows(parse(bracketedSentence)).length;
+    $("#menu").data("currentNumberOfRows", currentNumberOfRows)
+    console.log(currentNumberOfRows)
 }
 
 function leftPad(rowJQ) {
@@ -1042,7 +1072,7 @@ function leftPad(rowJQ) {
     let firstItem = rowJQ.children().first()
     firstItem.addClass("first")
     let firstIndex = firstItem.data("index")
-    rowJQ.css({ "padding-left": `${firstIndex * 10}rem` })
+    rowJQ.css({ "padding-left": `${firstIndex * 10}em` })
 
     rowJQ.children().css({ "padding-left": 0 })
     //rowJQ.prepend($("<img/>"))
@@ -1163,7 +1193,7 @@ function drawArrows() {
         $("#lineContainer").append(path);
         // calculate control point
         // same y as lowest + fudge factor
-        let controlY = Math.max(endbottom, startbottom) + 20
+        let controlY = Math.max(endbottom, startbottom) + 200
         // let controlYPercent = Math.max(endbottomPercent, startbottomPercent) + 4
         // x is average of both - fudge factor
         let controlX = ((endCenterX + startCenterX) / 2) - 50
@@ -1208,7 +1238,7 @@ function getCornerPercentages(elem) {
     // replace calculations in drawLine with this
 }
 
-function getPar(bracketedSentence) {
+function getMinStep(bracketedSentence) {
     let str = bracketedSentence
     let par = 0
     for (let i = 0; i < str.length; i++) {

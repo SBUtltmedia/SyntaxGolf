@@ -3,12 +3,14 @@
 <head>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-
-    <script src="scripts/parse.js"></script>
+    
+        <script src="scripts/parse.js"></script>
     <script src="scripts/bracketToString.js"></script>
     <script src="scripts/golf.js"></script>
     <script src="scripts/resize.js"></script>
     <script src="scripts/jsonToDom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/intro.js@8.0.0-beta.1/intro.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.css">
     <link rel="stylesheet" href="styles/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.css"
         integrity="sha512-gGkweS4I+MDqo1tLZtHl3Nu3PGY7TU8ldedRnu60fY6etWjQ/twRHRG2J92oDj7GDU2XvX8k6G5mbp0yCoyXCA=="
@@ -19,7 +21,6 @@
 <body>
 
     <div id="stage">
-
         <div id="sentenceContainer">
             <svg id="lineContainer">
 
@@ -37,6 +38,52 @@
     <script>dragula([document.getElementById("right")], {
             copy: true, copySortSource: true
         });</script>
+    <!-- <script type="text/javascript">
+        function startIntro(){
+            var intro = introJs();
+              intro.setOptions({
+                steps: [
+                  {
+                    intro: 'Welcome to DragLogic! DragLogic is a tool for writing proofs of theorems provable in the Łukasiewicz axioms of logic. The goal is to prove the statement in the Show line by using substitution and Modus Ponens. All operations can be performed by using drag-and-drop with a mouse. This program is not optimised for tablets yet.'
+                  },
+                  {
+                    element: document.querySelector('#proof'),
+                    intro: 'The proof will be displayed here as it is constructed. Line numbers of lines derived by substitution and Modus Ponens can be clicked, and they will be deleted' ,
+                    position: 'left'
+                  },
+                  {
+                    element: document.querySelector('#wffConstructor'),
+                    intro: 'This tool can be used to create new well-formed formulas, also known as WFFs',
+                    position: 'bottom'
+                  }
+                ],
+                tooltipClass:"tooltip",
+                disableInteraction: "true"
+              }
+            );
+            intro.oncomplete(function() {
+              localStorage.setItem('doneTour', 'yeah!');
+            })
+        
+            // add a flag when we exit
+            intro.onexit(function() {
+               localStorage.setItem('doneTour', 'yeah!');
+            });
+        
+            // and check for it when deciding whether to start.
+            window.addEventListener('load', ()=> {
+              var doneTour = localStorage.getItem('doneTour') === 'yeah!';
+              if (doneTour) return;
+              intro.start();
+            })
+            $("#tourButton").click(function(){
+              intro.start();
+            });
+        
+          };
+        
+        startIntro();
+    </script> -->
 </body>
 
 </html>

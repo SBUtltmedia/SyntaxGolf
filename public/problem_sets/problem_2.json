@@ -1,14 +1,19 @@
-[
 {
-    "sentence": "(CP (NP who ^1) (C' (C did) (S (NP Lucy) (VP (V see) (NP who ^t1)))))"
-    ,"progress": "in process" 
-},
- {
- "sentence": "(S (NP Alice) (VP (V chased) (NP (D the) (N rabbit))))"
- ,"progress": "in process"  
-},
- {
- "sentence": "(CP (AP (A' (A where)) ^1) (C' (C did ^2) (TP (NP (N' (N you))) (T' (T did ^t2) (VP (V' (V get) (AP (A' (A where)) ^t1) (DP (D' (D that) (NP (N' (N hat)))))))))))"
- ,"progress": "in process"  
+    "holes": [
+        {
+            "expression": "(CP (NP who ^1) (C' (C did) (S (NP Lucy) (VP (V see) (NP who ^t1)))))",
+            "progress": [18],
+            "note": "t1"
+        },
+        {
+            "expression": "(S (NP Alice) (VP (V chased) (NP (D the) (N rabbit))))",
+            "note": "r/a"
+        },
+        {
+            "expression": "(NP (D the) (N Alice))",
+            "progress": [6],
+            "note": "t2"
+        }
+    ],
+    "description": "This is a course for learning Syntax."
 }
-]

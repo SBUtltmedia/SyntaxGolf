@@ -29,7 +29,7 @@
 
         .wordContainer {
             /* background-color: aquamarine; */
-            font-size: 3rem;
+            font-size: 3em;
             display: inline-block;
             color: var(--word);
         }
@@ -44,7 +44,7 @@
         .hidden {
             /* display: none; */
             visibility: hidden;
-            height: 1rem;
+            height: 2em;
         }
 
         .faded {
@@ -81,9 +81,15 @@
             background-color: var(--highlight);
         }
 
-        div {
+        #menu div {
             padding: 1rem;
-            /* border: 0.1rem solid black; */
+
+
+        }
+
+        #sentenceContainer div {
+            padding: 1em;
+
 
         }
 
@@ -115,8 +121,7 @@
 
         #stage {
             padding: 0;
-            /* border: 1px solid black; */
-            border: 0px;
+            border: 0;
             width: 100%;
             height: 100%;
             background-color: var(--background);
@@ -126,6 +131,16 @@
         #problemConstituent {
             flex-flow: column wrap;
             width: 80%;
+            height: 100%;
+        }
+
+        #sentenceContainer .constituentContainer {
+            /* border: 1px solid white; */
+            padding:.1em;
+        }
+
+        #sentenceContainer .wordContainer {
+            padding:.5em .25em .3em .25em;
         }
 
         .block {
@@ -137,6 +152,7 @@
             /* flex-flow: column wrap; */
             flex-direction: column;
             align-items: center;
+            padding: 1em;
         }
 
         .wordContainer {
@@ -144,38 +160,36 @@
 
         }
 
-        .labelDiv {
+        #sentenceContainer .labelDiv {
             /* position:absolute; */
             /* margin: auto; */
-            padding: 0;
-            width: 5rem;
-            /* min-width: 3rem;
-            max-width: 20rem; */
-            /* height: 100%; */
+            padding: 0.1em .5em .1em .5em;
+            /* width: 1.5em; */
+
+            /* height: 0.7em; */
             left: 0;
             top: 0;
             /* background-color: rgba(137, 43, 226, 0.208); */
             text-align: center;
-            font-size: 3rem;
+            font-size: 3em;
             border-radius: 10%;
             color:#eeeeee;
         }
 
-        .labelMenu {
+        #sentenceContainer .labelMenu {
             display: flex;
-            width: 100%;
             flex-wrap: wrap;
             justify-content: center;
-            padding: 0;
+            padding: 0.1em;
             /* background-color: rgba(137, 43, 226, 0.208); */
         }
 
-        .labelItem {
+        #sentenceContainer .labelItem {
             flex: 33%;
-            font-size: 2rem;
+            font-size: 0.5em;
             margin: auto;
             padding: 0;
-            border: 0;
+            border: 0.01em;
         }
 
         .bar::after {
@@ -186,19 +200,19 @@
             content: "P"
         }
 
-        .typeMenu {
+        #sentenceContainer .typeMenu {
             display: flex;
             /* position:relative;
-            left:-29rem;
-            top:-11rem; */
+*/
             padding: 0;
             border: 0;
         }
 
-        .typeItem {
+        #sentenceContainer .typeItem {
             display: inline-block;
             width: 50%;
-            font-size: 2rem;
+            font-size: 0.5em;
+            padding: 0.8em;
         }
 
         .labelItem:hover,
@@ -219,7 +233,7 @@
         .labelDiv {
             background-color: rgba(88, 226, 186, 0.208);
             border-radius: 10%;
-            border: .8rem solid rgba(255, 255, 255, .8);
+            border: .2em solid rgba(255, 255, 255, .8);
         }
 
           
@@ -227,7 +241,7 @@
         .arrow {
             /* lines of tree */
             stroke: var(--line);
-            stroke-width: 0.4rem;
+            stroke-width: 0.4em;
             stroke-linecap: round;
         }
 
@@ -274,7 +288,7 @@
 
         .first {
             /* position: relative; */
-            /* width:10rem; */
+
         }
 
         /* .first::before{

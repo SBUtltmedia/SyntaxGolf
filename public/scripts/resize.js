@@ -1,17 +1,17 @@
 $(window).resize(resizeWindow);
 
 var aspect = 1/ 1;
-var numberOfRows = $(menu).data("currentNumberOfRows");
-console.log(numberOfRows);
 // var baseFontFactor = 0.016; // make this based on number of rows
 // var baseFontFactor =  .02 - numberOfRows * 0.002;
-let baseFontFactor = .02;
+// let baseFontFactor = .02;
 var paddingFactor = .9;
 var stageHeight,  stageWidth;
-$(()=>{resizeWindow()})
+// $(()=>{resizeWindow()})
 
 function resizeWindow() {
   var viewport =  $(window)
+  var numberOfRows = $("#menu").data("currentNumberOfRows");
+  console.log(numberOfRows);
   console.log(viewport.width(),$(window).height(), $("#stage").css("height"))
 
   var w = window.innerWidth;
@@ -45,13 +45,25 @@ else{
     left: stageLeft + "px",
   });
   //console.log(stageLeft, stageTop)
-  $("html").css("font-size", (stageHeight * baseFontFactor)*.5 + "px");
+  $("html").css("font-size", stageHeight*.01 + "px");
   $("#lineContainer").css({
     width: $("#problemConstituent").width(),
-    height: $("#problemConstituent").height() + 20
+    height: $("#problemConstituent").height()
   });
+  console.log(numberOfRows)
+  $("#sentenceContainer").css({"font-size":fontSize(numberOfRows) + "rem"});
+  // $("#sentenceContainer").css("background-color", "blue");
+  // $("#sentenceContainer").css("cssText", `font-size:${0.1*numberOfRows}rem !important;`);
 
   drawLines()
   drawArrows()
 
+}
+
+function fontSize(numberOfRows) {
+  let shortest = 2;
+  let longest = 10;
+  let smallestFont = 0.7;
+  let longestFont = 1.2;
+  return ((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont)
 }
