@@ -23,12 +23,13 @@ startingSentence = startingSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ')
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence
 let mode = parseQuery(window.location.search).mode || 'automatic'
-let steps
-let par
+let stepsUsed
+let minStep
 let positivePoint
 let problemJSON
 let currentSentenceID
 let progress
+let parFactor
 //console.log(bracketedSentence)
 //console.log(sentence)
 
@@ -78,18 +79,18 @@ function loadMenu(problemJSON) {
         $(menu).append($("<div/>", { id: "points" }))
     }
     problemJSON.holes.forEach((problem, i) => {
-        console.log(problem.process)
-        let parFactor = Math.max(getMinStep(problem.expression)*0.1, 1)
-        let weightedPar = parseInt(getMinStep(problem.expression)+parFactor)
-        let progress = flagColor(problem.progress, weightedPar)
+        let minStep = getMinStep(problem.expression)
+        let parFactor = getParFactor(minStep)
+        let par = parseInt(minStep+parFactor)
+        let {flagColor, alarm} = getProgressSignal(bestProgress(problem.progress), par, minStep)
         // let flag = $(document.createElementNS("http://www.w3.org/2000/svg", 'svg'))
         // let flag = $("<svg/>", {style:"width:2rem", xmlns:"http://www.w3.org/2000/svg"})
         // .append($("<use/>", {"xlink:href":"images/flag.svg#flag", "style":`--color_fill: ${progress}`}))
         let flag = `<div class=problemList> 
         <svg style="width:1.2rem;" viewBox="0 0 208 334">
-        <use xlink:href="images/flag.svg#flag" id="${i}" style="--color_fill: ${progress};"></use>
+        <use xlink:href="images/flag.svg#flag" id="${i}" style="--color_fill: ${flagColor};"></use>
         </svg>
-        <div style="font-size:1em">hole ${i + 1} <br/> Par: ${weightedPar}</div>
+        <div style="font-size:1em">hole ${i + 1} <br/> Par: ${par}</div>
         </div>`
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem))))
@@ -104,8 +105,9 @@ function loadSentence(sentenceID) {
     bracketedSentence = problemJSON.holes[sentenceID].expression
     currentSentenceID = sentenceID
     $("#sentenceContainer").data("bracketedSentence", bracketedSentence)
-    steps = 0
-    par = getMinStep(bracketedSentence)
+    stepsUsed = 0
+    minStep = getMinStep(bracketedSentence)
+    parFactor = getParFactor(minStep)
     positivePoint = 0
     sentence = bracketToString(bracketedSentence)
     getNumberOfRows(bracketedSentence)
@@ -194,7 +196,7 @@ function loadSentence(sentenceID) {
             let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
             let row = $(target).data("row")
             let trueRow = treeToRows(parse(bracketedSentence))[row]
-            ++steps
+            ++stepsUsed
             console.log(treeToRows(parse(bracketedSentence)))
 
             if (trueRow.some(x => ((x.constituent === constituent)
@@ -319,7 +321,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                         && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
                         makeSelectable(constituent, row + 1, newIndex, bracketedSentence);
                         selectedJQ.addClass("faded").removeClass("selected")
-                        ++steps
+                        ++stepsUsed
                         ++positivePoint
                     } else {
                         let wrongArray = selectedJQ.toArray().map(item => $(item).data("uid")).join("")
@@ -327,7 +329,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                         if (!wrongAnswers.find((item) => item == wrongArray)) {
                             wrongAnswers.push(wrongArray)
                             console.log(treeToRows(parse(bracketedSentence))[row + 1])
-                            ++steps
+                            ++stepsUsed
                         }
                         selectedJQ.addClass("animateWrong")
                         selectedJQ[0].addEventListener("animationend", (event) => {
@@ -665,7 +667,7 @@ function generateMenu(e) {
             let symbol = inverse(symbolMap)[intersect] || ""
             let label = $(this).html() + symbol
             // replace ? with label and close menu
-            ++steps
+            ++stepsUsed
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
                 removeMenu($(this).parent().parent(), label)
                 ++positivePoint
@@ -984,26 +986,20 @@ function isAncestor(node1, node2, pcm) {
 }
 
 function updatePoints() {
-    parFactor = Math.max(par*0.1, 1)
-    $("#points").html(`Par: ${parseInt(par+parFactor)}<br/>Steps Used: ${steps}`)
+    $("#points").html(`Par: ${parseInt(minStep+parFactor)}<br/>Steps Used: ${stepsUsed}`)
 }
 
 function finishAlarm() {
-    console.log(positivePoint,par)
-    let good = parseInt(par*1.1)
-    let fColor = "yellow"
-    if (positivePoint == par) {
-        if (steps == good) {
-            //console.log("Correct!") 
-            console.log("Wonderful! You meet the par!")
-        } else if (steps > good) {
-            //console.log("On the right track!")
-            console.log("On the right track! But take too many steps!")
-        } else if (steps < good) {
-            console.log("Wonderful!")
-        }
-        fColor = flagColor(steps, parseInt(par*1.1))
-        color = `--color_fill: ${fColor};`
+    console.log(positivePoint,minStep)
+    let good = parseInt(minStep+parFactor)
+    if (positivePoint == minStep) {
+        
+        problemJSON.holes[currentSentenceID].progress = problemJSON.holes[currentSentenceID].progress || [] 
+        problemJSON.holes[currentSentenceID].progress.push(stepsUsed);
+        let bestStep = bestProgress(problemJSON.holes[currentSentenceID].progress)
+        let {flagColor, alarm} = getProgressSignal(bestStep, good, minStep)
+        console.log(bestStep, good, minStep)
+        color = `--color_fill: ${flagColor};`
         console.log(color)
         $(`#${currentSentenceID}`).attr("style", color)
 	let URL = `/saveData?problem_id=${parseQuery(window.location.search).problem_id}`
@@ -1020,43 +1016,19 @@ function finishAlarm() {
     }
 }
 
-function flagColor(steps, weightedPar) {
-    let best;
-    if (currentSentenceID == undefined) {
-        currentSentenceID = 0
+function getProgressSignal(stepUsed, weightedPar, minStep) {
+    if (stepUsed == undefined) {
+        // problemJSON.holes[currentSentenceID].progress = []
+        return {"flagColor":"yellow", "alarm":""}
     }
-    console.log(steps)
-    if (steps == undefined) {
-        return "yellow"
+    if (stepUsed == minStep) {
+        return {"flagColor":"blue", "alarm":"Wonderful! You got it perfect!"}
     }
-    if (problemJSON.holes[currentSentenceID].progress == undefined) {
-        problemJSON.holes[currentSentenceID].progress = []
+    else if (stepUsed > weightedPar) {
+        return {"flagColor":"red", "alarm":"On the right track! But you took too many steps!"}
     }
-    if (typeof steps == 'number') {
-        best = steps;
-        problemJSON.holes[currentSentenceID].progress.push(steps);
-    } else {
-        best = steps[0];
-    }
-    console.log(best)
-    let progressArray = problemJSON.holes[currentSentenceID].progress
-    for (let i = 0; i < progressArray.length; i++) {
-        if (best >= progressArray[i]) {
-            best = progressArray[i];
-        }
-    }
-    console.log(best)
-    if (best == weightedPar) {
-        return "green"
-    }
-    else if (best > weightedPar) {
-        return "red"
-    }
-    else if (best < weightedPar) {
-        return "blue"
-    }
-    else {
-        return "yellow"
+    else if (stepUsed <= weightedPar) {
+        return {"flagColor":"green", "alarm":"Wonderful! You got par!"}
     }
 }
 
@@ -1240,12 +1212,20 @@ function getCornerPercentages(elem) {
 
 function getMinStep(bracketedSentence) {
     let str = bracketedSentence
-    let par = 0
+    let minStep = 0
     for (let i = 0; i < str.length; i++) {
         if (str.charAt(i) == "(") {
-            par++
+            minStep++
         }
     }
-    par = par * 2 - 1;
-    return par
+    minStep = minStep * 2 - 1;
+    return minStep
+}
+
+function getParFactor(minStep){
+    return Math.max(minStep*0.1, 1)
+}
+
+function bestProgress(progress) {
+    return progress?.sort(function(a, b){return a - b})[0]
 }

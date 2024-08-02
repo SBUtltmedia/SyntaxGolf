@@ -79,6 +79,7 @@
             position: absolute;
             border-radius: 0.1rem;
             background-color: var(--highlight);
+            width: 89%;
         }
 
         #menu div {
