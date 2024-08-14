@@ -2,12 +2,16 @@
     "holes": [
         {
             "expression": "(CP (NP who ^1) (VP (V see) (NP who ^t1)))",
-            "progress": [18],
+            "progress": [
+                12
+            ],
             "note": "t1"
         },
         {
             "expression": "(CP (NP who ^1) (C' (C did) (S (NP Lucy) (VP (V see) (NP who ^t1)))))",
-            "progress": [18],
+            "progress": [
+                18
+            ],
             "note": "t1"
         },
         {
@@ -16,7 +20,9 @@
         },
         {
             "expression": "(NP (D the) (N Alice))",
-            "progress": [6],
+            "progress": [
+                6
+            ],
             "note": "t2"
         }
     ],

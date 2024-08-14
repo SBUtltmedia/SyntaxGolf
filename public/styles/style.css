@@ -237,6 +237,10 @@
             border: .2em solid rgba(255, 255, 255, .8);
         }
 
+        .labelDiv {
+            /* min-width: 5em; */
+        }
+
           
         .branch,
         .arrow {
@@ -253,6 +257,7 @@
         .container {
             display: flex;
             justify-content: center;
+            /* margin: 0 10em 0 10em; */
         }
 
         #menu {

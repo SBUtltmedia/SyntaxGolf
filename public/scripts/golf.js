@@ -30,6 +30,7 @@ let problemJSON
 let currentSentenceID
 let progress
 let parFactor
+let drake
 //console.log(bracketedSentence)
 //console.log(sentence)
 
@@ -127,100 +128,6 @@ function loadSentence(sentenceID) {
     // use config file?
 
     // $(foundation).append($("<div/>", { "data-row": 99, class: "container first-row" })) // start with just row 0 div
-    let drake = dragula([...document.getElementsByClassName("container")], {
-        isContainer: function (el) {
-            console.log(el)
-            console.log($(el).data("row"))
-            // console.log($(el).hasClass("container"))
-            if ($(el).data("row") == "0") {
-                return false
-            }
-            if ($(el).hasClass("container")) {
-                return true
-            } else {
-                return false
-            }
-
-        },
-        moves: function (el, container, handle) {
-            //console.log("move")
-            return (handle.classList.contains('labelDiv') && !($(el).hasClass("traced")));
-        },
-        copy: true
-    });
-    // drake.on("out",resizeWindow)
-    // drake.on("shadow",resizeWindow)
-    drake.on("drag", (el, source)=> {
-        if (getTraceInfo(el, source).destination) {
-            let destNum = getTraceInfo(el, source).destination
-            $(el).attr("data-dest", destNum)
-        }
-    })
-    drake.on("drop", (el, target, source, sibling) => {//resizeWindow()
-        console.log({el, target, source, sibling})
-        if (target === null) { // dropped back where it originated
-            console.log("no movement")
-            return
-        }
-        let destID = $(el).attr("id")
-        console.log(destID)
-        $(el).attr("id", Date.now()) // new distinct id
-        let index = $(`[data-trace]`).length + 1
-        $(`#${destID}`).attr("data-destination", index)
-        $(el).attr("data-trace", index)
-        $(el).data("trace", index)
-        //console.log($(el).prev().data("index"))
-        // updating block index
-        let newBlockIndex = $(el).data("index")
-        if ($(el).prev().data("index")) {
-            //console.log("prev exists")
-            newBlockIndex = $(el).prev().data("index") + 1
-        } else {
-            //console.log("no prev")
-            newBlockIndex = $(el).next().data("index")
-        }
-        //console.log(newBlockIndex)
-        $(el).attr("data-index", newBlockIndex)
-        $(el).data("index", newBlockIndex)
-        //console.log($(el).data("index")) 
-        //console.log(findParent($(el)))
-        if (getTraceInfo(el, target).trace) {
-            let traceNum = getTraceInfo(el, target).trace
-            $(el).attr("data-trac", traceNum)
-        }
-
-        // test if this placement is valid for automatic mode
-        if (mode == 'automatic') {
-            let sourceRow = $(source).data("row")
-            let sourceColumn = $(source).data("index")
-            let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
-            let row = $(target).data("row")
-            let trueRow = treeToRows(parse(bracketedSentence))[row]
-            ++stepsUsed
-            console.log(treeToRows(parse(bracketedSentence)))
-
-            if (trueRow.some(x => ((x.constituent === constituent)
-                && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))
-                && ($(el).data("trac") == $(`#${destID}`).data("dest"))))) {
-                updateIndicesAfterTrace(el)
-                ++positivePoint
-                $(el).addClass("traced")
-                $(`#${destID}`).addClass("traced")
-            } else {
-                $(el).remove()
-            }
-            updatePoints()
-            // finishAlarm()
-        }
-        $(el).find(".labelDiv").text("?").css({ "cursor": "pointer" }).on({
-            "click": generateMenu
-        })
-
-        leftPad($(target))
-        // drawLines() 
-        resizeWindow()
-        return true
-    })
     makeSelectable(sentence, 0, 0, bracketedSentence) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({
         mousedown: function (e) {
@@ -231,6 +138,7 @@ function loadSentence(sentenceID) {
             // e.stopPropagation();
         }
     })
+    setUpDrake();
 }
 
 function getTraceInfo(el, source){
@@ -459,6 +367,109 @@ function traverse(callback) {
         if (rowIndex > 0) { // skip root node           
             rowThis.children().each(callback)
         }
+    })
+}
+
+function setUpDrake() {
+    if (drake) {drake.destroy();}
+    drake = dragula([...document.getElementsByClassName("container")], {
+        isContainer: function (el) {
+            console.log(el)
+            console.log($(el).data("row"))
+            // console.log($(el).hasClass("container"))
+            if ($(el).data("row") == "0") {
+                return false
+            }
+            if ($(el).hasClass("container")) {
+                return true
+            } else {
+                return false
+            }
+
+        },
+        moves: function (el, container, handle) {
+            //console.log("move")
+            return (handle.classList.contains('labelDiv') && !($(el).hasClass("traced")));
+        },
+        copy: true
+    });
+    // drake.on("out",resizeWindow)
+    // drake.on("shadow",resizeWindow)
+    drake.on("drag", (el, source)=> {
+        if (getTraceInfo(el, source).destination) {
+            let destNum = getTraceInfo(el, source).destination
+            $(el).data("dest", parseInt(destNum))
+            console.log($(el).data("dest"))
+        }
+    })
+    drake.on("drop", (el, target, source, sibling) => {//resizeWindow()
+        console.log({el, target, source, sibling})
+        if (target === null) { // dropped back where it originated
+            console.log("no movement")
+            return
+        }
+        let destID = $(el).attr("id")
+        console.log(destID)
+        $(el).attr("id", Date.now()) // new distinct id
+        let index = $(`[data-trace]`).length + 1
+        $(`#${destID}`).attr("data-destination", index)
+        $(el).attr("data-trace", index)
+        $(el).data("trace", index)
+        //console.log($(el).prev().data("index"))
+        // updating block index
+        let newBlockIndex = $(el).data("index")
+        if ($(el).prev().data("index")) {
+            //console.log("prev exists")
+            newBlockIndex = $(el).prev().data("index") + 1
+        } else {
+            //console.log("no prev")
+            newBlockIndex = $(el).next().data("index")
+        }
+        //console.log(newBlockIndex)
+        $(el).attr("data-index", newBlockIndex)
+        $(el).data("index", newBlockIndex)
+        //console.log($(el).data("index")) 
+        //console.log(findParent($(el)))
+        if (getTraceInfo(el, target)?.trace) {
+            let traceNum = getTraceInfo(el, target).trace
+            $(el).attr("data-trac", parseInt(traceNum))
+        }
+
+        // test if this placement is valid for automatic mode
+        if (mode == 'automatic') {
+            let sourceRow = $(source).data("row")
+            let sourceColumn = $(source).data("index")
+            let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
+            let row = $(target).data("row")
+            let trueRow = treeToRows(parse(bracketedSentence))[row]
+            let trac = $(el).attr("data-trac") || $(el).data("trac")
+            let dest =  $(`#${destID}`).attr("data-dest") ||  $(`#${destID}`).data("dest")
+            ++stepsUsed
+            console.log(trac, dest, $(el).attr("data-trac"), $(`#${destID}`).attr("data-dest"), typeof $(el).data("trac"), typeof $(`#${destID}`).data("dest"))
+            console.log(treeToRows(parse(bracketedSentence)))
+            // trueRow.some(x => ((x.constituent === constituent)
+            // && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))
+            // && 
+            if (trac && (trac == dest)) {
+                console.log(trac, dest)
+                updateIndicesAfterTrace(el)
+                ++positivePoint
+                $(el).addClass("traced")
+                $(`#${destID}`).addClass("traced")
+            } else {
+                $(el).remove()
+            }
+            updatePoints()
+            // finishAlarm()
+        }
+        $(el).find(".labelDiv").text("?").css({ "cursor": "pointer" }).on({
+            "click": generateMenu
+        })
+
+        leftPad($(target))
+        // drawLines() 
+        resizeWindow()
+        return true
     })
 }
 
