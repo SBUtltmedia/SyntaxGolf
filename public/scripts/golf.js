@@ -88,7 +88,7 @@ function loadMenu(problemJSON) {
         // let flag = $("<svg/>", {style:"width:2rem", xmlns:"http://www.w3.org/2000/svg"})
         // .append($("<use/>", {"xlink:href":"images/flag.svg#flag", "style":`--color_fill: ${progress}`}))
         let flag = `<div class=problemList> 
-        <svg style="width:1.2rem;" viewBox="0 0 208 334">
+        <svg style="width:3rem;" viewBox="0 0 208 334">
         <use xlink:href="images/flag.svg#flag" id="${i}" style="--color_fill: ${flagColor};"></use>
         </svg>
         <div style="font-size:1em">hole ${i + 1} <br/> Par: ${par}</div>
@@ -96,11 +96,15 @@ function loadMenu(problemJSON) {
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem))))
         $(menu).append([link])
+        if (flagColor == "yellow") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
+    enableNext();
 }
 
 // functions
-
+function enableNext() {
+    $(".disable").first().removeClass("disable")
+}
 // ready function
 function loadSentence(sentenceID) {
     bracketedSentence = problemJSON.holes[sentenceID].expression
@@ -1008,11 +1012,12 @@ function finishAlarm() {
         problemJSON.holes[currentSentenceID].progress = problemJSON.holes[currentSentenceID].progress || [] 
         problemJSON.holes[currentSentenceID].progress.push(stepsUsed);
         let bestStep = bestProgress(problemJSON.holes[currentSentenceID].progress)
-        let {flagColor, alarm} = getProgressSignal(bestStep, good, minStep)
+        let {flagColor, complete, alarm} = getProgressSignal(bestStep, good, minStep)
         console.log(bestStep, good, minStep)
         color = `--color_fill: ${flagColor};`
         console.log(color)
         $(`#${currentSentenceID}`).attr("style", color)
+        if (!(flagColor == "red")) {enableNext()}
 	let URL = `/saveData?problem_id=${parseQuery(window.location.search).problem_id}`
 	if (window.location.href.includes("stonybrook")) {
         URL= `problem_set.php?id=${parseQuery(window.location.search).problem_id}`
@@ -1041,6 +1046,12 @@ function getProgressSignal(stepUsed, weightedPar, minStep) {
     else if (stepUsed <= weightedPar) {
         return {"flagColor":"green", "alarm":"Wonderful! You got par!"}
     }
+}
+
+function globalScore(problemJSON) {
+    let numberOfHoles = problemJSON.holes.length();
+    let scoreAccummelated = 0;
+    problemJSON.holes.forEach()
 }
 
 function getNumberOfRows(bracketedSentence) {
@@ -1234,7 +1245,7 @@ function getMinStep(bracketedSentence) {
 }
 
 function getParFactor(minStep){
-    return Math.max(minStep*0.1, 1)
+    return Math.max(minStep*0.2, 2)
 }
 
 function bestProgress(progress) {

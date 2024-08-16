@@ -1,10 +1,11 @@
 {
     "holes": [
         {
+            "expression": "(NP (D the) (N Alice))",
+            "note": "t2"
+        },
+        {
             "expression": "(CP (NP who ^1) (VP (V see) (NP who ^t1)))",
-            "progress": [
-                12
-            ],
             "note": "t1"
         },
         {
@@ -17,13 +18,6 @@
         {
             "expression": "(S (NP Alice) (VP (V chased) (NP (D the) (N rabbit))))",
             "note": "r/a"
-        },
-        {
-            "expression": "(NP (D the) (N Alice))",
-            "progress": [
-                6
-            ],
-            "note": "t2"
         }
     ],
     "description": "This is a course for learning Syntax."
