@@ -98,6 +98,7 @@ function loadMenu(problemJSON) {
         $(menu).append([link])
         if (flagColor == "yellow") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
+    // let numberOfTryHoles = problemJSON.holes.length() - $(".disable").length();
     enableNext();
 }
 
@@ -1049,9 +1050,10 @@ function getProgressSignal(stepUsed, weightedPar, minStep) {
 }
 
 function globalScore(problemJSON) {
-    let numberOfHoles = problemJSON.holes.length();
-    let scoreAccummelated = 0;
+    let numberOfTryHoles = problemJSON.holes.length() - $(".disable").length()
+    let scoreAccumulated = 0;
     problemJSON.holes.forEach()
+    return ((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont)
 }
 
 function getNumberOfRows(bracketedSentence) {

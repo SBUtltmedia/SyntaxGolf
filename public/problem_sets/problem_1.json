@@ -1,16 +1,40 @@
 {
     "holes": [
         {
-            "expression": "(CP (NP who ^1) (C' (C did) (S (NP Lucy) (VP (V see) (NP who ^t1)))))",
-            "note": "t1"
+            "expression": "(S (N Alice) (V arrived)",
+            "note": "none"
         },
         {
-            "expression": "(S (NP Alice) (VP (V chased) (NP (D the) (N rabbit))))",
-            "note": "r/a"
+            "expression": "(S (NP (Det a) (N woman))(V arrived)))",
+            "note": "none"
         },
         {
-            "expression": "(CP (AP (A' (A where)) ^1) (C' (C did ^2) (TP (NP (N' (N you))) (T' (T did ^t2) (VP (V' (V get) (AP (A' (A where)) ^t1) (DP (D' (D that) (NP (N' (N hat)))))))))))",
-            "note": "t2"
+            "expression": "(S (N John) (VP (V saw) (N Alice)))",
+            "note": "none"
+        },
+        {
+            "expression": "(S (NP (Det a) (N man)) (VP (V saw) (N Alice)))",
+            "note": "none"
+        },
+        {
+            "expression": "(S (N John) (VP (V saw) (NP (Det a) (N woman))) ",
+            "note": "none"
+        },
+        {
+            "expression": "(S (N John) (VP (V likes) (N sweets)))",
+            "note": "none"
+        },
+        {
+            "expression": "(S (N John) (VP (V likes) (NP (det those) (N sweets)))",
+            "note": "none"
+        },
+        {
+            "expression": "(S (N Alice) (VP (V gave) (N John) (N sweets)",
+            "note": "none"
+        },
+        {
+            "expression": "(S (NP (Det a) (N woman)) (VP (V gave) (NP (Det a) (N man)) (NP (det those) (N sweets)))",
+            "note": "none"
         }
     ],
     "description": "This is a course for learning Syntax."

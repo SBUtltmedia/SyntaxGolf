@@ -80,11 +80,15 @@
             position: absolute;
             border-radius: 0.1rem;
             background-color: var(--highlight);
-            width: 89%;
+            width: 100%;
+            padding: 0 !important;
+            margin: 1rem 0 0 0;
+            bottom: 0;
+
         }
 
         #menu div {
-            padding: 1rem;
+            padding: 0.5rem;
 
 
         }
@@ -105,6 +109,7 @@
             text-decoration: none;
             color: var(--word);
             font-size: 2rem;
+            padding: 3rem 0 3rem 0 !important;
         }
 
         #lineContainer {
@@ -266,7 +271,7 @@
             width: 20%;
             height: 100%;
             color:#eeeeee;
-            font-size: 3rem;
+            font-size: 2.8rem;
             border-width: 0 .1em 0 0;
             border-color: #eee;
             border-style: solid;
