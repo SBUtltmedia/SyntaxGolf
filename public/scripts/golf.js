@@ -812,7 +812,7 @@ function treeAtNode(blockID, PCM) {
 function showProblem(event, problem) {
     console.log(event.clientY)
     $("#problemInfo").remove()
-    $(menu).append($("<div/>", { id: "problemInfo", html: bracketToString(problem.expression) }))
+    $(menu).append($("<div/>", { id: "problemInfo", html: bracketToString(problem.note)}))
 }
 
 function treeToString(tree) {
@@ -1013,12 +1013,13 @@ function finishAlarm() {
         problemJSON.holes[currentSentenceID].progress = problemJSON.holes[currentSentenceID].progress || [] 
         problemJSON.holes[currentSentenceID].progress.push(stepsUsed);
         let bestStep = bestProgress(problemJSON.holes[currentSentenceID].progress)
-        let {flagColor, complete, alarm} = getProgressSignal(bestStep, good, minStep)
+        let {flagColor, alarm} = getProgressSignal(bestStep,minStep)
         console.log(bestStep, good, minStep)
         color = `--color_fill: ${flagColor};`
         console.log(color)
         $(`#${currentSentenceID}`).attr("style", color)
         if (!(flagColor == "red")) {enableNext()}
+        makeModal(alarm)
 	let URL = `/saveData?problem_id=${parseQuery(window.location.search).problem_id}`
 	if (window.location.href.includes("stonybrook")) {
         URL= `problem_set.php?id=${parseQuery(window.location.search).problem_id}`
@@ -1039,14 +1040,30 @@ function getProgressSignal(stepUsed, weightedPar, minStep) {
         return {"flagColor":"yellow", "alarm":""}
     }
     if (stepUsed == minStep) {
-        return {"flagColor":"blue", "alarm":"Wonderful! You got it perfect!"}
+        return {"flagColor":"blue", "alarm":{ div: ["Wonderful! You got it perfect!", `You completed this level in ${stepUsed} attempts.`], button: ["Try Level Again", "Go To Next Level"] }}
     }
     else if (stepUsed > weightedPar) {
-        return {"flagColor":"red", "alarm":"On the right track! But you took too many steps!"}
+        return {"flagColor":"red", "alarm": { div: [`You did not complete this level under par: ${stepUsed} attempts.`], button: ["Try Level Again"] }}
     }
     else if (stepUsed <= weightedPar) {
-        return {"flagColor":"green", "alarm":"Wonderful! You got par!"}
+        return {"flagColor":"green", "alarm":{ div: ["Wonderful! You got par!", `You completed this level in ${stepUsed} attempts.`], button: ["Play Again", "g"] }}
     }
+}
+
+function makeModal(properties) {
+    document.querySelector("#dialog")?.remove();
+    let dialog = Object.assign(document.createElement("dialog"), { "id": "dialog" })
+    Object.keys(properties).forEach((prop) => {
+        properties[prop].forEach((line) => {
+            let current = Object.assign(document.createElement(prop), { "innerHTML": line })
+            current.addEventListener("click", (e) => { this.listen(e) })
+            dialog.appendChild(current)
+
+        })
+    })
+
+    document.querySelector("#screen").append(dialog);
+    dialog.show();
 }
 
 function globalScore(problemJSON) {

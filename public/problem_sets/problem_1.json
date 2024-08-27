@@ -2,40 +2,40 @@
     "holes": [
         {
             "expression": "(S (N Alice) (V arrived)",
-            "note": "none"
+            "note": "A simple sentence"
         },
         {
             "expression": "(S (NP (Det a) (N woman))(V arrived)))",
-            "note": "none"
+            "note": "Same sentence with a phrase substituted"
         },
         {
             "expression": "(S (N John) (VP (V saw) (N Alice)))",
-            "note": "none"
+            "note": "Another simple sentence"
         },
         {
             "expression": "(S (NP (Det a) (N man)) (VP (V saw) (N Alice)))",
-            "note": "none"
+            "note": "Same sentence with a phrase substituted for the subject"
         },
         {
             "expression": "(S (N John) (VP (V saw) (NP (Det a) (N woman))) ",
-            "note": "none"
+            "note": "Same sentence with a phrase substituted for the object"
         },
         {
             "expression": "(S (N John) (VP (V likes) (N sweets)))",
-            "note": "none"
+            "note": "Yet another simple sentence"
         },
         {
             "expression": "(S (N John) (VP (V likes) (NP (det those) (N sweets)))",
-            "note": "none"
+            "note": "Same sentence with a phrase substituted for the object"
         },
         {
             "expression": "(S (N Alice) (VP (V gave) (N John) (N sweets)",
-            "note": "none"
+            "note": "A slightly more complicated sentence"
         },
         {
             "expression": "(S (NP (Det a) (N woman)) (VP (V gave) (NP (Det a) (N man)) (NP (det those) (N sweets)))",
-            "note": "none"
+            "note": "Same sentence with phrase substituted for the subject, the indirect object and the direct object"
         }
     ],
-    "description": "This is a course for learning Syntax."
+    "description": "The trees that you will derive for these sentences may seem natural. But they violate the basic principle that two expressions that can be freely substituted for each other are of the same category. Why?"
 }
