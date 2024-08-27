@@ -1,0 +1,6 @@
+#<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/SyntaxGolf/public
+RewriteRule ^(.*)$ /SyntaxGolf/public/$1 [NC,L]
+#RewriteRule /SyntaxGolf/(.*)$ /SyntaxGolf/public/$1 [R=301,NC,L]
+#</IfModule>
