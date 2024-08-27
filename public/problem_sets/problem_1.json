@@ -5,7 +5,7 @@
             "note": "A simple sentence"
         },
         {
-            "expression": "(S (NP (Det a) (N woman))(V arrived)))",
+            "expression": "(S (NP (Det a) (N woman)) (V arrived)))",
             "note": "Same sentence with a phrase substituted"
         },
         {

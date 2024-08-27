@@ -82,9 +82,9 @@
             background-color: var(--highlight);
             width: 100%;
             padding: 0 !important;
-            margin: 1rem 0 0 0;
             bottom: 0;
-
+            text-align: center;
+            justify-content: center;
         }
 
         #menu div {

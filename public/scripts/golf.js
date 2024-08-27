@@ -18,7 +18,8 @@ let startingSentence = parseQuery(window.location.search).string
 // || "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
 if (startingSentence) {
 startingSentence = startingSentence.replaceAll("[", "(").replaceAll("]", ")");
-startingSentence = startingSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ')
+startingSentence = startingSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ');
+startingSentence = startingSentence.replaceAll(")(", ") (");
 }
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence
@@ -96,7 +97,7 @@ function loadMenu(problemJSON) {
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem))))
         $(menu).append([link])
-        if (flagColor == "yellow") {$(`#${i}`).parent().parent().parent().addClass("disable")}
+        if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
     // let numberOfTryHoles = problemJSON.holes.length() - $(".disable").length();
     enableNext();
@@ -644,7 +645,7 @@ function generateMenu(e) {
 
     $(this).css({ "cursor": "auto"})
 
-    let labels = ["N", "V", "P", "Adj", "Adv", "D", "C", "T", "S"]
+    let labels = ["N", "V", "P", "Adj", "Adv", "Det", "C", "T", "S"]
 
     let typeMenu = $("<div/>", { class: "typeMenu" }).append(
         [$("<div/>", { class: "typeItem", html: "'" }), $("<div/>", { class: "typeItem", html: "P" })])
@@ -812,7 +813,10 @@ function treeAtNode(blockID, PCM) {
 function showProblem(event, problem) {
     console.log(event.clientY)
     $("#problemInfo").remove()
-    $(menu).append($("<div/>", { id: "problemInfo", html: bracketToString(problem.note)}))
+    let problemInfo = `
+    ${bracketToString(problem.expression)} <hr/> ${problem.note} 
+    `
+    $(menu).append($("<div/>", { id: "problemInfo", html: problemInfo}))
 }
 
 function treeToString(tree) {
@@ -1013,13 +1017,14 @@ function finishAlarm() {
         problemJSON.holes[currentSentenceID].progress = problemJSON.holes[currentSentenceID].progress || [] 
         problemJSON.holes[currentSentenceID].progress.push(stepsUsed);
         let bestStep = bestProgress(problemJSON.holes[currentSentenceID].progress)
-        let {flagColor, alarm} = getProgressSignal(bestStep,minStep)
+        let {flagColor, alarm} = getProgressSignal(bestStep,good,minStep)
         console.log(bestStep, good, minStep)
         color = `--color_fill: ${flagColor};`
         console.log(color)
         $(`#${currentSentenceID}`).attr("style", color)
-        if (!(flagColor == "red")) {enableNext()}
-        makeModal(alarm)
+        enableNext()
+        console.log(globalScore(problemJSON))
+        // makeModal(alarm)
 	let URL = `/saveData?problem_id=${parseQuery(window.location.search).problem_id}`
 	if (window.location.href.includes("stonybrook")) {
         URL= `problem_set.php?id=${parseQuery(window.location.search).problem_id}`
@@ -1037,7 +1042,7 @@ function finishAlarm() {
 function getProgressSignal(stepUsed, weightedPar, minStep) {
     if (stepUsed == undefined) {
         // problemJSON.holes[currentSentenceID].progress = []
-        return {"flagColor":"yellow", "alarm":""}
+        return {"flagColor":"white", "alarm":""}
     }
     if (stepUsed == minStep) {
         return {"flagColor":"blue", "alarm":{ div: ["Wonderful! You got it perfect!", `You completed this level in ${stepUsed} attempts.`], button: ["Try Level Again", "Go To Next Level"] }}
@@ -1067,10 +1072,23 @@ function makeModal(properties) {
 }
 
 function globalScore(problemJSON) {
-    let numberOfTryHoles = problemJSON.holes.length() - $(".disable").length()
-    let scoreAccumulated = 0;
-    problemJSON.holes.forEach()
-    return ((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont)
+    let numberOfHoles = problemJSON.holes.length
+    let scores = 0
+    let score
+    problemJSON.holes.forEach((hole) => {
+        bracketedSentence = hole.expression
+        min = getMinStep(bracketedSentence)
+        minestStep = Math.min(hole.progress)
+        max = min * Math.max(minStep*3, 8)
+        range = max - min;
+        x = 1 - (minestStep - min)/range
+        score = Math.ceil(1/Math.pow((x-1.1),2)) || 0
+        scores = scores + score
+        console.log(score)
+    })
+
+    globalS = scores/numberOfHoles
+    return globalS
 }
 
 function getNumberOfRows(bracketedSentence) {
