@@ -9,7 +9,9 @@ if(!$json){
 $json=file_get_contents("./problem_sets/problem_1.json");
 }
 print($json);
+print("hi")
 }
 else{
+    print("hello")
 print_r($_POST);
 }
