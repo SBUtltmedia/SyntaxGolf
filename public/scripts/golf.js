@@ -20,6 +20,7 @@ if (startingSentence) {
 startingSentence = startingSentence.replaceAll("[", "(").replaceAll("]", ")");
 startingSentence = startingSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ');
 startingSentence = startingSentence.replaceAll(")(", ") (");
+startingSentence = startingSentence.replaceAll("(det ", "(Det ");
 }
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence
@@ -1078,13 +1079,14 @@ function globalScore(problemJSON) {
     problemJSON.holes.forEach((hole) => {
         bracketedSentence = hole.expression
         min = getMinStep(bracketedSentence)
-        minestStep = Math.min(hole.progress)
-        max = min * Math.max(minStep*3, 8)
+        if (hole.progress[0] == undefined) {return "error"}
+        minestStep = hole.progress[0]
+        max = Math.max(min*3, 8)
         range = max - min;
         x = 1 - (minestStep - min)/range
         score = Math.ceil(1/Math.pow((x-1.1),2)) || 0
         scores = scores + score
-        console.log(score)
+        console.log(min, minestStep, max, score)
     })
 
     globalS = scores/numberOfHoles
