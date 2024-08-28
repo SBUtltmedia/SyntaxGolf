@@ -1290,6 +1290,6 @@ function getParFactor(minStep){
 }
 
 function bestProgress(progress) {
-    let sortedProgress = progress.toSort(function(a, b){return a - b})
+    let sortedProgress = progress.toSorted(function(a, b){return a - b})
     return sortedProgress[0]
 }
