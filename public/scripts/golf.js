@@ -1027,9 +1027,10 @@ function finishAlarm() {
         enableNext()
         console.log(globalScore(problemJSON))
         // makeModal(alarm)
-	let URL = `/saveData?problem_id=${parseQuery(window.location.search).problem_id}`
+    let problem_id = parseQuery(window.location.search).problem_id || 1
+	let URL = `/saveData?problem_id=${problem_id}`
 	if (window.location.href.includes("stonybrook")) {
-        URL= `problem_set.php?id=${parseQuery(window.location.search).problem_id}`
+        URL= `problem_set.php?id=${problem_id}`
     	}
         fetch(URL,
             {
