@@ -84,7 +84,6 @@
             padding: 0 !important;
             bottom: 0;
             text-align: center;
-            justify-content: center;
         }
 
         #menu div {
@@ -226,6 +225,11 @@
         .typeItem:hover,
         .button:hover {
             cursor: pointer;
+        }
+
+        .typeItem {
+            border-color: var(--line);
+            border-radius: 1rem;
         }
 
         .button {
