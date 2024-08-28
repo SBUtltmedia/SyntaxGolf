@@ -1014,11 +1014,12 @@ function finishAlarm() {
     console.log(positivePoint,minStep)
     let good = parseInt(minStep+parFactor)
     if (positivePoint == minStep) {
-        
-        problemJSON.holes[currentSentenceID].progress = problemJSON.holes[currentSentenceID].progress || [] 
-        problemJSON.holes[currentSentenceID].progress.push(stepsUsed);
-        let bestStep = bestProgress(problemJSON.holes[currentSentenceID].progress)
-        let {flagColor, alarm} = getProgressSignal(bestStep,good,minStep)
+        let PJ=problemJSON.holes[currentSentenceID];
+        PJ.progress = PJ.progress || [] 
+        PJ.progress.push(stepsUsed);
+       console.log(JSON.stringify(PJ),stepsUsed)
+	let bestStep = bestProgress(PJ.progress)
+	 let {flagColor, alarm} = getProgressSignal(bestStep,good,minStep)
         console.log(bestStep, good, minStep)
         color = `--color_fill: ${flagColor};`
         console.log(color)
@@ -1079,9 +1080,9 @@ function globalScore(problemJSON) {
     problemJSON.holes.forEach((hole) => {
         bracketedSentence = hole.expression
         min = getMinStep(bracketedSentence)
-	let minStep = hole?.progress?.shift() || 0
-        //if (hole.progress[0] == undefined) {return "error"}
-        minStep = hole.progress[0]
+	let minStep=0;
+	if (hole.progress)
+	{minStep=hole.progress[0]}
         max = Math.max(min*3, 8)
         range = max - min;
         x = 1 - (minStep - min)/range
