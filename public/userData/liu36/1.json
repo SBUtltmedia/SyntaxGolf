@@ -4,7 +4,8 @@
       "expression": "(S (N Alice) (V arrived)",
       "note": "A simple sentence",
       "progress": [
-        6
+        6,
+        5
       ]
     },
     {
