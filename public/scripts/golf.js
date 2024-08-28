@@ -1079,14 +1079,15 @@ function globalScore(problemJSON) {
     problemJSON.holes.forEach((hole) => {
         bracketedSentence = hole.expression
         min = getMinStep(bracketedSentence)
-        if (hole.progress[0] == undefined) {return "error"}
-        minestStep = hole.progress[0]
+	let minStep = hole?.progress?.shift() || 0
+        //if (hole.progress[0] == undefined) {return "error"}
+        minStep = hole.progress[0]
         max = Math.max(min*3, 8)
         range = max - min;
-        x = 1 - (minestStep - min)/range
+        x = 1 - (minStep - min)/range
         score = Math.ceil(1/Math.pow((x-1.1),2)) || 0
         scores = scores + score
-        console.log(min, minestStep, max, score)
+        console.log(min, minStep, max, score)
     })
 
     globalS = scores/numberOfHoles
