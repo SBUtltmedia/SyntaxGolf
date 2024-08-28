@@ -1,5 +1,5 @@
 <?php
-if($_POST){
+if(!$_POST){
 $id=$_GET['id'];
 if(isset($_SESSION['mail'])){
 list($user,$other)=explode("@",$_SESSION['mail']);
