@@ -229,7 +229,7 @@
 
         .typeItem {
             border-color: var(--line);
-            border-radius: 1rem;
+            border: 0.1rem solid;
         }
 
         .button {
