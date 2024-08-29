@@ -110,6 +110,7 @@ function enableNext() {
 }
 // ready function
 function loadSentence(sentenceID) {
+    sentJSON(problemJSON, sentenceID)
     bracketedSentence = problemJSON.holes[sentenceID].expression
     currentSentenceID = sentenceID
     $("#sentenceContainer").data("bracketedSentence", bracketedSentence)
@@ -1028,14 +1029,18 @@ function finishAlarm() {
         console.log(globalScore(problemJSON))
         // makeModal(alarm)
     let problem_id = parseQuery(window.location.search).problem_id || 1
-	let URL = `/saveData?problem_id=${problem_id}`
+	sentJSON(problemJSON, problem_id)
+}
+
+function sentJSON(json, id) {
+	let URL = `/saveData?problem_id=${id}`
 	if (window.location.href.includes("stonybrook")) {
-        URL= `problem_set.php?id=${problem_id}`
+        URL= `problem_set.php?id=${id}`
     	}
         fetch(URL,
             {
                 method: "POST",
-                body: JSON.stringify(problemJSON, null, 2)
+                body: JSON.stringify(json, null, 2)
             })
             // .then(function (res) { return res.json(); })
             // .then(function (data) { alert(JSON.stringify(data)) })
