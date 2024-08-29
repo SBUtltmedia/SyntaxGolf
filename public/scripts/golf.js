@@ -1030,7 +1030,7 @@ function finishAlarm() {
         // makeModal(alarm)
     let problem_id = parseQuery(window.location.search).problem_id || 1
 	sentJSON(problemJSON, problem_id)
-}
+}}
 
 function sentJSON(json, id) {
 	let URL = `/saveData?problem_id=${id}`
@@ -1044,7 +1044,6 @@ function sentJSON(json, id) {
             })
             // .then(function (res) { return res.json(); })
             // .then(function (data) { alert(JSON.stringify(data)) })
-    }
 }
 
 function getProgressSignal(stepUsed, weightedPar, minStep) {
