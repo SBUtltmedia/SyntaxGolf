@@ -3,7 +3,7 @@ let foundation = "#problemConstituent"
 let menu = "#menu"
 let wrongAnswers = [];
 //let sentence = "Mary had a little lamb" // default sentence but can be replaced by input
-
+JSON_API({foundation}, 22,"POST")
 function parseQuery(queryString) {
     var query = {};
     var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
@@ -41,15 +41,8 @@ $(document).ready(init)
 
 function init() {
     let problem_id = parseQuery(window.location.search).problem_id || 1
-    let URL = `problem_set/?problem_id=${problem_id}`
-    if (window.location.href.includes("github.io")) {
-        URL = `problem_sets/problem_${problem_id}.json`
-    }
-    if (window.location.href.includes("stonybrook")) {
-	URL= `problem_set.php?id=${problem_id}`	
-    }
-    fetch(new Request(URL))
-        .then((response) => response.json())
+   
+JSON_API()
         .then((data) => {
             problemJSON = data
             if (startingSentence) {
@@ -57,6 +50,7 @@ function init() {
                 problemJSON.holes = [problemJSON.holes[0]]
                 problemJSON.description = "tests"
             }
+           // sendJSON(problemJSON, 1)
             loadMenu(problemJSON)
             loadSentence(0)
         })
@@ -110,7 +104,7 @@ function enableNext() {
 }
 // ready function
 function loadSentence(sentenceID) {
-    sentJSON(problemJSON, sentenceID)
+  
     bracketedSentence = problemJSON.holes[sentenceID].expression
     currentSentenceID = sentenceID
     $("#sentenceContainer").data("bracketedSentence", bracketedSentence)
@@ -1029,21 +1023,24 @@ function finishAlarm() {
         console.log(globalScore(problemJSON))
         // makeModal(alarm)
     let problem_id = parseQuery(window.location.search).problem_id || 1
-	sentJSON(problemJSON, problem_id)
+	JSON_API(problemJSON, problem_id).then(console.log)
 }}
 
-function sentJSON(json, id) {
+function JSON_API(json={}, id=1,method="GET") {
+    let payload={method}
+    if(method=="POST"){
+    var data = new FormData();
+    data.append( "json", JSON.stringify( json ) );
+    payload.body=data;
+
+    }
 	let URL = `/saveData?problem_id=${id}`
 	if (window.location.href.includes("stonybrook")) {
         URL= `problem_set.php?id=${id}`
     	}
-        fetch(URL,
-            {
-                method: "POST",
-                body: JSON.stringify(json, null, 2)
-            })
-            // .then(function (res) { return res.json(); })
-            // .then(function (data) { alert(JSON.stringify(data)) })
+       return fetch(URL,payload)
+             .then(function (res) { return res.json(); })
+            .then(function (data) { return data })
 }
 
 function getProgressSignal(stepUsed, weightedPar, minStep) {

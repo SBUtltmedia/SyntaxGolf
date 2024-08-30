@@ -1,16 +1,30 @@
 <?php
-if(!$_POST){
+$user="dummyUser";
 $id=$_GET['id'];
+$file="./problem_sets/problem_$id.json"
 if(isset($_SESSION['mail'])){
-list($user,$other)=explode("@",$_SESSION['mail']);
-$json=file_get_contents("./data/$user/$id.json");
+    list($user,$other)=explode("@",$_SESSION['mail']);
+    $checkFile=  "./data/$user/$id.json";
+    if(!file_exists($checkFile)){
+    mkdir(dirname($path), 0755, true);
+    }
+    else{
+        $file=$checkFile;
+    }
 }
-if(!$json){
-$json=file_get_contents("./problem_sets/problem_1.json");
-}
-print($json);
+
+  
+if($_POST["json"] && isset($_SESSION['mail']) ){
+   file_put_contents($file,$_POST["json"]);
+
+   print($_POST["json"]);
 }
 else{
-    print("hello");
-print_r($_POST);
+  
+  
+
+    $json=file_get_contents($file);
+    
+    print($json);
+
 }
