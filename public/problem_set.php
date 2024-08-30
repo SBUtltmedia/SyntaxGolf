@@ -1,7 +1,8 @@
 <?php
+session_start();
 $user="dummyUser";
 $id=$_GET['id'];
-$file="./problem_sets/problem_$id.json"
+$file="./problem_sets/problem_$id.json";
 if(isset($_SESSION['mail'])){
     list($user,$other)=explode("@",$_SESSION['mail']);
     $checkFile=  "./data/$user/$id.json";
@@ -14,7 +15,7 @@ if(isset($_SESSION['mail'])){
 }
 
   
-if($_POST["json"] && isset($_SESSION['mail']) ){
+if(isset($_POST["json"]) && isset($_SESSION['mail']) ){
    file_put_contents($file,$_POST["json"]);
 
    print($_POST["json"]);

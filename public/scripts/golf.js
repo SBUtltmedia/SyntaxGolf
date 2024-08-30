@@ -3,7 +3,7 @@ let foundation = "#problemConstituent"
 let menu = "#menu"
 let wrongAnswers = [];
 //let sentence = "Mary had a little lamb" // default sentence but can be replaced by input
-JSON_API({foundation}, 22,"POST")
+
 function parseQuery(queryString) {
     var query = {};
     var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
@@ -1023,7 +1023,8 @@ function finishAlarm() {
         console.log(globalScore(problemJSON))
         // makeModal(alarm)
     let problem_id = parseQuery(window.location.search).problem_id || 1
-	JSON_API(problemJSON, problem_id).then(console.log)
+	JSON_API(problemJSON, problem_id,"POST").then(console.log)
+    
 }}
 
 function JSON_API(json={}, id=1,method="GET") {
