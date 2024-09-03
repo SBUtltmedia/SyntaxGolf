@@ -29,7 +29,7 @@
             "note": "Same sentence with a phrase substituted for the object"
         },
         {
-            "expression": "(S (N Alice) (VP (V gave) (N John) (N sweets)",
+            "expression": "(S (N Alice) (VP (V gave) (N John) (N sweets)))",
             "note": "A slightly more complicated sentence"
         },
         {

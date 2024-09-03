@@ -16,12 +16,6 @@ function parseQuery(queryString) {
 }
 let startingSentence = parseQuery(window.location.search).string 
 // || "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
-if (startingSentence) {
-startingSentence = startingSentence.replaceAll("[", "(").replaceAll("]", ")");
-startingSentence = startingSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ');
-startingSentence = startingSentence.replaceAll(")(", ") (");
-startingSentence = startingSentence.replaceAll("(det ", "(Det ");
-}
 //let sentence = treeToString(parse(bracketedSentence))
 let sentence
 let mode = parseQuery(window.location.search).mode || 'automatic'
@@ -106,6 +100,12 @@ function enableNext() {
 function loadSentence(sentenceID) {
   
     bracketedSentence = problemJSON.holes[sentenceID].expression
+    if (bracketedSentence) {
+        bracketedSentence = bracketedSentence.replaceAll("[", "(").replaceAll("]", ")");
+        bracketedSentence = bracketedSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ');
+        bracketedSentence = bracketedSentence.replaceAll(")(", ") (");
+        bracketedSentence = bracketedSentence.replaceAll("(det ", "(Det ");
+        }
     currentSentenceID = sentenceID
     $("#sentenceContainer").data("bracketedSentence", bracketedSentence)
     stepsUsed = 0
@@ -1024,7 +1024,7 @@ function finishAlarm() {
         // makeModal(alarm)
     let problem_id = parseQuery(window.location.search).problem_id || 1
 	if(ses != null){
-        ses.grade= globalScore(problemJSON);  
+        ses.grade= globalScore(problemJSON)/100;  
         console.log(ses)
         postLTI(ses,"du"); 
     }
