@@ -1020,7 +1020,7 @@ function finishAlarm() {
         console.log(color)
         $(`#${currentSentenceID}`).attr("style", color)
         if (PJ.progress.length == 1) {enableNext()}
-        console.log(globalScore(problemJSON))
+        console.log(problemJSON)
         // makeModal(alarm)
     let problem_id = parseQuery(window.location.search).problem_id || 1
 	JSON_API(problemJSON, problem_id,"POST").then(console.log)
