@@ -35,7 +35,7 @@ $(document).ready(init)
 
 function init() {
     let problem_id = parseQuery(window.location.search).problem_id || 1
-   
+    
 JSON_API()
         .then((data) => {
             problemJSON = data
@@ -1041,7 +1041,11 @@ function JSON_API(json={}, id=1,method="GET") {
     payload.body=data;
 
     }
-	let URL = `/saveData?problem_id=${id}`
+    let problem_id = parseQuery(window.location.search).problem_id || 1
+	let URL = `problem_set/?problem_id=${problem_id}`
+    if (window.location.href.includes("github.io")) {
+        URL = `problem_sets/problem_${problem_id}.json`
+    }
 	if (window.location.href.includes("stonybrook")) {
         URL= `problem_set.php?id=${id}`
     	}
