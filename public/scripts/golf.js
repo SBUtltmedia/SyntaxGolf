@@ -46,6 +46,7 @@ JSON_API()
            // sendJSON(problemJSON, 1)
             loadMenu(problemJSON)
             loadSentence(0)
+            intro()
         })
 }
 
@@ -140,6 +141,9 @@ function loadSentence(sentenceID) {
         }
     })
     setUpDrake();
+}
+
+function intro() {
     introJs().setOptions({
         steps: [{
             intro: problemJSON.description

@@ -76,6 +76,14 @@
             animation: 0.5s forwards alternate animateWrong;
         }
 
+        .introjs-tooltip{
+            background-color: var(--highlight);
+        }
+
+        .introjs-helperLayer {
+            background: transparent;
+        }
+
         #problemInfo {
             position: absolute;
             border-radius: 0.1rem;
