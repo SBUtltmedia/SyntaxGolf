@@ -175,7 +175,7 @@ function intro() {
       })
     window.addEventListener('load', ()=> {
         var doneTour = localStorage.getItem('doneTour') === 'yeah!';
-        if (doneTour) return console.log("finish");
+        if (doneTour) {return console.log("finish")};
     })
     intro.start();
 }

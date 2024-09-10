@@ -76,9 +76,18 @@
             animation: 0.5s forwards alternate animateWrong;
         }
 
-        a.introjs-button.introjs-nextbutton.introjs-fullbutton{
+        a.introjs-button.introjs-nextbutton{
             background-color: red;
+            background-image: none;
+            text-shadow:none;
+            color: var(--word);
         }
+
+        .introjs-tooltiptext {
+            font-size:2.7rem;
+        }
+
+        a.menu_links { cursor: pointer; }
 
         .introjs-tooltip{
             background-color: var(--highlight);
@@ -280,6 +289,7 @@
             display: flex;
             justify-content: center;
             /* margin: 0 10em 0 10em; */
+            cursor: pointer;
         }
 
         #menu {
