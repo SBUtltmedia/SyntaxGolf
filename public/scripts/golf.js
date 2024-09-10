@@ -84,7 +84,7 @@ function loadMenu(problemJSON) {
         <div style="font-size:1em">hole ${i + 1} <br/> Par: ${par}</div>
         </div>`
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})` }).append(flag)
-            .on("mouseover", ((e) => (showProblem(e, problem))))
+            .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
         $(menu).append([link])
         if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
@@ -857,7 +857,7 @@ function showProblem(event, problem) {
     let problemInfo = `
     ${bracketToString(problem.expression)} <hr/> ${problem.note} 
     `
-    $(menu).append($("<div/>", { id: "problemInfo", html: problemInfo}))
+    $(stage).append($("<div/>", { id: "problemInfo", html: problemInfo}))
 }
 
 function treeToString(tree) {
