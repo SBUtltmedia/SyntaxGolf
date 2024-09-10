@@ -30,7 +30,6 @@ let drake
 //console.log(bracketedSentence)
 //console.log(sentence)
 
-
 $(document).ready(init)
 
 function init() {
@@ -141,6 +140,23 @@ function loadSentence(sentenceID) {
         }
     })
     setUpDrake();
+    introJs().setOptions({
+        steps: [{
+            intro: problemJSON.description
+        }, {
+            element: document.querySelector('#menu'),
+            intro: "You choose different hole and see progress by looking at the color of flag, with white for incomplete, red for do it again, green for finished but could be better, and blue for wonderful",
+            position: 'right'
+        }, {
+            element: document.querySelector('#problemConstituent'),
+            intro: "You will create Syntax tree here",
+            position: 'left'
+        }, {
+            element: document.querySelector('#row_id_0'),
+            intro: "You will parse from here",
+            position: 'left'
+        }]
+    }).start();
 }
 
 function getTraceInfo(el, source){
@@ -273,7 +289,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
         $("<div/>", { class: "labelDiv", html: "?" }).on({
             "click": generateMenu
         }).css({ "cursor": "pointer" }),
-        $("<div/>", { class: "constituentContainer" }).append(sentenceArray)])
+        $("<div/>", { class: "constituentContainer", id:`row_id_${row}` }).append(sentenceArray)])
 
     // dragula([...document.getElementsByClassName("container")], {
     //     moves: function (el, container, handle) {
