@@ -33,6 +33,7 @@ let drake
 $(document).ready(init)
 
 function init() {
+    console.log(localStorage)
     let problem_id = parseQuery(window.location.search).problem_id || 1
     
 JSON_API()
