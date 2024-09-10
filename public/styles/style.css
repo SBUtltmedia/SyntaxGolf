@@ -97,6 +97,13 @@
             background: transparent;
         }
 
+        #tourButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 3rem;
+        }
+
         #problemInfo {
             position: absolute;
             border-radius: 0.1rem;

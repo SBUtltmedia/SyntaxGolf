@@ -33,7 +33,6 @@ let drake
 $(document).ready(init)
 
 function init() {
-    console.log(localStorage)
     let problem_id = parseQuery(window.location.search).problem_id || 1
     
 JSON_API()
@@ -89,6 +88,8 @@ function loadMenu(problemJSON) {
         $(menu).append([link])
         if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
+    let button = `<img src="images/questionmark.svg" alt="Tour" id="tourButton"></img>`
+    $(stage).append(button)
     // let numberOfTryHoles = problemJSON.holes.length() - $(".disable").length();
     enableNext();
 }
@@ -99,7 +100,6 @@ function enableNext() {
 }
 // ready function
 function loadSentence(sentenceID) {
-  
     bracketedSentence = problemJSON.holes[sentenceID].expression
     if (bracketedSentence) {
         bracketedSentence = bracketedSentence.replaceAll("[", "(").replaceAll("]", ")");
@@ -169,7 +169,11 @@ function intro() {
             element: document.querySelector('#label_row_0'),
             intro: "You will choose part of the sentence that this line belong to",
             position: 'left'
-        }]
+        }, {
+            element: '#tourButton',
+            intro: 'This button can be clicked to view this tour again at any time. You can click anywhere outside thie popup to begin.',
+            position:'bottom'
+          }]
     })
     intro.oncomplete(function() {
         localStorage.setItem('doneTour', 'yeah!');
@@ -179,7 +183,9 @@ function intro() {
         if (doneTour) {return console.log("finish")};
         intro.start();
     })
-
+    $("#tourButton").click(function(){
+        intro.start();
+      });
 }
 
 function getTraceInfo(el, source){
