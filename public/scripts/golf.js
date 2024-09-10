@@ -152,12 +152,20 @@ function intro() {
             intro: "You choose different hole and see progress by looking at the color of flag, with white for incomplete, red for do it again, green for finished but could be better, and blue for wonderful",
             position: 'right'
         }, {
+            element: document.querySelector('#points'),
+            intro: "You will see your progress of each question here. Par means how many steps a good grade will take, but you need to take below the Par to get 100% for each question. Steps refer to how many steps you already took.",
+            position: 'left'
+        }, {
             element: document.querySelector('#problemConstituent'),
             intro: "You will create Syntax tree here",
             position: 'left'
         }, {
             element: document.querySelector('#row_id_0'),
             intro: "You will parse from here",
+            position: 'left'
+        }, {
+            element: document.querySelector('#label_row_0'),
+            intro: "You will choose part of the sentence that this line belong to",
             position: 'left'
         }]
     }).start();
@@ -290,7 +298,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
         }
 
     }).append([
-        $("<div/>", { class: "labelDiv", html: "?" }).on({
+        $("<div/>", { class: "labelDiv", id: `label_row_${row}`, html: "?" }).on({
             "click": generateMenu
         }).css({ "cursor": "pointer" }),
         $("<div/>", { class: "constituentContainer", id:`row_id_${row}` }).append(sentenceArray)])
