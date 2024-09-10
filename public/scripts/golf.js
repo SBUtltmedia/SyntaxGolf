@@ -168,7 +168,15 @@ function intro() {
             intro: "You will choose part of the sentence that this line belong to",
             position: 'left'
         }]
-    }).start();
+    })
+    introJs().oncomplete(function() {
+        localStorage.setItem('doneTour', 'yeah!');
+      })
+    window.addEventListener('load', ()=> {
+        var doneTour = localStorage.getItem('doneTour') === 'yeah!';
+        if (doneTour) return;
+        introJs().start();
+    })
 }
 
 function getTraceInfo(el, source){

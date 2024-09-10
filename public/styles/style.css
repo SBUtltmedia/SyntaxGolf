@@ -76,6 +76,10 @@
             animation: 0.5s forwards alternate animateWrong;
         }
 
+        a.introjs-button.introjs-nextbutton.introjs-fullbutton{
+            background-color: red;
+        }
+
         .introjs-tooltip{
             background-color: var(--highlight);
         }
