@@ -162,11 +162,11 @@ function intro() {
             intro: "You will create Syntax tree here",
             position: 'left'
         }, {
-            element: document.querySelector('#row_id_0'),
+            element: '#row_id_0',
             intro: "You will parse from here",
             position: 'left'
         }, {
-            element: document.querySelector('#label_row_0'),
+            element: '#label_row_0',
             intro: "You will choose part of the sentence that this line belong to",
             position: 'left'
         }, {
