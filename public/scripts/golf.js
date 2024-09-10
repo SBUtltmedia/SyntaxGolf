@@ -144,7 +144,8 @@ function loadSentence(sentenceID) {
 }
 
 function intro() {
-    introJs().setOptions({
+    var intro = introJs();
+    intro.setOptions({
         steps: [{
             intro: problemJSON.description
         }, {
@@ -169,14 +170,14 @@ function intro() {
             position: 'left'
         }]
     })
-    introJs().oncomplete(function() {
+    intro.oncomplete(function() {
         localStorage.setItem('doneTour', 'yeah!');
       })
     window.addEventListener('load', ()=> {
         var doneTour = localStorage.getItem('doneTour') === 'yeah!';
-        if (doneTour) return;
-        introJs().start();
+        if (doneTour) return console.log("finish");
     })
+    intro.start();
 }
 
 function getTraceInfo(el, source){
