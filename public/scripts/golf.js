@@ -199,7 +199,9 @@ function getTraceInfo(el, source){
 function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
     // sentence is a string of words
     // row is the number of the div to put these words into
+    console.log(parse(bracketedSentence))
     // index is the position in the row, the initial index of the first word
+    console.log(treeToString(parse(bracketedSentence)))
     if (!($(`[data-row="${row}"]`)).length) {
         // create row div if it doesn't exist
         $(foundation).append($("<div/>", { "data-row": row, class: "container" }))
@@ -211,6 +213,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
     let sentenceArray = [] // will fill with words from sentence then be converted to string
     sentence.split(' ').forEach((word, index) => {
         // console.log(blockIndex)
+        console.log(index)
         let wordContainer = $("<div/>", { html: word, "data-uid": Math.random(), "data-index": index, class: "wordContainer" }).on({
 
             mousemove: function (e) {
@@ -237,7 +240,6 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
 
     // get unique ID from timestamp
     let blockID = Date.now();
-
     let blockDiv = $("<div/>", { id: blockID, "data-index": blockIndex, class: "block" }).on({
 
         mousedown: function (e) {
@@ -259,7 +261,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                 // }
 
                 blockIndex = $(`#${blockID}`).data("index") // in case it was updated
-
+                console.log(selectedJQ)
                 let constituent = sentenceArrayToSentence(selectedWords)
                 newIndex = blockIndex + parseInt(selectedWords[0].dataset.index)
                 //console.log(constituent, blockIndex, newIndex)
@@ -272,6 +274,8 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                     let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
                     let childRow = treeToRows(parse(bracketedSentence))[row + 2]
                     console.log(trueRow)
+                    // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
+                    // x.constituent === constituent
                     if (trueRow && trueRow.some(x => ((x.constituent === constituent)
                         && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
                         makeSelectable(constituent, row + 1, newIndex, bracketedSentence);
@@ -475,7 +479,7 @@ function setUpDrake() {
         //console.log(newBlockIndex)
         $(el).attr("data-index", newBlockIndex)
         $(el).data("index", newBlockIndex)
-        //console.log($(el).data("index")) 
+        // console.log($(el).data("index")) 
         //console.log(findParent($(el)))
         if (getTraceInfo(el, target)?.trace) {
             let traceNum = getTraceInfo(el, target).trace
@@ -680,9 +684,10 @@ function generateMenu(e) {
     //console.log(column)
 
     // only used in auto mode
+    // item.constituent === constituent & 
     let reference = treeToRows(parse(bracketedSentence))[row].find(item => item.constituent === constituent & item.column === column)
     let goldlabel = reference?.label
-    //console.log(goldlabel)
+    // console.log(reference, goldlabel, constituent, column, $(this).parent().data())
 
     $(this).css({ "cursor": "auto"})
 
@@ -726,6 +731,7 @@ function generateMenu(e) {
             let label = $(this).html() + symbol
             // replace ? with label and close menu
             ++stepsUsed
+            console.log(label,goldlabel)
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
                 removeMenu($(this).parent().parent(), label)
                 ++positivePoint

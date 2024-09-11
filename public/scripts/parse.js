@@ -73,17 +73,21 @@ sentence.split("").forEach((char,index)=>{
 if(tree.children.length==0)
 {
     let [g,...text]=  sentence.split(" ")
-    if (text.length > 1) {
-        text.pop() // make this only affect ^ using includes
-        // this causes a bug for parse(getTree())
-        // which is not used now but may be in the future
-        console.log("pop")
-    }
+
+    text = text.filter(word=>!word.includes("^"))   
+         console.log(text)
+    // if (text.length > 1) {
+    //     // text.pop() // make this only affect ^ using includes
+    //     // this causes a bug for parse(getTree())
+    //     // which is not used now but may be in the future
+    //     console.log("pop")
+    // }
+   // text = text.split("^")[0]
     // console.log(text)
-    tree.children=text.join(" ").split(")")[0]
-    // console.log(tree) 
+    tree.children=text.join(" ").split(")")[0]
+    // console.log(tree.children)
 }
-// console.log(tree)
+ console.log(tree)
 return tree
 }
 

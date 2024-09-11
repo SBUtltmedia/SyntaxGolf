@@ -5,7 +5,6 @@ function bracketToString(bracket) {
     let slices = []
     //console.log(matches)
     matches.forEach((m) => {
-        //console.log(m)
         let rightIndex = m[0].length + m.index
         let parenCount = 1
         for (i = rightIndex-2; i > 0; i--) {
@@ -24,16 +23,21 @@ function bracketToString(bracket) {
         }
     })
     slices.forEach((slice) => {
-        //console.log(slice)
+        // console.log(slice)
         bracket = bracket.replace(slice, '')
     })
-    //console.log(bracket)
+    // console.log(bracket)
 
-    return bracket
+    fixedBracket = bracket
     .replace(/\([^ ]* /g, '') // get rid of left parenthesis and label
-    .replace(/\)/g, '') // get rid of right parenthesis
     .replace(/  +/g, ' ') // get rid of extra white spaces
-    .replace(/ \^[^ ]*/g, '') // get rid of carets
+    .replace(/ \^[^ ]*/g, ')') // get rid of carets
+    .replace(/ $/g, '') // get rid of space at end of line
+    fixedBracket = fixedBracket.replace(/\s+/g, "&#x2000;").replaceAll(")&#x2000;", ") ").replaceAll("&#x2000;)", ")")
+    // console.log(fixedBracket)
+
+    return fixedBracket
+    .replace(/\)/g, '') // get rid of right parenthesis
     .replace(/ $/g, '') // get rid of space at end of line
 
 }
