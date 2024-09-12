@@ -1105,7 +1105,7 @@ function JSON_API(json={}, id=1,method="GET") {
         URL = `problem_sets/problem_${problem_id}.json`
     }
 	if (window.location.href.includes("stonybrook")) {
-        URL= `problem_set.php?id=${id}`
+        URL= `problem_set.php?id=${problem_id}`
     	}
        return fetch(URL,payload)
              .then(function (res) { return res.json(); })
