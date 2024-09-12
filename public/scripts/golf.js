@@ -86,12 +86,12 @@ function loadMenu(problemJSON) {
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
         $(menu).append([link])
-        if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
+        // if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
     let button = `<img src="images/questionmark.svg" alt="Tour" id="tourButton"></img>`
     $(stage).append(button)
     // let numberOfTryHoles = problemJSON.holes.length() - $(".disable").length();
-    enableNext();
+    // enableNext();
 }
 
 // functions
@@ -691,7 +691,7 @@ function generateMenu(e) {
 
     $(this).css({ "cursor": "auto"})
 
-    let labels = ["N", "V", "P", "Adj", "Adv", "Det", "C", "T", "S"]
+    let labels = ["N", "V", "P", "Adj", "Adv", "Det", "C", "T", "S", "Deg"]
 
     let typeMenu = $("<div/>", { class: "typeMenu" }).append(
         [$("<div/>", { class: "typeItem", html: "'" }), $("<div/>", { class: "typeItem", html: "P" })])
@@ -1070,7 +1070,7 @@ function finishAlarm() {
         color = `--color_fill: ${flagColor};`
         console.log(color)
         $(`#${currentSentenceID}`).attr("style", color)
-        if (PJ.progress.length == 1) {enableNext()}
+        // if (PJ.progress.length == 1) {enableNext()}
    
         // makeModal(alarm)
     let problem_id = parseQuery(window.location.search).problem_id || 1
