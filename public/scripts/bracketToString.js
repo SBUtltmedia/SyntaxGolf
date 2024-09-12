@@ -34,6 +34,7 @@ function bracketToString(bracket) {
     .replace(/ \^[^ ]*/g, ')') // get rid of carets
     .replace(/ $/g, '') // get rid of space at end of line
 
+    console.log(fixedBracket)
     let word = parseQuery(window.location.search).word || false;
     if (word) {
         fixedBracket = fixedBracket.replace(/\s+/g, "").replaceAll(")&#x2000;", "").replaceAll("&#x2000;)", "")
