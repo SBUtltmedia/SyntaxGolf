@@ -195,6 +195,10 @@
 
         }
 
+        .noPad {
+            padding-left: 0 !important; 
+        }
+
         #sentenceContainer .labelDiv {
             /* position:absolute; */
             /* margin: auto; */

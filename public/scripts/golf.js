@@ -212,9 +212,13 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
 
     let sentenceArray = [] // will fill with words from sentence then be converted to string
     sentence.split(' ').forEach((word, index) => {
-        // console.log(blockIndex)
-        console.log(index)
-        let wordContainer = $("<div/>", { html: word, "data-uid": Math.random(), "data-index": index, class: "wordContainer" }).on({
+        let noPad
+        if (word.includes(`'`))
+            {
+                noPad = "noPad"
+            }
+
+        let wordContainer = $("<div/>", { html: word, "data-uid": Math.random(), "data-index": index, class: `wordContainer ${noPad}` }).on({
 
             mousemove: function (e) {
                 if (e.buttons == 1) {
@@ -314,6 +318,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                 //resizeWindow()
                 // redraw SVG based on new child
                 // drawLines();
+                // $("div:contains('s)").css({"padding-left":0})
                 resizeWindow()
             }
         }
@@ -363,7 +368,8 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
 
     //leftPad(rowJQ)
     leftPadAll()
-
+    console.log($(".noPad").prev().html())
+    $(".noPad").prev().css({"padding-right":0})
 }
 
 function selected(el) {
@@ -860,8 +866,9 @@ function treeAtNode(blockID, PCM) {
 function showProblem(event, problem) {
     console.log(event.clientY)
     $("#problemInfo").remove()
+    let note = problem.note || "";
     let problemInfo = `
-    ${bracketToString(problem.expression)} <hr/> ${problem.note} 
+    ${bracketToString(problem.expression)} <hr/>   ${note} 
     `
     $(stage).append($("<div/>", { id: "problemInfo", html: problemInfo}))
 }

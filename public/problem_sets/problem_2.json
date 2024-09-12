@@ -1,7 +1,7 @@
 {
     "holes": [
         {
-            "expression": "(S (NP (N Alice)) (VP (V is) (NP (Det a) (N' (N friend) (PP (P of) (NP (N Peter))))))",
+            "expression": "(S (NP (N Alice)) (VP (V is) (NP (Det a) (N' (N friend) (PP (P of) (NP (N Peter)))))))",
             "notes": ""
         },
         {
@@ -25,17 +25,17 @@
             "notes": ""
         },
         {
-            "expression": "(S (NP (DetP (NP (N Bill)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook))))",
+            "expression": "(S (NP (DetP (NP (N Bill)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook)))))",
             "notes": ""
         },
         {
-            "expression": "(S (NP (DetP (NP (Det the) (N boy)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook))))",
+            "expression": "(S (NP (DetP (NP (Det the) (N boy)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook)))))",
             "notes": ""
         },
         {
-            "expression": "(S (NP (DetP (NP (DetP (NP (N Bill's)) (Det 's)) (N mother)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook))))",
+            "expression": "(S (NP (DetP (NP (DetP (NP (N Bill)) (Det 's)) (N mother)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook)))))",
             "notes": ""
         }
     ],
-    "description": "description"
+    "description": "This course explores English NPs with various structures."
 }

@@ -25,7 +25,7 @@
             "notes": ""
         },
         {
-            "expression": "(S (NP (Det her) [N party)) (VP (V lasted) (NP (Det five) (N hours))))",
+            "expression": "(S (NP (Det her) (N party)) (VP (V lasted) (NP (Det five) (N hours))))",
             "notes": ""
         },
         {
@@ -33,9 +33,9 @@
             "notes": ""
         },
         {
-            "expression": "(S (NP (N Jack)) (VP (V finds) (NP (Det her) (N jokes)) (AdjP (Deg extremely) (Adj funny)))",
+            "expression": "(S (NP (N Jack)) (VP (V finds) (NP (Det her) (N jokes)) (AdjP (Deg extremely) (Adj funny)))))",
             "notes": ""
         }
     ],
-    "description": "description"
+    "description": "This course explores English VPs with various structures."
 }

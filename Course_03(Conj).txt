@@ -1,10 +1,8 @@
-Conjoined phrases
-
 (S (S (NP (N Herbert)) (VP (V broke) (NP (Det the) (N machine)))) (C and) (S (NP (N Max)) (VP (V repaired) (NP (N it)))))
 
 (S (NP (N Fernandez))(VP (VP (V drank)(NP (N brandy)))e (C and) (VP (V smoked)(NP (N cheroots))))) 
 
-(S (NP (N I)) (VP (V (S (NP (N I)) (VP (V (V spotted) (C and) (V photographed)) (NP (Det a) (N (N Baltimore) (N oriole))))) (NP (Det a) (N (N Baltimore) (N oriole)))))
+(S (NP (N I)) (VP (V (S (NP (N I)) (VP (V (V spotted) (C and) (V photographed)) (NP (Det a) (N (N Baltimore) (N oriole))))) (NP (Det a) (N (N Baltimore) (N oriole))))))
 
 (S (NP (N Max))(VP (V felt) (AdjP (AdjP (Deg rather) (Adj nervous)) (C but) (AdjP (Deg very) (Adj excited)))))
 
@@ -16,7 +14,7 @@ Conjoined phrases
 
 (S (NP (Det (Det two) (C or) (Det three)) (N clowns)) (VP (V (V juggled) (C and) (V tumbled)))) 
 
-(S (NP (NP (Det two) (N clowns)) (C and) (NP (Det three) (N acrobats)))
-(VP (V ran) (PP (P around) (NP (Det the) (N ring)))
+(S (NP (NP (Det two) (N clowns)) (C and) (NP (Det three) (N acrobats))))
+(VP (V ran) (PP (P around) (NP (Det the) (N ring))))
 
 

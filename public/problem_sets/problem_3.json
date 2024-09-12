@@ -1,1 +1,45 @@
-{"holes": [{"expression": "Conjoined phrases", "notes": ""}, {"expression": "(S (S (NP (N Herbert)) (VP (V broke) (NP (Det the) (N machine)))) (C and) (S (NP (N Max)) (VP (V repaired) (NP (N it)))))", "notes": ""}, {"expression": "(S (NP (N Fernandez))(VP (VP (V drank)(NP (N brandy)))e (C and) (VP (V smoked)(NP (N cheroots)))))", "notes": ""}, {"expression": "(S (NP (N I)) (VP (V (S (NP (N I)) (VP (V (V spotted) (C and) (V photographed)) (NP (Det a) (N (N Baltimore) (N oriole))))) (NP (Det a) (N (N Baltimore) (N oriole)))))", "notes": ""}, {"expression": "(S (NP (N Max))(VP (V felt) (AdjP (AdjP (Deg rather) (Adj nervous)) (C but) (AdjP (Deg very) (Adj excited)))))", "notes": ""}, {"expression": "(S (NP (N She))(VP (V spoke) (AdvP (AdvP (Adj slowly)) (C and) (AdvP (Deg very) (Adv carefully)))))", "notes": ""}, {"expression": "(S (NP (N William)) (VP (V bakes) (NP (N cakes)) (PP (PP (P for) (NP (N Millie))) (C and) (PP (PP (P for) (NP (N me))))))", "notes": ""}, {"expression": "(S (NP (N William)) (VP (V bakes) (NP (N cakes)) (PP (P for) (NP (NP (N Millie))) (C and) (NP (N me))))))", "notes": ""}, {"expression": "(S (NP (Det (Det two) (C or) (Det three)) (N clowns)) (VP (V (V juggled) (C and) (V tumbled))))", "notes": ""}, {"expression": "(S (NP (NP (Det two) (N clowns)) (C and) (NP (Det three) (N acrobats)))", "notes": ""}, {"expression": "(VP (V ran) (PP (P around) (NP (Det the) (N ring)))", "notes": ""}], "description": "description"}
+{
+    "holes": [
+        {
+            "expression": "(S (S (NP (N Herbert)) (VP (V broke) (NP (Det the) (N machine)))) (C and) (S (NP (N Max)) (VP (V repaired) (NP (N it)))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (N Fernandez))(VP (VP (V drank)(NP (N brandy)))e (C and) (VP (V smoked)(NP (N cheroots)))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (N I)) (VP (V (S (NP (N I)) (VP (V (V spotted) (C and) (V photographed)) (NP (Det a) (N (N Baltimore) (N oriole))))) (NP (Det a) (N (N Baltimore) (N oriole))))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (N Max))(VP (V felt) (AdjP (AdjP (Deg rather) (Adj nervous)) (C but) (AdjP (Deg very) (Adj excited)))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (N She))(VP (V spoke) (AdvP (AdvP (Adj slowly)) (C and) (AdvP (Deg very) (Adv carefully)))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (N William)) (VP (V bakes) (NP (N cakes)) (PP (PP (P for) (NP (N Millie))) (C and) (PP (PP (P for) (NP (N me))))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (N William)) (VP (V bakes) (NP (N cakes)) (PP (P for) (NP (NP (N Millie))) (C and) (NP (N me))))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (Det (Det two) (C or) (Det three)) (N clowns)) (VP (V (V juggled) (C and) (V tumbled))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (NP (Det two) (N clowns)) (C and) (NP (Det three) (N acrobats))))",
+            "notes": ""
+        },
+        {
+            "expression": "(VP (V ran) (PP (P around) (NP (Det the) (N ring))))",
+            "notes": ""
+        }
+    ],
+    "description": "This course explores the various kinds of phrases that we can conjoin in English."
+}
