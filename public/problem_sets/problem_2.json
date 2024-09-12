@@ -1,1 +1,41 @@
-{"holes": [{"expression": "English NPs", "notes": ""}, {"expression": "(S (NP (N Alice)) (VP (V is) (NP (Det a) (N' (N friend) (PP (P of) (NP (N Peter))))))", "notes": ""}, {"expression": "(S (NP (Det the) (N' (N queen) (PP (P of) (NP (N Belgium))))) (VP (V is) (NP (N Mathilde))))", "notes": ""}, {"expression": "(S (NP (Det the) (N' (N expedition) (PP (P to) (NP (Det the) (N Moon))))) (VP (V returned)))", "notes": ""}, {"expression": "(S (NP (N Alice)) (VP (V performed) (NP (Det two) (N' (N operations) (PP (P on) (NP (Det her) (N patient)))))))", "notes": ""}, {"expression": "(S (NP (N' (N pictures) (PP (P of) (NP (N Alice))))) (VP (V resemble) (NP (N her))))", "notes": ""}, {"expression": "(S (NP (DetP (NP (N Alice)) (Det 's)) (N pictures)) (VP (V resemble) (NP (N her))))", "notes": ""}, {"expression": "(S (NP (DetP (NP (N Bill)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook))))", "notes": ""}, {"expression": "(S (NP (DetP (NP (Det the) (N boy)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook))))", "notes": ""}, {"expression": "(S (NP (DetP (NP (DetP (NP (N Bill's)) (Det 's)) (N mother)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook))))", "notes": ""}], "description": "description"}
+{
+    "holes": [
+        {
+            "expression": "(S (NP (N Alice)) (VP (V is) (NP (Det a) (N' (N friend) (PP (P of) (NP (N Peter))))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (Det the) (N' (N queen) (PP (P of) (NP (N Belgium))))) (VP (V is) (NP (N Mathilde))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (Det the) (N' (N expedition) (PP (P to) (NP (Det the) (N Moon))))) (VP (V returned)))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (N Alice)) (VP (V performed) (NP (Det two) (N' (N operations) (PP (P on) (NP (Det her) (N patient)))))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (N' (N pictures) (PP (P of) (NP (N Alice))))) (VP (V resemble) (NP (N her))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (DetP (NP (N Alice)) (Det 's)) (N pictures)) (VP (V resemble) (NP (N her))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (DetP (NP (N Bill)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (DetP (NP (Det the) (N boy)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook))))",
+            "notes": ""
+        },
+        {
+            "expression": "(S (NP (DetP (NP (DetP (NP (N Bill's)) (Det 's)) (N mother)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook))))",
+            "notes": ""
+        }
+    ],
+    "description": "description"
+}
