@@ -45,6 +45,7 @@ function bracketToString(bracket) {
     return fixedBracket
     .replace(/\)/g, '') // get rid of right parenthesis
     .replace(/ $/g, '') // get rid of space at end of line
+    // .replaceAll(" 's", "&#8203;'s").replaceAll("&#x2000;'s", "&#8203;'s") //get rid of space before 's
 
 }
 
