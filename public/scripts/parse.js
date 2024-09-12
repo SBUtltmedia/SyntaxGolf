@@ -82,6 +82,8 @@ if(tree.children.length==0)
     //     // this causes a bug for parse(getTree())
     //     // which is not used now but may be in the future
     //     console.log("pop")
+    }else{
+        tree.children=text.join("").split(")")[0]
     }
    // text = text.split("^")[0]
     // console.log(text)
