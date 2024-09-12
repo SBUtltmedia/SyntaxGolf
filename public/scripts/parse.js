@@ -76,15 +76,15 @@ if(tree.children.length==0)
 
     text = text.filter(word=>!word.includes("^"))   
          console.log(text)
-    // if (text.length > 1) {
+    if (text.length > 1) {
+        tree.children=text.join(" ").split(")")[0]
     //     // text.pop() // make this only affect ^ using includes
     //     // this causes a bug for parse(getTree())
     //     // which is not used now but may be in the future
     //     console.log("pop")
-    // }
+    }
    // text = text.split("^")[0]
     // console.log(text)
-    tree.children=text.join(" ").split(")")[0]
     // console.log(tree.children)
 }
  console.log(tree)
