@@ -5,11 +5,11 @@
             "notes": ""
         },
         {
-            "expression": "(S (NP (N Fernandez))(VP (VP (V drank)(NP (N brandy)))) (C and) (VP (V smoked)(NP (N cheroots))))",
+            "expression": "(S (NP (N Fernandez))(VP (VP (V drank)(NP (N brandy))) (C and) (VP (V smoked)(NP (N cheroots)))))",
             "notes": ""
         },
         {
-            "expression": "(S (NP (N I)) (VP (V (S (NP (N I)) (VP (V (V spotted) (C and) (V photographed)) (NP (Det a) (N (N Baltimore) (N oriole))))) (NP (Det a) (N (N Baltimore) (N oriole))))))",
+            "expression": "(S (NP (N I)) (VP (V (V spotted) (C and) (V photographed)) (NP (Det a) (N (N Baltimore) (N oriole)))))",
             "notes": ""
         },
         {
@@ -17,15 +17,15 @@
             "notes": ""
         },
         {
-            "expression": "(S (NP (N She))(VP (V spoke) (AdvP (AdvP (Adj slowly)) (C and) (AdvP (Deg very) (Adv carefully)))))",
+            "expression": "(S (NP (N She))(VP (V spoke) (AdvP (AdvP (Adv slowly)) (C and) (AdvP (Deg very) (Adv carefully)))))",
             "notes": ""
         },
         {
-            "expression": "(S (NP (N William)) (VP (V bakes) (NP (N cakes)) (PP (PP (P for) (NP (N Millie))) (C and) (PP (PP (P for) (NP (N me))))))",
+            "expression": "(S (NP (N William)) (VP (V bakes) (NP (N cakes)) (PP (PP (P for) (NP (N Millie))) (C and) (PP (P for) (NP (N me))))))",
             "notes": ""
         },
         {
-            "expression": "(S (NP (N William)) (VP (V bakes) (NP (N cakes)) (PP (P for) (NP (NP (N Millie))) (C and) (NP (N me))))))",
+            "expression": "(S (NP (N William)) (VP (V bakes) (NP (N cakes)) (PP (P for) (NP (NP (N Millie)) (C and) (NP (N me))))))",
             "notes": ""
         },
         {
