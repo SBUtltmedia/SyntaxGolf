@@ -33,11 +33,7 @@
             "notes": ""
         },
         {
-            "expression": "(S (NP (NP (Det two) (N clowns)) (C and) (NP (Det three) (N acrobats))))",
-            "notes": ""
-        },
-        {
-            "expression": "(VP (V ran) (PP (P around) (NP (Det the) (N ring))))",
+            "expression": "(S (NP (NP (Det two) (N clowns)) (C and) (NP (Det three) (N acrobats))) (VP (V ran) (PP (P around) (NP (Det the) (N ring)))))",
             "notes": ""
         }
     ],
