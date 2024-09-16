@@ -1176,7 +1176,7 @@ function leftPad(rowJQ) {
     let firstItem = rowJQ.children().first()
     firstItem.addClass("first")
     let firstIndex = firstItem.data("index")
-    rowJQ.css({ "padding-left": `${firstIndex * 10}em` })
+    rowJQ.css({ "padding-left": `${firstIndex * 7}em` })
 
     rowJQ.children().css({ "padding-left": 0 })
     //rowJQ.prepend($("<img/>"))
