@@ -4,16 +4,6 @@ let menu = "#menu"
 let wrongAnswers = [];
 //let sentence = "Mary had a little lamb" // default sentence but can be replaced by input
 
-function parseQuery(queryString) {
-    var query = {};
-    var pairs = (queryString[0] === '?' ? queryString.substr(1) : queryString).split('&');
-    for (var i = 0; i < pairs.length; i++) {
-        var pair = pairs[i].split('=');
-        query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '').replaceAll("+", " ");
-    }
-    //console.log(query)
-    return query;
-}
 let startingSentence = parseQuery(window.location.search).string 
 // || "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
 //let sentence = treeToString(parse(bracketedSentence))
@@ -1081,7 +1071,8 @@ function finishAlarm() {
    
         // makeModal(alarm)
     let problem_id = parseQuery(window.location.search).problem_id || 1
-	if(ses != null){
+    
+	if (!(typeof ses=== "undefined")){
         ses.grade= globalScore(problemJSON)/100;  
         console.log(ses)
         postLTI(ses,"du"); 
@@ -1090,27 +1081,6 @@ function finishAlarm() {
     JSON_API(problemJSON, problem_id,"POST").then(console.log)
     
 }}
-
-function JSON_API(json={}, id=1,method="GET") {
-    let payload={method}
-    if(method=="POST"){
-    var data = new FormData();
-    data.append( "json", JSON.stringify( json ) );
-    payload.body=data;
-
-    }
-    let problem_id = parseQuery(window.location.search).problem_id || 1
-	let URL = `problem_set/?problem_id=${problem_id}`
-    if (window.location.href.includes("github.io")) {
-        URL = `problem_sets/problem_${problem_id}.json`
-    }
-	if (window.location.href.includes("stonybrook")) {
-        URL= `problem_set.php?id=${problem_id}`
-    	}
-       return fetch(URL,payload)
-             .then(function (res) { return res.json(); })
-            .then(function (data) { return data })
-}
 
 function getProgressSignal(stepUsed, weightedPar, minStep) {
     if (stepUsed == undefined) {
@@ -1176,7 +1146,7 @@ function leftPad(rowJQ) {
     let firstItem = rowJQ.children().first()
     firstItem.addClass("first")
     let firstIndex = firstItem.data("index")
-    rowJQ.css({ "padding-left": `${firstIndex * 7}em` })
+    rowJQ.css({ "padding-left": `${firstIndex * 10}em` })
 
     rowJQ.children().css({ "padding-left": 0 })
     //rowJQ.prepend($("<img/>"))

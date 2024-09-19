@@ -1,7 +1,7 @@
 {
     "holes": [
         {
-            "expression": "(S (N Alice) (V arrived)",
+            "expression": "(S (N Alice))",
             "note": "A simple sentence"
         },
         {

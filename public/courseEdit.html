@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="scripts/JSON_API.js"></script>
+    <script> 
+    document.addEventListener('DOMContentLoaded', JSON_API, { once: true });
+    let currentID = 1
+    JSON_API(undefined,currentID,undefined)
+        .then((data) => {
+            problemJSON = data
+            init(problemJSON)
+        })
+
+    function resizeInput(inputEl) {
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 3000000) + "px";
+    inputEl.style.width = Math.min(inputEl.scrollWidth, 3000000) + "px";
+    };
+        
+    function init(problemJSON) 
+{document.body.innerHTML = ""
+    document.body.append(Object.assign(document.createElement("button"),{id:"submit", innerHTML:"Submit All"})) 
+    br()
+    problemJSON.holes.forEach(hole=> {
+        let expressionArea=Object.assign(document.createElement("textArea"),{className:"expression", innerHTML:hole.expression})
+        let descArea=Object.assign(document.createElement("input"),{className: "notes",type:"text", value:hole.notes})
+        document.body.append(expressionArea)        
+        br()
+        document.body.append(descArea)
+        br()
+    });
+    document.body.append(Object.assign(document.createElement("textArea"),{className:"description",innerHTML:problemJSON.description}))
+    document.querySelectorAll("textArea").forEach(resizeInput)
+    document.getElementById("submit").addEventListener('click', submitCourse, { once: true });
+
+
+}
+function submitCourse(){
+
+    let expressions = document.querySelectorAll(".expression")
+    let allNotes =  document.querySelectorAll(".notes")
+    let description =  document.querySelector(".description")
+    let problemJSON = {description:description.value, holes:[]}
+    expressions.forEach((expression, i)=>{
+        let notes = allNotes[i]
+        problemJSON.holes[i] = {expression, notes}
+    })
+    console.log(problemJSON)
+    JSON_API(problemJSON,currentID,"POST")
+}
+function br(){
+    document.body.append(document.createElement("br"))
+}
+
+
+        </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
