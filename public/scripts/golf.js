@@ -23,9 +23,14 @@ let drake
 $(document).ready(init)
 
 function init() {
+
+    if (window.location.href.includes("localhost")){
+        fetch(`/set_NetID?netID=liu36`)
+    }
+
     let problem_id = parseQuery(window.location.search).problem_id || 1
     
-JSON_API()
+JSON_API(undefined, problem_id)
         .then((data) => {
             problemJSON = data
             if (startingSentence) {

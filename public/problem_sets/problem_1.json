@@ -1,41 +1,41 @@
 {
-    "holes": [
-        {
-            "expression": "(S (NP (N Sigmund)) (VP (V fainted)))",
-            "notes": "test"
-        },
-        {
-            "expression": "(S (NP (N Sigmund)) (VP (V spotted) (NP (Det an) (N auctioneer))))",
-            "notes": "test"
-        },
-        {
-            "expression": "(S (NP (N William)) (VP (V gave) (NP (N Millie)) (NP (Det some) (N bleach))))",
-            "notes": "test"
-        },
-        {
-            "expression": "(S (NP (N William)) (VP (V gave) (NP (Det some) (N bleach)) (PP (P to) (NP (N Millie)))))",
-            "notes": "test"
-        },
-        {
-            "expression": "(S (NP (N Teaching)) (VP (V pays) (AdvP (Adv adequately))))",
-            "notes": "test"
-        },
-        {
-            "expression": "(S (NP (N Alice)) (VP (V phrased) (NP (Det her) (N answer)) (AdvP (Adv carefully))))",
-            "notes": "test"
-        },
-        {
-            "expression": "(S (NP (Det her) (N party)) (VP (V lasted) (NP (Det five) (N hours))))",
-            "notes": "test"
-        },
-        {
-            "expression": "(S (NP (N Simon)) (VP (V lives) (PP (P in) (NP (N France)))))",
-            "notes": "test"
-        },
-        {
-            "expression": "(S (NP (N Jack)) (VP (V finds) (NP (Det her) (N jokes)) (AdjP (Deg extremely) (Adj funny))))",
-            "notes": "test"
-        }
-    ],
-    "description": "This course explores English VPs with various structures."
+  "holes": [
+    {
+      "expression": "(S (NP (N Sigmund)) (VP (V fainted)))",
+      "notes": "test"
+    },
+    {
+      "expression": "(S (NP (N Sigmund)) (VP (V spotted) (NP (Det an) (N auctioneer))))",
+      "notes": "test"
+    },
+    {
+      "expression": "(S (NP (N William)) (VP (V gave) (NP (N Millie)) (NP (Det some) (N bleach))))",
+      "notes": "test"
+    },
+    {
+      "expression": "(S (NP (N William)) (VP (V gave) (NP (Det some) (N bleach)) (PP (P to) (NP (N Millie)))))",
+      "notes": "test"
+    },
+    {
+      "expression": "(S (NP (N Teaching)) (VP (V pays) (AdvP (Adv adequately))))",
+      "notes": "test"
+    },
+    {
+      "expression": "(S (NP (N Alice)) (VP (V phrased) (NP (Det her) (N answer)) (AdvP (Adv carefully))))",
+      "notes": "test"
+    },
+    {
+      "expression": "(S (NP (Det her) (N party)) (VP (V lasted) (NP (Det five) (N hours))))",
+      "notes": "test"
+    },
+    {
+      "expression": "(S (NP (N Simon)) (VP (V lives) (PP (P in) (NP (N France)))))",
+      "notes": "test"
+    },
+    {
+      "expression": "(S (NP (N Jack)) (VP (V finds) (NP (Det her) (N jokes)) (AdjP (Deg extremely) (Adj funny))))",
+      "notes": "test"
+    }
+  ],
+  "description": "This course explores English VPs with various structures."
 }

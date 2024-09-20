@@ -3,26 +3,39 @@
 <head>
     <script src="scripts/JSON_API.js"></script>
     <script> 
-    document.addEventListener('DOMContentLoaded', JSON_API, { once: true });
-    let currentID = 1
-    JSON_API(undefined,currentID,undefined)
+    document.addEventListener('DOMContentLoaded', ()=>loadCourse(), { once: true });
+    let courseCount = 5
+
+function loadCourse(courseID=1){
+    JSON_API(undefined,courseID,undefined, "admin")
         .then((data) => {
             problemJSON = data
-            init(problemJSON)
+            init(problemJSON, courseID)
         })
+}
 
     function resizeInput(inputEl) {
     inputEl.style.height = Math.min(inputEl.scrollHeight, 3000000) + "px";
     inputEl.style.width = Math.min(inputEl.scrollWidth, 3000000) + "px";
     };
         
-    function init(problemJSON) 
+    function init(problemJSON, courseID=1) 
 {document.body.innerHTML = ""
+let select = Object.assign(document.createElement("select"),{id:"select", innerHTML:"Select from here"})
+for (i=1; i < courseCount+1; i++){
+    let option = Object.assign(document.createElement("option"),{innerHTML:`${i}`, id:`course_${i}`})
+    select.appendChild(option);
+}
+document.body.append(select);
+document.getElementById('select').options.selectedIndex = courseID-1
+document.getElementById("select").addEventListener('change', ()=>changeCourse());
     document.body.append(Object.assign(document.createElement("button"),{id:"submit", innerHTML:"Submit All"})) 
     br()
     problemJSON.holes.forEach(hole=> {
         let expressionArea=Object.assign(document.createElement("textArea"),{className:"expression", innerHTML:hole.expression})
+        console.log(expressionArea)
         let descArea=Object.assign(document.createElement("input"),{className: "notes",type:"text", value:hole.notes})
+        console.log(descArea)
         document.body.append(expressionArea)        
         br()
         document.body.append(descArea)
@@ -30,22 +43,34 @@
     });
     document.body.append(Object.assign(document.createElement("textArea"),{className:"description",innerHTML:problemJSON.description}))
     document.querySelectorAll("textArea").forEach(resizeInput)
-    document.getElementById("submit").addEventListener('click', submitCourse, { once: true });
+    document.getElementById("submit").addEventListener('click', ()=>submitCourse(courseID), { once: true });
 
 
 }
-function submitCourse(){
+function changeCourse(){
+    let courseID = document.getElementById("select").value
+    console.log(courseID);
+    loadCourse(courseID);
 
+}
+function submitCourse(courseID){
+    console.log(courseID)
     let expressions = document.querySelectorAll(".expression")
     let allNotes =  document.querySelectorAll(".notes")
     let description =  document.querySelector(".description")
-    let problemJSON = {description:description.value, holes:[]}
+    let problemJSON = {holes:[], description:description.value}
     expressions.forEach((expression, i)=>{
+        console.log(expression.innerHTML)
         let notes = allNotes[i]
-        problemJSON.holes[i] = {expression, notes}
+        problemJSON.holes[i] = {expression:expression.innerHTML, notes:notes.value}
+        // console.log(problemJSON.holes[i].value)
     })
     console.log(problemJSON)
-    JSON_API(problemJSON,currentID,"POST")
+    try {
+        JSON_API(problemJSON,courseID,"POST", "admin")
+    } catch {
+        console.error(error);
+    }
 }
 function br(){
     document.body.append(document.createElement("br"))
