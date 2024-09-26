@@ -39,3 +39,39 @@
   ],
   "description": "The trees that you will derive for these sentences may seem natural. But they violate the basic principle that two expressions that can be freely substituted for each other are of the same category. Why?"
 }
+
+(CP 
+        (NP who ^1) 
+        (C' 
+            (C did) 
+            (S 
+                (NP Lucy) 
+                (VP 
+                    (V think) 
+(CP
+        (NP who ^t1)
+        (C' 
+            (C that) 
+            (S 
+                (NP Max) 
+                (VP
+                    (V saw) 
+                    (NP who ^t1)))))))))
+
+(CP 
+        (NP who ^1) 
+        (C' 
+            (C did) 
+            (S 
+                (NP Lucy) 
+                (VP 
+                    (V think) 
+(CP
+        (NP who ^2^t1)
+        (C' 
+            (C that) 
+            (S 
+                (NP Max) 
+                (VP
+                    (V saw) 
+                    (NP who ^t2)))))))))

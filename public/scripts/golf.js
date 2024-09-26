@@ -192,6 +192,7 @@ function getTraceInfo(el, source){
 }
 
 function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
+    console.log(sentence)
     // sentence is a string of words
     // row is the number of the div to put these words into
     console.log(parse(bracketedSentence))
@@ -208,6 +209,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
     let sentenceArray = [] // will fill with words from sentence then be converted to string
     sentence.split(' ').forEach((word, index) => {
         let noPad
+        console.log(word)
         if (word.includes(`'`))
             {
                 noPad = "noPad"
@@ -245,6 +247,13 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
             let clickedID = $(this).attr("id")
 
             let selectedJQ = $(`#${clickedID} .selected`)
+            console.log($(this).prev().data("index"), $(this).prev(), $(this))
+            if ($(this).prev().attr("data-trace")!=undefined){
+                let newBlockIndex = $(this).prev().data("index")+1
+                $(this).attr("data-index", newBlockIndex)
+                $(this).data("index", newBlockIndex)
+            }
+
             // console.log()
 
             // var tmp = $("<div/>");
@@ -260,10 +269,10 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                 // }
 
                 blockIndex = $(`#${blockID}`).data("index") // in case it was updated
-                console.log(selectedJQ)
+                console.log(selectedJQ, $(`#${blockID}`))
                 let constituent = sentenceArrayToSentence(selectedWords)
                 newIndex = blockIndex + parseInt(selectedWords[0].dataset.index)
-                //console.log(constituent, blockIndex, newIndex)
+                console.log(constituent, blockIndex, newIndex, selectedWords)
 
                 // check if constituent is valid before calling recursion
                 // if in automatic checking mode
@@ -272,7 +281,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                     // parse and give steps if correct
                     let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
                     let childRow = treeToRows(parse(bracketedSentence))[row + 2]
-                    console.log(trueRow)
+                    console.log(trueRow, newIndex)
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
                     if (trueRow && trueRow.some(x => ((x.constituent === constituent)
@@ -486,6 +495,7 @@ function setUpDrake() {
             let traceNum = getTraceInfo(el, target).trace
             $(el).attr("data-trac", parseInt(traceNum))
         }
+        let traceInfo = getTraceInfo(el, target)
 
         // test if this placement is valid for automatic mode
         if (mode == 'automatic') {
@@ -493,6 +503,7 @@ function setUpDrake() {
             let sourceColumn = $(source).data("index")
             let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
             let row = $(target).data("row")
+            let index = $(el).data("index")
             let trueRow = treeToRows(parse(bracketedSentence))[row]
             let trac = $(el).attr("data-trac") || $(el).data("trac")
             let dest =  $(`#${destID}`).attr("data-dest") ||  $(`#${destID}`).data("dest")
@@ -506,8 +517,11 @@ function setUpDrake() {
                 console.log(trac, dest)
                 updateIndicesAfterTrace(el)
                 ++positivePoint
-                $(el).addClass("traced")
+                if (!(traceInfo.destination)){
+                    $(el).addClass("traced")
+                }
                 $(`#${destID}`).addClass("traced")
+                console.log($(`#${destID}`),$(el)[0],traceInfo)
             } else {
                 $(el).remove()
             }
@@ -1151,7 +1165,7 @@ function leftPad(rowJQ) {
     let firstItem = rowJQ.children().first()
     firstItem.addClass("first")
     let firstIndex = firstItem.data("index")
-    rowJQ.css({ "padding-left": `${firstIndex * 10}em` })
+    rowJQ.css({ "padding-left": `${firstIndex * 8}em` })
 
     rowJQ.children().css({ "padding-left": 0 })
     //rowJQ.prepend($("<img/>"))
@@ -1217,7 +1231,7 @@ function updateIndicesAfterTrace(trace) {
 function drawArrows() {
     // $("#lineContainer").empty()
 
-    // console.log($(`[data-trace]`), $(`[data-destination]`))
+    console.log($(`[data-trace]`), $(`[data-destination]`))
 
     // recreate defs for arrows
     var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs")

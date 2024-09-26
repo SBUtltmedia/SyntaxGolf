@@ -33,6 +33,7 @@ function JSON_API(json = {}, id = 1, method = "GET", mode = "user") {
             }
         })
         .then((data) => { return data })
+        
 }
 
 function parseQuery(queryString) {

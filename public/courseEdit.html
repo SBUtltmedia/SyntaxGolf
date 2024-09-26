@@ -35,7 +35,6 @@ document.getElementById("select").addEventListener('change', ()=>changeCourse())
         let expressionArea=Object.assign(document.createElement("textArea"),{className:"expression", innerHTML:hole.expression})
         console.log(expressionArea)
         let descArea=Object.assign(document.createElement("input"),{className: "notes",type:"text", value:hole.notes})
-        console.log(descArea)
         document.body.append(expressionArea)        
         br()
         document.body.append(descArea)
@@ -58,9 +57,10 @@ function submitCourse(courseID){
     let expressions = document.querySelectorAll(".expression")
     let allNotes =  document.querySelectorAll(".notes")
     let description =  document.querySelector(".description")
+    console.log(expressions)
     let problemJSON = {holes:[], description:description.value}
     expressions.forEach((expression, i)=>{
-        console.log(expression.innerHTML)
+        console.log(expression.value)
         let notes = allNotes[i]
         problemJSON.holes[i] = {expression:expression.innerHTML, notes:notes.value}
         // console.log(problemJSON.holes[i].value)
