@@ -207,15 +207,21 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
     }
 
     let sentenceArray = [] // will fill with words from sentence then be converted to string
+    let traceIndexOffset = 0;
+
     sentence.split(' ').forEach((word, index) => {
-        let noPad
+        let noPad =""
         console.log(word)
+        if (word == "") {
+            traceIndexOffset -=1;
+            return
+        }
         if (word.includes(`'`))
             {
                 noPad = "noPad"
             }
 
-        let wordContainer = $("<div/>", { html: word, "data-uid": Math.random(), "data-index": index, class: `wordContainer ${noPad}` }).on({
+        let wordContainer = $("<div/>", { html: word, "data-uid": Math.random(), "data-index": index+traceIndexOffset, class: `wordContainer ${noPad}` }).on({
 
             mousemove: function (e) {
                 if (e.buttons == 1) {
@@ -248,7 +254,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
 
             let selectedJQ = $(`#${clickedID} .selected`)
             console.log($(this).prev().data("index"), $(this).prev(), $(this))
-            if ($(this).prev().attr("data-trace")!=undefined){
+            if ($(this).prev().attr("data-trace")!=undefined || $(this).prev().data("index") == $(this).data("index")){
                 let newBlockIndex = $(this).prev().data("index")+1
                 $(this).attr("data-index", newBlockIndex)
                 $(this).data("index", newBlockIndex)
@@ -281,11 +287,16 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                     // parse and give steps if correct
                     let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
                     let childRow = treeToRows(parse(bracketedSentence))[row + 2]
-                    console.log(trueRow, newIndex)
+                    console.log(trueRow, newIndex, constituent)
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
-                    if (trueRow && trueRow.some(x => ((x.constituent === constituent)
-                        && (x.column === newIndex || tracePad(trueRow, x.column, newIndex))))) {
+                    if (trueRow
+                         && trueRow.some(x => {
+                            
+                            
+                            return (
+                            (x.constituent === constituent)&&
+                             (x.column === newIndex || tracePad(trueRow, x.column, newIndex)))})) {
                         makeSelectable(constituent, row + 1, newIndex, bracketedSentence);
                         selectedJQ.addClass("faded").removeClass("selected")
                         ++stepsUsed
@@ -465,6 +476,7 @@ function setUpDrake() {
     })
     drake.on("drop", (el, target, source, sibling) => {//resizeWindow()
         console.log({el, target, source, sibling})
+        // $(".gu-mirror").remove()
         if (target === null) { // dropped back where it originated
             console.log("no movement")
             return
@@ -1251,6 +1263,10 @@ function drawArrows() {
 
     // draw curves
     $(`[data-trace]`).each((i, block) => {
+        // if ($(block).hasClass(".gu-mirror")) {
+        if (block.classList.contains("gu-mirror")) {
+            return;
+        }
         console.log(i, block)
         console.log($(block).data("trace"))
         let endPoint = $(block).find(".constituentContainer")

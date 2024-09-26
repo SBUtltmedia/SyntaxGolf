@@ -75,3 +75,12 @@
                 (VP
                     (V saw) 
                     (NP who ^t2)))))))))
+
+(CP 
+        (NP who ^1) 
+            (S 
+                    (V think) 
+        (NP who ^2^t1)
+        (C' 
+                    (V saw) 
+                    (NP who ^t2))))
