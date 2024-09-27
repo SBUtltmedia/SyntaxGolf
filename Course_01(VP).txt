@@ -9,4 +9,23 @@
 (S (NP (N Simon)) (VP (V lives) (PP (P in) (NP (N France)))))
 (S (NP (N Jack)) (VP (V finds) (NP (Det her) (N jokes)) (AdjP (Deg extremely) (Adj funny))))
 
-
+(CP (NP who ^1) (S (V think) (NP who ^2^t1) (C' (V saw) (NP who ^t2)) (NP (N Alice))))
+(CP 
+        (NP who ^1) 
+            (S 
+                    (V think) 
+        (NP who ^2^t1)
+        (C' 
+                    (V saw) 
+                    (NP who ^t2))
+        (C' 
+                    (V saw))
+        (C' 
+                    (V see))))
+(CP 
+        (NP who ^1) 
+            (S 
+                    (V think) 
+                    (NP who ^t1)
+                    (C' (V saw))
+                    (C' (V see))))

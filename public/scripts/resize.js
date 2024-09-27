@@ -10,7 +10,7 @@ var stageHeight,  stageWidth;
 
 function resizeWindow() {
   var viewport =  $(window)
-  var numberOfRows = $("#menu").data("currentNumberOfRows");
+  var numberOfRows = $("#menu").attr("data-currentNumberOfRows");
   console.log(numberOfRows);
   console.log(viewport.width(),$(window).height(), $("#stage").css("height"))
 

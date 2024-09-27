@@ -103,7 +103,7 @@ function loadSentence(sentenceID) {
         bracketedSentence = bracketedSentence.replaceAll("(det ", "(Det ");
         }
     currentSentenceID = sentenceID
-    $("#sentenceContainer").data("bracketedSentence", bracketedSentence)
+    $("#sentenceContainer").attr("data-bracketedSentence", bracketedSentence)
     stepsUsed = 0
     minStep = getMinStep(bracketedSentence)
     parFactor = getParFactor(minStep)
@@ -184,9 +184,10 @@ function intro() {
 }
 
 function getTraceInfo(el, source){
-    let row = $(source).data("row")
-    let index = $(el).data("index")
+    let row = $(source).attr("data-row")
+    let index = $(el).attr("data-index")
     let rows = treeToRows(parse(bracketedSentence)) 
+    console.log(row,index, rows)
     let moveThing = rows[row].find(x => x.column == index)
     return moveThing
 }
@@ -211,6 +212,10 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
 
     sentence.split(' ').forEach((word, index) => {
         let noPad =""
+        let fudge = 0
+        // if (word == "see")  {
+        //     fudge=2
+        // }
         console.log(word)
         if (word == "") {
             traceIndexOffset -=1;
@@ -221,7 +226,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                 noPad = "noPad"
             }
 
-        let wordContainer = $("<div/>", { html: word, "data-uid": Math.random(), "data-index": index+traceIndexOffset, class: `wordContainer ${noPad}` }).on({
+        let wordContainer = $("<div/>", { html: word, "data-uid": Math.random(), "data-index": index+traceIndexOffset+fudge, class: `wordContainer ${noPad}` }).on({
 
             mousemove: function (e) {
                 if (e.buttons == 1) {
@@ -253,11 +258,10 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
             let clickedID = $(this).attr("id")
 
             let selectedJQ = $(`#${clickedID} .selected`)
-            console.log($(this).prev().data("index"), $(this).prev(), $(this))
-            if ($(this).prev().attr("data-trace")!=undefined || $(this).prev().data("index") == $(this).data("index")){
-                let newBlockIndex = $(this).prev().data("index")+1
+            console.log($(this).prev().attr("data-index"), $(this).prev(), $(this))
+            if ($(this).prev().attr("data-wastraced")!=undefined || $(this).prev().attr("data-index") == $(this).attr("data-index")){
+                let newBlockIndex = parseInt($(this).prev().attr("data-index"))+1
                 $(this).attr("data-index", newBlockIndex)
-                $(this).data("index", newBlockIndex)
             }
 
             // console.log()
@@ -274,10 +278,10 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                 //     selectedJQ.parent().addClass("hidden")
                 // }
 
-                blockIndex = $(`#${blockID}`).data("index") // in case it was updated
+                blockIndex = $(`#${blockID}`).attr("data-index") // in case it was updated
                 console.log(selectedJQ, $(`#${blockID}`))
                 let constituent = sentenceArrayToSentence(selectedWords)
-                newIndex = blockIndex + parseInt(selectedWords[0].dataset.index)
+                newIndex = parseInt(blockIndex) + parseInt(selectedWords[0].dataset.index)
                 console.log(constituent, blockIndex, newIndex, selectedWords)
 
                 // check if constituent is valid before calling recursion
@@ -288,6 +292,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                     let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
                     let childRow = treeToRows(parse(bracketedSentence))[row + 2]
                     console.log(trueRow, newIndex, constituent)
+                    let treeRow = treeToRows(parse(bracketedSentence))
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
                     if (trueRow
@@ -296,13 +301,15 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                             
                             return (
                             (x.constituent === constituent)&&
-                             (x.column === newIndex || tracePad(trueRow, x.column, newIndex)))})) {
+                             (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow))
+                            //   || tracePad(trueRow, x.column, newIndex)
+                            ))})) {
                         makeSelectable(constituent, row + 1, newIndex, bracketedSentence);
                         selectedJQ.addClass("faded").removeClass("selected")
                         ++stepsUsed
                         ++positivePoint
                     } else {
-                        let wrongArray = selectedJQ.toArray().map(item => $(item).data("uid")).join("")
+                        let wrongArray = selectedJQ.toArray().map(item => $(item).attr("data-uid")).join("")
 
                         if (!wrongAnswers.find((item) => item == wrongArray)) {
                             wrongAnswers.push(wrongArray)
@@ -377,7 +384,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
 
     // console.log(rowJQ.children().first())
     // let firstItem = rowJQ.children().first()
-    // let firstIndex = firstItem.data("index")
+    // let firstIndex = firstItem.attr("data-index")
     // rowJQ.children().css({"padding-left":0})
     // firstItem.css({"padding-left":`${firstIndex * 10}rem`})
 
@@ -391,11 +398,11 @@ function selected(el) {
     let thisBlockID = $(el).parent().parent().attr("id")
     let allSelected = $('.selected')
     if (allSelected.length) {
-        let firstSelected = $(allSelected[0]).data("index")
-        let lastSelected = $(allSelected.slice(-1)).data("index")
+        let firstSelected = $(allSelected[0]).attr("data-index")
+        let lastSelected = $(allSelected.slice(-1)).attr("data-index")
         for (i = firstSelected; i < lastSelected; i++) {
             $(allSelected[0]).parent().find("[data-index").each(function () {
-                if ($(this).data("index") == i) { $(this).addClass("selected") }
+                if ($(this).attr("data-index") == i) { $(this).addClass("selected") }
             })
         }
         selectedID = $($(".selected")[0]).parent().parent().attr("id")
@@ -435,7 +442,7 @@ function drawLines() {
 function traverse(callback) {
     $(foundation).children().each(function (row) {
         let rowThis = $(this)
-        let rowIndex = parseInt(rowThis.data("row"))
+        let rowIndex = parseInt(rowThis.attr("data-row"))
         if (rowIndex > 0) { // skip root node           
             rowThis.children().each(callback)
         }
@@ -447,9 +454,9 @@ function setUpDrake() {
     drake = dragula([...document.getElementsByClassName("container")], {
         isContainer: function (el) {
             console.log(el)
-            console.log($(el).data("row"))
+            console.log($(el).attr("data-row"))
             // console.log($(el).hasClass("container"))
-            if ($(el).data("row") == "0") {
+            if ($(el).attr("data-row") == "0") {
                 return false
             }
             if ($(el).hasClass("container")) {
@@ -470,8 +477,8 @@ function setUpDrake() {
     drake.on("drag", (el, source)=> {
         if (getTraceInfo(el, source).destination) {
             let destNum = getTraceInfo(el, source).destination
-            $(el).data("dest", parseInt(destNum))
-            console.log($(el).data("dest"))
+            $(el).attr("data-dest", parseInt(destNum))
+            console.log($(el).attr("data-dest"))
         }
     })
     drake.on("drop", (el, target, source, sibling) => {//resizeWindow()
@@ -484,43 +491,43 @@ function setUpDrake() {
         let destID = $(el).attr("id")
         console.log(destID)
         $(el).attr("id", Date.now()) // new distinct id
-        let index = $(`[data-trace]`).length + 1
+        let index = $(`[data-wastraced]`).length + 1
         $(`#${destID}`).attr("data-destination", index)
-        $(el).attr("data-trace", index)
-        $(el).data("trace", index)
-        //console.log($(el).prev().data("index"))
+        $(el).attr("data-wastraced", index)
+        //console.log($(el).prev().attr("data-index"))
         // updating block index
-        let newBlockIndex = $(el).data("index")
-        if ($(el).prev().data("index")) {
+        let newBlockIndex = $(el).attr("data-index")
+        if ($(el).prev()) {
             //console.log("prev exists")
-            newBlockIndex = $(el).prev().data("index") + 1
+            newBlockIndex = parseInt($(el).prev().attr("data-index")) + 1
         } else {
             //console.log("no prev")
-            newBlockIndex = $(el).next().data("index")
+            newBlockIndex = $(el).next().attr("data-index")
         }
         //console.log(newBlockIndex)
         $(el).attr("data-index", newBlockIndex)
-        $(el).data("index", newBlockIndex)
-        // console.log($(el).data("index")) 
+        // console.log($(el).attr("data-index")) 
         //console.log(findParent($(el)))
         if (getTraceInfo(el, target)?.trace) {
             let traceNum = getTraceInfo(el, target).trace
-            $(el).attr("data-trac", parseInt(traceNum))
+            $(el).attr("data-traceIndex", parseInt(traceNum))
+            console.log($(el))
         }
         let traceInfo = getTraceInfo(el, target)
+        console.log(getTraceInfo(el, target))
 
         // test if this placement is valid for automatic mode
         if (mode == 'automatic') {
-            let sourceRow = $(source).data("row")
-            let sourceColumn = $(source).data("index")
+            let sourceRow = $(source).attr("data-row")
+            let sourceColumn = $(source).attr("data-index")
             let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
-            let row = $(target).data("row")
-            let index = $(el).data("index")
+            let row = $(target).attr("data-row")
+            let index = $(el).attr("data-index")
             let trueRow = treeToRows(parse(bracketedSentence))[row]
-            let trac = $(el).attr("data-trac") || $(el).data("trac")
-            let dest =  $(`#${destID}`).attr("data-dest") ||  $(`#${destID}`).data("dest")
+            let trac = $(el).attr("data-traceIndex");
+            let dest =  $(`#${destID}`).attr("data-dest");
             ++stepsUsed
-            console.log(trac, dest, $(el).attr("data-trac"), $(`#${destID}`).attr("data-dest"), typeof $(el).data("trac"), typeof $(`#${destID}`).data("dest"))
+            console.log(trac, dest, $(el).attr("data-traceIndex"), $(`#${destID}`).attr("data-dest"), typeof $(el).attr("data-traceIndex"), typeof $(`#${destID}`).attr("data-dest"))
             console.log(treeToRows(parse(bracketedSentence)))
             // trueRow.some(x => ((x.constituent === constituent)
             // && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))
@@ -554,16 +561,17 @@ function setUpDrake() {
 function findParent(block) {
     // row is row before row of block, look there for parent
     let parent = false
-    rowIndex = parseInt(block.parent().data("row"))
+    rowIndex = parseInt(block.parent().attr("data-row"))
     row = $(`[data-row="${rowIndex - 1}"]`)
     row.children().each(function () {
-        // console.log($(this), $(this).data("index"))
-        // console.log($(block), $(block).data("index"), $(block)[0].dataset.index)
-        if ($(this).data("index") > $(block).data("index")) {
+        // console.log($(this), $(this).attr("data-index"))
+        // console.log($(block), $(block).attr("data-index"), $(block)[0].dataset.index)
+        if ($(this).attr("data-index") > $(block).attr("data-index")) {
             return false
         }
         parent = $(this)
     })
+    console.log(parent, block)
     return parent
 }
 
@@ -690,7 +698,7 @@ function getCorners(elem) {
 }
 
 function generateMenu(e) {
-    let bracketedSentence = $("#sentenceContainer").data("bracketedSentence")
+    let bracketedSentence = $("#sentenceContainer").attr("data-bracketedSentence")
     // let clickedOnQuestion = $(e.target).hasClass("labelDiv")
     if ($(e.target).text() != "?") { return }
     // if(!clickedOnQuestion) {return}
@@ -703,11 +711,11 @@ function generateMenu(e) {
     // console.log($(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" "))
     let constituent = $(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
     //console.log(constituent)
-    // console.log($(this).parent().parent().data("row"))
-    let row = $(this).parent().parent().data("row")
+    // console.log($(this).parent().parent().attr("data-row"))
+    let row = $(this).parent().parent().attr("data-row")
     // console.log($(this).parent().parent())
-    // //console.log($(this).parent().data("index"))
-    let column = $(this).parent().data("index")
+    // //console.log($(this).parent().attr("data-index"))
+    let column = $(this).parent().attr("data-index")
     //console.log(column)
 
     // only used in auto mode
@@ -848,13 +856,13 @@ function treeAtNode(blockID, PCM) {
         //console.log(leaf)
 
         // if there's an attribute indicating that the word is a trace or destination, include ^ti or ^i
-        //console.log(node.data("trace"), node.data("destination"))
-        if (node.data("trace")) {
-            leaf = leaf.replace(")", ` ^t${node.data("trace")})`)
+        //console.log(node.attr("data-wastraced"), node.attr("data-destination"))
+        if (node.attr("data-wastraced")) {
+            leaf = leaf.replace(")", ` ^t${node.attr("data-wastraced")})`)
         }
         // allow for multiple movements? 
-        if (node.data("destination")) {
-            leaf = leaf.replace(")", ` ^${node.data("destination")})`)
+        if (node.attr("data-destination")) {
+            leaf = leaf.replace(")", ` ^${node.attr("data-destination")})`)
         }
         //console.log(leaf)
 
@@ -869,13 +877,13 @@ function treeAtNode(blockID, PCM) {
         let tree = `(${label} ${children})`
 
         //console.log(tree)
-        //console.log(node.data("trace"), node.data("destination"))
+        //console.log(node.attr("data-wastraced"), node.attr("data-destination"))
 
-        if (node.data("trace")) {
-            tree = tree.replace(/\)$/, ` ^t${node.data("trace")})`)
+        if (node.attr("data-wastraced")) {
+            tree = tree.replace(/\)$/, ` ^t${node.attr("data-wastraced")})`)
         }
-        if (node.data("destination")) {
-            tree = tree.replace(/\)$/, ` ^${node.data("destination")})`)
+        if (node.attr("data-destination")) {
+            tree = tree.replace(/\)$/, ` ^${node.attr("data-destination")})`)
         }
         //console.log(tree)
 
@@ -987,15 +995,15 @@ function getRows() {
             //console.log(label)
             let constituent = $(this).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
             //console.log(constituent)
-            // structure[row].push({label:label, constituent:constituent, column:$(this).data("index")})
-            let newEntry = { label: label, constituent: constituent, column: $(this).data("index") }
-            //console.log($(this).data("index"))
-            //console.log($(this).data("destination"), $(this).data("trace"))
-            if ($(this).data("trace")) {
-                newEntry['trace'] = $(this).data("trace")
+            // structure[row].push({label:label, constituent:constituent, column:$(this).attr("data-index")})
+            let newEntry = { label: label, constituent: constituent, column: $(this).attr("data-index") }
+            //console.log($(this).attr("data-index"))
+            //console.log($(this).attr("data-destination"), $(this).attr("data-wastraced"))
+            if ($(this).attr("data-wastraced")) {
+                newEntry['trace'] = $(this).attr("data-wastraced")
             }
-            if ($(this).data("destination")) {
-                newEntry['destination'] = $(this).data("destination")
+            if ($(this).attr("data-destination")) {
+                newEntry['destination'] = $(this).attr("data-destination")
             }
             structure[row].push(newEntry)
         })
@@ -1013,7 +1021,7 @@ function isValid(tree, subtree) {
             // check for matching constituent, label, column
             if (!(tree[i].some(x => ((x.constituent === c.constituent)
                 & (c.label == "?" || x.label == c.label)
-                & (x.column === c.column || tracePad(tree[i], x.column, c.column)))))) { // or column it could have before trace changes it
+                & (x.column === c.column || tracePad(i, x.column, c.column, tree)))))) { // or column it could have before trace changes it
                 flag = false
                 // //console.log(false)
                 // is there a way to break out of the loops?
@@ -1030,33 +1038,55 @@ function isValid(tree, subtree) {
 }
 
 
-function tracePad(row, xCol, cCol) {
+function tracePad(row, xCol, cCol, tree) {
     // x and c actually have equivalent columns if the element at c's column and all elements up to x
     // are traces
     console.log(xCol, cCol)
-    console.log(row)
+    console.log(tree[row], tree)
     // console.log(row.filter(n => n.column >= cCol && n.column < xCol))
 
-    if (!row) {
-        return // avoiding error
+    if (!tree[row]) {
+        return 0// avoiding error
     }
 
     // split into variables
     // filterval
     // empty array should be false not true
-
-    let filterval = row.filter(n => n.column >= cCol && n.column < xCol)
-    console.log(filterval)
-    if (!filterval.length) { // is this how you do it?
-        console.log("empty")
-        return false
-    }
-    return filterval.every(function (n) {
-        // //console.log(typeof n.trace !== undefined)
-        console.log(n.trace)
+    let traceNum = 0
+    for (let i = row; i < tree.length; i++) {
+        let filterval = tree[i].filter(n => n.column >= 0 && n.column < xCol)
+        console.log(filterval)
+        if (!filterval.length) { // is this how you do it?
+            console.log("empty")
+        }
+        filterval.forEach(n => {
+            // //console.log(typeof n.trace !== undefined)
+            console.log(n.trace)
+            if (n.trace) {
+                traceNum += 1
+        }
         // return (typeof n.trace !== undefined)
-        return n.trace
+        // return n.trace
     })
+    }
+    console.log(traceNum)
+    // let filterval = tree.filter(n => n.column >= 0 && n.column < xCol)
+    // console.log(filterval)
+    // if (!filterval.length) { // is this how you do it?
+    //     console.log("empty")
+    //     return 0
+    // }
+    // let traceNum = 0
+    // filterval.forEach(n => {
+    //     // //console.log(typeof n.trace !== undefined)
+    //     console.log(n.trace)
+    //     if (n.trace) {
+    //         traceNum += 1
+    //     }
+    //     // return (typeof n.trace !== undefined)
+    //     // return n.trace
+    // })
+    return traceNum;
 
 }
 
@@ -1167,7 +1197,7 @@ function globalScore(problemJSON) {
 
 function getNumberOfRows(bracketedSentence) {
     let currentNumberOfRows = treeToRows(parse(bracketedSentence)).length;
-    $("#menu").data("currentNumberOfRows", currentNumberOfRows)
+    $("#menu").attr("data-currentNumberOfRows", currentNumberOfRows)
     console.log(currentNumberOfRows)
 }
 
@@ -1176,7 +1206,7 @@ function leftPad(rowJQ) {
     console.log(rowJQ)
     let firstItem = rowJQ.children().first()
     firstItem.addClass("first")
-    let firstIndex = firstItem.data("index")
+    let firstIndex = firstItem.attr("data-index")
     rowJQ.css({ "padding-left": `${firstIndex * 8}em` })
 
     rowJQ.children().css({ "padding-left": 0 })
@@ -1228,14 +1258,14 @@ function findRowInPCM(id, pcm) {
 // delete?
 
 function updateIndicesAfterTrace(trace) {
-    let j = $(trace).data("index")
+    let j = $(trace).attr("data-index")
     $("[data-index].block").filter(function () {
-        return $(this).data("index") >= j
+        return $(this).attr("data-index") >= j
     }).each((i, e) => {
         // update all except element itself and its ancestors
         if (!($(e).attr("id") === $(trace).attr("id") || isAncestor($(e), $(trace), getParentChildrenMap()))) {
-            $(e).data("index", $(e).data("index") + 1)
-            $(e).attr("data-index", $(e).data("index"))
+            $(e).attr("data-index", parseInt($(e).attr("data-index")) + 1)
+            $(e).attr("data-index", $(e).attr("data-index"))
         }
     })
 }
@@ -1243,7 +1273,7 @@ function updateIndicesAfterTrace(trace) {
 function drawArrows() {
     // $("#lineContainer").empty()
 
-    console.log($(`[data-trace]`), $(`[data-destination]`))
+    console.log($(`[data-wastraced]`), $(`[data-destination]`))
 
     // recreate defs for arrows
     var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs")
@@ -1262,17 +1292,17 @@ function drawArrows() {
     let [containerWidth, containerHeight] = getSize()
 
     // draw curves
-    $(`[data-trace]`).each((i, block) => {
+    $(`[data-wastraced]`).each((i, block) => {
         // if ($(block).hasClass(".gu-mirror")) {
         if (block.classList.contains("gu-mirror")) {
             return;
         }
         console.log(i, block)
-        console.log($(block).data("trace"))
+        console.log($(block).attr("data-wastraced"))
         let endPoint = $(block).find(".constituentContainer")
 
-        console.log($(`[data-destination=${$(block).data("trace")}]`))
-        let startPoint = $(`[data-destination=${$(block).data("trace")}]`).find(".constituentContainer")
+        console.log($(`[data-destination=${$(block).attr("data-wastraced")}]`))
+        let startPoint = $(`[data-destination=${$(block).attr("data-wastraced")}]`).find(".constituentContainer")
 
         // drawDot(endPoint)
         // drawDot(startPoint)

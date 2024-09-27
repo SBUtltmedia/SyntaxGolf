@@ -276,7 +276,7 @@ let currentLine = 0;
 		// 	$(`${el}`).append(parse)
 		// 	$('.cut').on("click", picked)
 		// 	function picked(el) {
-		// 		let currentIndex = $(el.currentTarget).data("index")
+		// 		let currentIndex = $(el.currentTarget).attr("data-index")
 		// 		let newLineId = `${parentEl}_${currentIndex}`;
 		// 		$('#root').append($('<div/>', { "id": newLineId.split("#")[1], "class": "displayBox" }))
 

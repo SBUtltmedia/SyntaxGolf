@@ -44,7 +44,7 @@ function jsonToDom(tree) {
             console.log(block["trace"], block["destination"])
             // needs to exist in output of treeToRows
             if (block["trace"]) {
-                $(`#${blockID}`).attr("data-trace", block["trace"]) // get dragula to do this
+                $(`#${blockID}`).attr("data-wastraced", block["trace"]) // get dragula to do this
             }
             if (block["destination"]) {
                 $(`#${blockID}`).attr("data-destination", block["destination"])
@@ -60,7 +60,7 @@ function jsonToDom(tree) {
         console.log(word)
         // only if there are children
         if ($(word).parent().parent().attr("id") in pcm) {
-            let column = $(word).data("index") + $(word).parent().parent().data("index")
+            let column = $(word).attr("data-index") + $(word).parent().parent().attr("data-index")
         
             let children = pcm[$(word).parent().parent().attr("id")].map(childID => $(`#${childID}`))
 
@@ -68,10 +68,10 @@ function jsonToDom(tree) {
             // does there exist a child such that there exists a word within it that matches both word and column
             if (children.some(child => child.find(".constituentContainer").find(".wordContainer").toArray()
             .some(wordC => (wordC.innerHTML === word.innerHTML) && 
-            (column === $(wordC).data("index") + $(wordC).parent().parent().data("index") 
+            (column === $(wordC).attr("data-index") + $(wordC).parent().parent().attr("data-index") 
             // || tracePad(tree[findRowInPCM(child.attr("id"), pcm)], 
-            || tracePad(tree[child.parent().data("row")], 
-                $(wordC).data("index") + $(wordC).parent().parent().data("index"), column)
+            || tracePad(tree[child.parent().attr("data-row")], 
+                $(wordC).attr("data-index") + $(wordC).parent().parent().attr("data-index"), column)
             )))) {
                 console.log("faded")
                 $(word).addClass("faded")
@@ -113,14 +113,14 @@ function jsonToDom(tree) {
 
     // draw curves between matching traces and destinations
     // maybe should be part of drawLines() ?
-    console.log($(`[data-trace]`), $(`[data-destination]`))
+    console.log($(`[data-wastraced]`), $(`[data-destination]`))
     // try it here and move to drawLines() or new function drawCurve() later
-    $(`[data-trace]`).each((i, block) => {
+    $(`[data-wastraced]`).each((i, block) => {
         console.log(i, block)
-        console.log($(block).data("trace"))
+        console.log($(block).attr("data-wastraced"))
         let endPoint = $(block)
-        console.log($(`[data-destination=${$(block).data("trace")}]`)) 
-        let startPoint = $(`[data-destination=${$(block).data("trace")}]`)
+        console.log($(`[data-destination=${$(block).attr("data-wastraced")}]`)) 
+        let startPoint = $(`[data-destination=${$(block).attr("data-wastraced")}]`)
         // how to find control point(s)? 
         // calculate point coordinates
         let [endleft, endtop, endright, endbottom] = getCorners(endPoint)

@@ -84,3 +84,35 @@
         (C' 
                     (V saw) 
                     (NP who ^t2))))
+
+(CP 
+        (NP who ^1) 
+            (S 
+                    (V think) 
+        (NP who ^2)
+        (C' 
+                    (V saw) 
+                    (NP who ^t2))
+        (C' 
+                    (V watch))
+        (C' 
+                    (V see)
+                    (NP who ^t1))))
+
+
+(CP 
+        (NP who ^1) 
+            (S 
+                    (V think) 
+                    (NP who ^t1)
+                    (C' (V saw))
+                    (C' (V see))))
+(CP 
+        (NP who ^1) 
+            (S 
+                    (V think) 
+                    (NP who ^2^t1)
+                    (C' 
+                            (V saw) 
+                            (NP who ^t2))
+                    (C' (V is))))
