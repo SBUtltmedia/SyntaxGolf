@@ -116,3 +116,15 @@
                             (V saw) 
                             (NP who ^t2))
                     (C' (V is))))
+(CP 
+        (NP who ^1) 
+            (S 
+                    (V think) 
+                    (NP who ^2^t1)
+                    (C' 
+                            (V saw) 
+                            (NP who ^3^t2))
+                    (C' (S
+                            (V see) 
+                            (NP who ^t3)))
+                    (C' (VP (V is)))))

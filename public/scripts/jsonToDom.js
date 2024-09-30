@@ -32,7 +32,7 @@ function jsonToDom(tree) {
             console.log(block)
             // errors from IDs being identical
             let blockID = Math.floor(Date.now() + Math.random() * 1000000)
-            $(`#row${i}`).append($("<div/>",{id:blockID, "data-index":block["column"], class:"block"})
+            $(`#row${i}`).append($("<div/>",{id:blockID, "data-blockindex":block["column"], class:"block"})
             .append([$("<div/>", {class:"labelDiv", html:`${block["label"]}`}), 
             $("<div/>", {class:"constituentContainer"})])) // check whether to add hidden
             block["constituent"].split(' ').forEach((word, j) => {
@@ -60,7 +60,7 @@ function jsonToDom(tree) {
         console.log(word)
         // only if there are children
         if ($(word).parent().parent().attr("id") in pcm) {
-            let column = $(word).attr("data-index") + $(word).parent().parent().attr("data-index")
+            let column = parseInt($(word).attr("data-index")) + parseInt($(word).parent().parent().attr("data-blockindex"))
         
             let children = pcm[$(word).parent().parent().attr("id")].map(childID => $(`#${childID}`))
 
@@ -68,10 +68,10 @@ function jsonToDom(tree) {
             // does there exist a child such that there exists a word within it that matches both word and column
             if (children.some(child => child.find(".constituentContainer").find(".wordContainer").toArray()
             .some(wordC => (wordC.innerHTML === word.innerHTML) && 
-            (column === $(wordC).attr("data-index") + $(wordC).parent().parent().attr("data-index") 
+            (column === parseInt($(wordC).attr("data-index")) + parseInt($(wordC).parent().parent().attr("data-blockindex")) 
             // || tracePad(tree[findRowInPCM(child.attr("id"), pcm)], 
             || tracePad(tree[child.parent().attr("data-row")], 
-                $(wordC).attr("data-index") + $(wordC).parent().parent().attr("data-index"), column)
+                parseInt($(wordC).attr("data-index")) + parseInt($(wordC).parent().parent().attr("data-blockindex"), column))
             )))) {
                 console.log("faded")
                 $(word).addClass("faded")

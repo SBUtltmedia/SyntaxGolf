@@ -185,7 +185,7 @@ function intro() {
 
 function getTraceInfo(el, source){
     let row = $(source).attr("data-row")
-    let index = $(el).attr("data-index")
+    let index = $(el).attr("data-blockindex")
     let rows = treeToRows(parse(bracketedSentence)) 
     console.log(row,index, rows)
     let moveThing = rows[row].find(x => x.column == index)
@@ -252,16 +252,16 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
 
     // get unique ID from timestamp
     let blockID = Date.now();
-    let blockDiv = $("<div/>", { id: blockID, "data-index": blockIndex, class: "block" }).on({
+    let blockDiv = $("<div/>", { id: blockID, "data-blockindex": blockIndex, class: "block" }).on({
 
         mousedown: function (e) {
             let clickedID = $(this).attr("id")
 
             let selectedJQ = $(`#${clickedID} .selected`)
-            console.log($(this).prev().attr("data-index"), $(this).prev(), $(this))
-            if ($(this).prev().attr("data-wastraced")!=undefined || $(this).prev().attr("data-index") == $(this).attr("data-index")){
-                let newBlockIndex = parseInt($(this).prev().attr("data-index"))+1
-                $(this).attr("data-index", newBlockIndex)
+            console.log($(this).prev().attr("data-blockindex"), $(this).prev(), $(this))
+            if ($(this).prev().attr("data-wastraced")!=undefined || $(this).prev().attr("data-blockindex") == $(this).attr("data-blockindex")){
+                let newBlockIndex = parseInt($(this).prev().attr("data-blockindex"))+1
+                $(this).attr("data-blockindex", newBlockIndex)
             }
 
             // console.log()
@@ -278,7 +278,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                 //     selectedJQ.parent().addClass("hidden")
                 // }
 
-                blockIndex = $(`#${blockID}`).attr("data-index") // in case it was updated
+                blockIndex = $(`#${blockID}`).attr("data-blockindex") // in case it was updated
                 console.log(selectedJQ, $(`#${blockID}`))
                 let constituent = sentenceArrayToSentence(selectedWords)
                 newIndex = parseInt(blockIndex) + parseInt(selectedWords[0].dataset.index)
@@ -296,12 +296,10 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
                     if (trueRow
-                         && trueRow.some(x => {
-                            
-                            
-                            return (
+                         && trueRow.some(x => {return (
                             (x.constituent === constituent)&&
                              (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow))
+                            //   || x.column === newIndex
                             //   || tracePad(trueRow, x.column, newIndex)
                             ))})) {
                         makeSelectable(constituent, row + 1, newIndex, bracketedSentence);
@@ -494,19 +492,19 @@ function setUpDrake() {
         let index = $(`[data-wastraced]`).length + 1
         $(`#${destID}`).attr("data-destination", index)
         $(el).attr("data-wastraced", index)
-        //console.log($(el).prev().attr("data-index"))
+        //console.log($(el).prev().attr("data-blockindex"))
         // updating block index
-        let newBlockIndex = $(el).attr("data-index")
+        let newBlockIndex = $(el).attr("data-blockindex")
         if ($(el).prev()) {
             //console.log("prev exists")
-            newBlockIndex = parseInt($(el).prev().attr("data-index")) + 1
+            newBlockIndex = parseInt($(el).prev().attr("data-blockindex")) + 1
         } else {
             //console.log("no prev")
-            newBlockIndex = $(el).next().attr("data-index")
+            newBlockIndex = $(el).next().attr("data-blockindex")
         }
         //console.log(newBlockIndex)
-        $(el).attr("data-index", newBlockIndex)
-        // console.log($(el).attr("data-index")) 
+        $(el).attr("data-blockindex", newBlockIndex)
+        // console.log($(el).attr("data-blockindex")) 
         //console.log(findParent($(el)))
         if (getTraceInfo(el, target)?.trace) {
             let traceNum = getTraceInfo(el, target).trace
@@ -519,10 +517,10 @@ function setUpDrake() {
         // test if this placement is valid for automatic mode
         if (mode == 'automatic') {
             let sourceRow = $(source).attr("data-row")
-            let sourceColumn = $(source).attr("data-index")
+            let sourceColumn = $(source).attr("data-blockindex")
             let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
             let row = $(target).attr("data-row")
-            let index = $(el).attr("data-index")
+            let index = $(el).attr("data-blockindex")
             let trueRow = treeToRows(parse(bracketedSentence))[row]
             let trac = $(el).attr("data-traceIndex");
             let dest =  $(`#${destID}`).attr("data-dest");
@@ -563,15 +561,21 @@ function findParent(block) {
     let parent = false
     rowIndex = parseInt(block.parent().attr("data-row"))
     row = $(`[data-row="${rowIndex - 1}"]`)
+    console.log(row)
+    indexVarificator = parseInt($(block).attr("data-blockindex"))
     row.children().each(function () {
-        // console.log($(this), $(this).attr("data-index"))
-        // console.log($(block), $(block).attr("data-index"), $(block)[0].dataset.index)
-        if ($(this).attr("data-index") > $(block).attr("data-index")) {
+        // console.log($(this), $(this).attr("data-blockindex"))
+        // console.log($(block), $(block).attr("data-blockindex"), $(block)[0].dataset.index)
+        console.log($(this))
+        if ($(this).attr("data-traceindex") && $(block).attr("data-wastraced")) {
+            indexVarificator -= 1
+        }
+        if ($(this).attr("data-blockindex") > indexVarificator) {
             return false
         }
         parent = $(this)
     })
-    console.log(parent, block)
+    console.log(parent, block, indexVarificator)
     return parent
 }
 
@@ -707,22 +711,24 @@ function generateMenu(e) {
         return;
     }
     console.log($(this))
-    //console.log($(this).parent())
+    console.log($(this).parent())
     // console.log($(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" "))
     let constituent = $(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
     //console.log(constituent)
     // console.log($(this).parent().parent().attr("data-row"))
     let row = $(this).parent().parent().attr("data-row")
     // console.log($(this).parent().parent())
-    // //console.log($(this).parent().attr("data-index"))
-    let column = $(this).parent().attr("data-index")
-    //console.log(column)
+    // //console.log($(this).parent().attr("data-blockindex"))
+    let column = parseInt($(this).parent().attr("data-blockindex"))
+    let treeRow = treeToRows(parse(bracketedSentence))
+    console.log(column, constituent,treeRow[row])
 
     // only used in auto mode
+    //+ (tracePad(row, item.column, column, treeRow))
     // item.constituent === constituent & 
-    let reference = treeToRows(parse(bracketedSentence))[row].find(item => item.constituent === constituent & item.column === column)
+    let reference = treeRow[row].find(item => item.constituent === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
     let goldlabel = reference?.label
-    // console.log(reference, goldlabel, constituent, column, $(this).parent().data())
+    console.log(reference, goldlabel, constituent, column, $(this).parent().data())
 
     $(this).css({ "cursor": "auto"})
 
@@ -982,6 +988,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
 }
 
 function getRows() {
+    //for manual use only, so did not varified that should "data-index" be "data-blockindex" or not
     // makes row structure with labels and constituents from DOM
     let structure = []
     $(foundation).find("[data-row]").each(function (row) {
@@ -990,7 +997,7 @@ function getRows() {
         //console.log($(this))
         $(this).children().each(function (block) {
             // //console.log(block)
-            //console.log($(this))
+            console.log($(this))
             let label = $(this).find(".labelDiv").text()
             //console.log(label)
             let constituent = $(this).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
@@ -1206,7 +1213,7 @@ function leftPad(rowJQ) {
     console.log(rowJQ)
     let firstItem = rowJQ.children().first()
     firstItem.addClass("first")
-    let firstIndex = firstItem.attr("data-index")
+    let firstIndex = firstItem.attr("data-blockindex")
     rowJQ.css({ "padding-left": `${firstIndex * 8}em` })
 
     rowJQ.children().css({ "padding-left": 0 })
@@ -1258,14 +1265,17 @@ function findRowInPCM(id, pcm) {
 // delete?
 
 function updateIndicesAfterTrace(trace) {
-    let j = $(trace).attr("data-index")
-    $("[data-index].block").filter(function () {
-        return $(this).attr("data-index") >= j
+    console.log($(trace))
+    let j = $(trace).attr("data-blockindex")
+    $("[data-blockindex].block").filter(function () {
+        console.log($(this))
+        return $(this).attr("data-blockindex") >= j
     }).each((i, e) => {
+        console.log($(e))
         // update all except element itself and its ancestors
         if (!($(e).attr("id") === $(trace).attr("id") || isAncestor($(e), $(trace), getParentChildrenMap()))) {
-            $(e).attr("data-index", parseInt($(e).attr("data-index")) + 1)
-            $(e).attr("data-index", $(e).attr("data-index"))
+            $(e).attr("data-blockindex", parseInt($(e).attr("data-blockindex")) + 1)
+            $(e).attr("data-blockindex", $(e).attr("data-blockindex"))
         }
     })
 }
