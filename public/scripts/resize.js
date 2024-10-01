@@ -63,9 +63,9 @@ else{
 }
 
 function fontSize(numberOfRows) {
-  let shortest = 1.6;
+  let shortest = 1;
   let longest = 10.5;
   let smallestFont = 0.40;
-  let longestFont = 1.8;
+  let longestFont = 1.5;
   return ((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont)
 }
