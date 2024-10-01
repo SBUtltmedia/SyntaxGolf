@@ -1,7 +1,7 @@
 $(window).resize(resizeWindow);
 var aspect = 1/ 1.1;
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-  aspect = 1/1.5
+  aspect = 9/16
 }
 // var baseFontFactor = 0.016; // make this based on number of rows
 // var baseFontFactor =  .02 - numberOfRows * 0.002;
@@ -63,9 +63,9 @@ else{
 }
 
 function fontSize(numberOfRows) {
-  let shortest = 2;
-  let longest = 10;
-  let smallestFont = 0.35;
-  let longestFont = 1.2;
+  let shortest = 1.6;
+  let longest = 10.5;
+  let smallestFont = 0.40;
+  let longestFont = 1.8;
   return ((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont)
 }
