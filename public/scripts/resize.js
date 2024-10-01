@@ -6,7 +6,7 @@ let mobileCheck = function() {
 };
 var aspect = 1/ 1.1;
 if (mobileCheck) {
-  aspect = 1/3
+  aspect = 1/2
 }
 // var baseFontFactor = 0.016; // make this based on number of rows
 // var baseFontFactor =  .02 - numberOfRows * 0.002;
