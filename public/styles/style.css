@@ -9,9 +9,11 @@
             user-select: none;
             max-width: 100%;
             overflow-x: hidden;
+            background-color: var(--grass);
         }
 
         :root {
+            --grass:#fbf2e3;
             --highlight: #A4AC86;
             --background: #254336;
             --line: #C2C5AA;

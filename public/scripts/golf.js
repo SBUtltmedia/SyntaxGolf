@@ -185,6 +185,9 @@ function intro() {
 
 function getTraceInfo(el, source){
     let row = $(source).attr("data-row")
+    if (isNaN($(el).attr("data-blockindex"))) {
+        $(el).attr("data-blockindex", $(el).next().attr("data-blockindex"))
+    }
     let index = $(el).attr("data-blockindex")
     let rows = treeToRows(parse(bracketedSentence)) 
     console.log(row,index, rows)
@@ -279,7 +282,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                 // }
 
                 blockIndex = $(`#${blockID}`).attr("data-blockindex") // in case it was updated
-                console.log(selectedJQ, $(`#${blockID}`))
+                console.log(selectedJQ, $(`#${blockID}`), selectedWords[0])
                 let constituent = sentenceArrayToSentence(selectedWords)
                 newIndex = parseInt(blockIndex) + parseInt(selectedWords[0].dataset.index)
                 console.log(constituent, blockIndex, newIndex, selectedWords)
@@ -367,7 +370,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
     if (rowJQ.children().length) {
         let greatest = true
         rowJQ.children().each(function (item) {
-            if (blockIndex < $(this)[0].dataset.index) {
+            if (blockIndex < $(this)[0].dataset.blockindex) {
                 blockDiv.insertBefore($(this))
                 greatest = false
                 return false
@@ -522,16 +525,16 @@ function setUpDrake() {
             let row = $(target).attr("data-row")
             let index = $(el).attr("data-blockindex")
             let trueRow = treeToRows(parse(bracketedSentence))[row]
-            let trac = $(el).attr("data-traceIndex");
+            let trace = $(el).attr("data-traceIndex");
             let dest =  $(`#${destID}`).attr("data-dest");
             ++stepsUsed
-            console.log(trac, dest, $(el).attr("data-traceIndex"), $(`#${destID}`).attr("data-dest"), typeof $(el).attr("data-traceIndex"), typeof $(`#${destID}`).attr("data-dest"))
+            console.log(trace, dest, $(el).attr("data-traceIndex"), $(`#${destID}`).attr("data-dest"), typeof $(el).attr("data-traceIndex"), typeof $(`#${destID}`).attr("data-dest"))
             console.log(treeToRows(parse(bracketedSentence)))
             // trueRow.some(x => ((x.constituent === constituent)
             // && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))
             // && 
-            if (trac && (trac == dest)) {
-                console.log(trac, dest)
+            if (trace && (trace == dest)) {
+                console.log(trace, dest)
                 updateIndicesAfterTrace(el)
                 ++positivePoint
                 if (!(traceInfo.destination)){
@@ -565,7 +568,7 @@ function findParent(block) {
     indexVarificator = parseInt($(block).attr("data-blockindex"))
     row.children().each(function () {
         // console.log($(this), $(this).attr("data-blockindex"))
-        // console.log($(block), $(block).attr("data-blockindex"), $(block)[0].dataset.index)
+        // console.log($(block), $(block).attr("data-blockindex"), $(block)[0].dataset.blockindex)
         console.log($(this))
         if ($(this).attr("data-traceindex") && $(block).attr("data-wastraced")) {
             indexVarificator -= 1
