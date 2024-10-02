@@ -95,6 +95,7 @@ function enableNext() {
 }
 // ready function
 function loadSentence(sentenceID) {
+    document.querySelector("#dialog")?.remove();
     bracketedSentence = problemJSON.holes[sentenceID].expression
     if (bracketedSentence) {
         bracketedSentence = bracketedSentence.replaceAll("[", "(").replaceAll("]", ")");
@@ -1134,7 +1135,7 @@ function finishAlarm() {
         PJ.progress.push(stepsUsed);
        console.log(JSON.stringify(PJ),stepsUsed)
 	let bestStep = bestProgress(PJ.progress)
-	 let {flagColor, alarm} = getProgressSignal(bestStep,good,minStep)
+	 let {flagColor, alarmForBest} = getProgressSignal(bestStep,good,minStep)
         console.log(bestStep, good, minStep)
         color = `--color_fill: ${flagColor};`
         console.log(color)
@@ -1151,8 +1152,27 @@ function finishAlarm() {
     }
    
     JSON_API(problemJSON, problem_id,"POST").then(console.log)
+    let {flagColor1, alarm} = getProgressSignal(stepsUsed,good,minStep)
+    finishDialog(alarm)
     
 }}
+
+function finishDialog(properties) {
+    document.querySelector("#dialog")?.remove();
+    let dialog = Object.assign(document.createElement("dialog"), { "id": "dialog" })
+    Object.keys(properties).forEach((prop) => {
+        properties[prop].forEach((line) => {
+            let current = Object.assign(document.createElement(prop), { "innerHTML": line })
+            // current.addEventListener("click", (e) => { this.listen(e) })
+            dialog.appendChild(current)
+
+        })
+    })
+    let meme = "<img src='images/Chomsky_meme.png' id='finishMeme' />"
+    document.querySelector("#sentenceContainer").append(dialog);
+    dialog.show();
+    // $("#dialog").append(meme)
+}
 
 function getProgressSignal(stepUsed, weightedPar, minStep) {
     if (stepUsed == undefined) {
@@ -1160,13 +1180,13 @@ function getProgressSignal(stepUsed, weightedPar, minStep) {
         return {"flagColor":"white", "alarm":""}
     }
     if (stepUsed == minStep) {
-        return {"flagColor":"blue", "alarm":{ div: ["Wonderful! You got it perfect!", `You completed this level in ${stepUsed} attempts.`], button: ["Try Level Again", "Go To Next Level"] }}
+        return {"flagColor":"blue", "alarm":{ div: ["Wonderful! You got it perfect!", `You completed this hole in ${stepUsed} attempts.`, "<img src='images/syntax_meme.png' id='finishMeme' />"]}}
     }
     else if (stepUsed > weightedPar) {
-        return {"flagColor":"red", "alarm": { div: [`You did not complete this level under par: ${stepUsed} attempts.`], button: ["Try Level Again"] }}
+        return {"flagColor":"red", "alarm": { div: [`You did not complete this hole under par: ${stepUsed} attempts.`, "<img src='images/Chomsky_meme.png' id='finishMeme' />"]}}
     }
     else if (stepUsed <= weightedPar) {
-        return {"flagColor":"green", "alarm":{ div: ["Wonderful! You got par!", `You completed this level in ${stepUsed} attempts.`], button: ["Play Again", "g"] }}
+        return {"flagColor":"green", "alarm":{ div: ["Wonderful! You got par!", `You completed this hole in ${stepUsed} attempts.`, "<img src='images/tree_meme.png' id='finishMeme' />"]}}
     }
 }
 
