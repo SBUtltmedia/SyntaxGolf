@@ -12,11 +12,12 @@
             background-color: var(--grass);
             position: relative;
         }
-        
+
         html,
         body {
             overscroll-behavior-block: contain;
             overflow-x: hidden;
+            overflow-y: hidden;
         }
 
         :root {
