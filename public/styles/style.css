@@ -14,7 +14,7 @@
 
         html,
         body {
-            overscroll-behavior-y: contain;
+            overscroll-behavior-block: contain;
         }
 
         :root {
