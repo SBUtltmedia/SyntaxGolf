@@ -12,6 +12,11 @@
             background-color: var(--grass);
         }
 
+        html,
+        body {
+            overscroll-behavior-y: contain;
+        }
+
         :root {
             --grass:#fbf2e3;
             --highlight: #A4AC86;

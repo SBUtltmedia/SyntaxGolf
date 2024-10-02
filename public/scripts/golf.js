@@ -256,16 +256,17 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
     // get unique ID from timestamp
     let blockID = Date.now();
     let blockDiv = $("<div/>", { id: blockID, "data-blockindex": blockIndex, class: "block" }).on({
-
-        mousedown: function (e) {
-            let clickedID = $(this).attr("id")
-
-            let selectedJQ = $(`#${clickedID} .selected`)
+        mousemove: function (e) {
             console.log($(this).prev().attr("data-blockindex"), $(this).prev(), $(this))
             if ($(this).prev().attr("data-wastraced")!=undefined || $(this).prev().attr("data-blockindex") == $(this).attr("data-blockindex")){
                 let newBlockIndex = parseInt($(this).prev().attr("data-blockindex"))+1
                 $(this).attr("data-blockindex", newBlockIndex)
             }
+        },
+        mousedown: function (e) {
+            let clickedID = $(this).attr("id")
+
+            let selectedJQ = $(`#${clickedID} .selected`)
 
             // console.log()
 
