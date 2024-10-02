@@ -10,11 +10,13 @@
             max-width: 100%;
             overflow-x: hidden;
             background-color: var(--grass);
+            position: relative;
         }
-
+        
         html,
         body {
             overscroll-behavior-block: contain;
+            overflow-x: hidden;
         }
 
         :root {
