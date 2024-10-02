@@ -1,7 +1,10 @@
 $(window).resize(resizeWindow);
 var aspect = 1/ 1.1;
-if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+if (/Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   aspect = 9/16
+}
+if (/iPad|iPod/.test(navigator.userAgent)) {
+  aspect = 4/3
 }
 // var baseFontFactor = 0.016; // make this based on number of rows
 // var baseFontFactor =  .02 - numberOfRows * 0.002;
