@@ -134,6 +134,7 @@ function loadSentence(sentenceID) {
             const labelList = ["labelDiv", "labelItem", "labelMenu", "typeMenu", "typeItem"]
             $(".selected").removeClass("selected"); // clicking anywhere else deselects
             if (!labelList.some(el => $(e.target).hasClass(el))) { removeMenu() }
+            document.querySelector("#dialog")?.remove();
             // e.stopPropagation();
         }
     })
@@ -1150,7 +1151,7 @@ function finishAlarm() {
         console.log(ses)
         postLTI(ses,"du"); 
     }
-   
+    
     JSON_API(problemJSON, problem_id,"POST").then(console.log)
     let {flagColor1, alarm} = getProgressSignal(stepsUsed,good,minStep)
     finishDialog(alarm)

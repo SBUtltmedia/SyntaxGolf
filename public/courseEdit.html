@@ -32,7 +32,7 @@ document.getElementById("select").addEventListener('change', ()=>changeCourse())
     document.body.append(Object.assign(document.createElement("button"),{id:"submit", innerHTML:"Submit All"})) 
     br()
     problemJSON.holes.forEach(hole=> {
-        let expressionArea=Object.assign(document.createElement("textArea"),{className:"expression", innerHTML:hole.expression})
+        let expressionArea=Object.assign(document.createElement("textArea"),{className:"expression", value:hole.expression})
         console.log(expressionArea)
         let descArea=Object.assign(document.createElement("input"),{className: "notes",type:"text", value:hole.notes})
         document.body.append(expressionArea)        
@@ -62,7 +62,7 @@ function submitCourse(courseID){
     expressions.forEach((expression, i)=>{
         console.log(expression.value)
         let notes = allNotes[i]
-        problemJSON.holes[i] = {expression:expression.innerHTML, notes:notes.value}
+        problemJSON.holes[i] = {expression:expression.value, notes:notes.value}
         // console.log(problemJSON.holes[i].value)
     })
     console.log(problemJSON)

@@ -1,64 +1,46 @@
 {
   "holes": [
     {
-      "expression": "(S\r\n    (NP Alice))",
-      "notes": "test",
+      "expression": "(S (NP (N Sigmund)) (VP (V fainted)))",
+      "notes": "",
       "progress": [
         9,
-        10,
-        9,
-        9,
-        9,
-        4,
-        4,
-        3,
-        4,
-        3,
-        3,
-        3,
-        3,
-        3,
-        3,
-        3,
-        4,
-        3,
-        3,
-        3,
-        3,
-        4,
-        3,
-        4,
-        7,
-        6,
-        4,
-        3,
-        6,
-        3,
-        18,
-        5,
-        3,
-        3,
-        3,
-        6,
-        5,
-        4,
-        3,
-        3,
-        4,
-        3,
-        6,
-        5,
-        5,
-        4,
-        4,
-        3,
-        3,
-        3,
-        3,
-        6,
-        5
+        16,
+        9
       ]
+    },
+    {
+      "expression": "(S (NP (N Sigmund)) (VP (V spotted) (NP (Det an) (N auctioneer))))",
+      "notes": ""
+    },
+    {
+      "expression": "(S (NP (N William)) (VP (V gave) (NP (N Millie)) (NP (Det some) (N bleach))))",
+      "notes": ""
+    },
+    {
+      "expression": "(S (NP (N William)) (VP (V gave) (NP (Det some) (N bleach)) (PP (P to) (NP (N Millie)))))",
+      "notes": ""
+    },
+    {
+      "expression": "(S (NP (N Teaching)) (VP (V pays) (AdvP (Adv adequately))))",
+      "notes": ""
+    },
+    {
+      "expression": "(S (NP (N Alice)) (VP (V phrased) (NP (Det her) (N answer)) (AdvP (Adv carefully))))",
+      "notes": ""
+    },
+    {
+      "expression": "(S (NP (Det her) (N party)) (VP (V lasted) (NP (Det five) (N hours))))",
+      "notes": ""
+    },
+    {
+      "expression": "(S (NP (N Simon)) (VP (V lives) (PP (P in) (NP (N France)))))",
+      "notes": ""
+    },
+    {
+      "expression": "(S (NP (N Jack)) (VP (V finds) (NP (Det her) (N jokes)) (AdjP (Deg extremely) (Adj funny))))",
+      "notes": ""
     }
   ],
-  "description": "tests"
+  "description": "This course explores English VPs with various structures."
 }

@@ -2,7 +2,11 @@
   "holes": [
     {
       "expression": "(S (NP (N Alice)) (VP (V is) (NP (Det a) (N' (N friend) (PP (P of) (NP (N Peter)))))))",
-      "notes": ""
+      "notes": "",
+      "progress": [
+        44,
+        28
+      ]
     },
     {
       "expression": "(S (NP (Det the) (N' (N queen) (PP (P of) (NP (N Belgium))))) (VP (V is) (NP (N Mathilde))))",
@@ -22,7 +26,14 @@
     },
     {
       "expression": "(S (NP (DetP (NP (N Alice)) (Det 's)) (N pictures)) (VP (V resemble) (NP (N her))))",
-      "notes": ""
+      "notes": "",
+      "progress": [
+        26,
+        22,
+        22,
+        22,
+        26
+      ]
     },
     {
       "expression": "(S (NP (DetP (NP (N Bill)) (Det 's)) (N coat)) (VP (V hung) (PP (P on) (NP (Det a) (N hook)))))",

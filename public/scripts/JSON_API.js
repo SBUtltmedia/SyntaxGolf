@@ -1,12 +1,14 @@
 function JSON_API(json = {}, id = 1, method = "GET", mode = "user") {
-    console.log(mode);
+    console.log(mode, json);
     let param = [];
     if (method == "POST") {
         var data = new FormData();
         data.append("mode", mode);
         data.append("json", JSON.stringify(json, null, 2));
         // payload.body=data;
-        // console.log(payload)
+        // // console.log(payload)
+        // let headers = {"Access-Control-Allow-Origin" : "*", 
+        //     'content-type': 'application/json'}
         param = [{ method, body: data }]
     }
     let problem_id = id || 1
@@ -27,10 +29,12 @@ function JSON_API(json = {}, id = 1, method = "GET", mode = "user") {
     return fetch(...param)
         .then(res => {
             if (res.status >= 200 && res.status < 300) {
+                console.log(res);
                 return res.json()
             } else {
                 throw new Error();
             }
+            
         })
         .then((data) => { return data })
         
