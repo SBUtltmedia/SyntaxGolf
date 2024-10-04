@@ -27,20 +27,26 @@ for (i=1; i < courseCount+1; i++){
     select.appendChild(option);
 }
 document.body.append(select);
+introText("Select Course: ", select);
 document.getElementById('select').options.selectedIndex = courseID-1
 document.getElementById("select").addEventListener('change', ()=>changeCourse());
     document.body.append(Object.assign(document.createElement("button"),{id:"submit", innerHTML:"Submit All"})) 
     br()
+    var i = 1;
     problemJSON.holes.forEach(hole=> {
-        let expressionArea=Object.assign(document.createElement("textArea"),{className:"expression", value:hole.expression})
-        console.log(expressionArea)
-        let descArea=Object.assign(document.createElement("input"),{className: "notes",type:"text", value:hole.notes})
-        document.body.append(expressionArea)        
+        let expressionArea=Object.assign(document.createElement("textArea"),{className:"expression", value:hole.expression, style:"width:35rem"})
+        let descArea=Object.assign(document.createElement("input"),{className: "notes",type:"text", value:hole.notes, style:"width:40rem"})
+        document.body.append(expressionArea)  
+        introText(`hole ${i}'s expression: `, expressionArea);      
         br()
         document.body.append(descArea)
+        introText(`note: `, descArea);  
         br()
+        i +=1;
     });
-    document.body.append(Object.assign(document.createElement("textArea"),{className:"description",innerHTML:problemJSON.description}))
+    let description = Object.assign(document.createElement("textArea"),{className:"description",innerHTML:problemJSON.description, style:"width:20rem"})
+    document.body.append(description)
+    introText(`Description for course ${courseID}: `, description);  
     document.querySelectorAll("textArea").forEach(resizeInput)
     document.getElementById("submit").addEventListener('click', ()=>submitCourse(courseID), { once: true });
 
@@ -72,6 +78,11 @@ function submitCourse(courseID){
 }
 function br(){
     document.body.append(document.createElement("br"))
+}
+
+function introText(txt, el) {
+    var text = document.createTextNode(txt);
+    el.parentNode.insertBefore(text, el);
 }
 
 
