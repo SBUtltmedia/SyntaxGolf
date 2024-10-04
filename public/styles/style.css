@@ -266,7 +266,6 @@
             display: flex;
             /* position:relative;
 */
-            padding: 0;
             border: 0;
         }
 
@@ -275,6 +274,11 @@
             width: 50%;
             font-size: 0.5em;
             padding: 0.8em;
+        }
+
+        .typeMenu {
+            padding: 0.5em 0 0 0 !important;
+            width: 100%;
         }
 
         .labelItem:hover,

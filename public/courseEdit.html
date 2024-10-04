@@ -66,11 +66,8 @@ function submitCourse(courseID){
         // console.log(problemJSON.holes[i].value)
     })
     console.log(problemJSON)
-    try {
-        JSON_API(problemJSON,courseID,"POST", "admin")
-    } catch {
-        console.error(error);
-    }
+    JSON_API(problemJSON,courseID,"POST", "admin")
+    loadCourse()
 }
 function br(){
     document.body.append(document.createElement("br"))

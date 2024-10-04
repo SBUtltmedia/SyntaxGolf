@@ -739,9 +739,8 @@ function generateMenu(e) {
     $(this).css({ "cursor": "auto"})
 
     let labels = ["N", "V", "P", "Adj", "Adv", "Det", "C", "T", "S", "Deg"]
-
     let typeMenu = $("<div/>", { class: "typeMenu" }).append(
-        [$("<div/>", { class: "typeItem", html: "'" }), $("<div/>", { class: "typeItem", html: "P" })])
+            [$("<div/>", { class: "typeItem", html: "'" }), $("<div/>", { class: "typeItem", html: "P" })])
 
     let labelDivArray = []
 

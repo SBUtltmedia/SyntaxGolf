@@ -21,7 +21,8 @@ app.post('/problem_set', upload.none(), function(req, respond) {
     var body = '';
     let problem_id = req.query.problem_id||1
  filePath = `${userDir}/${problem_id}.json`
- if (req.body.mode) {
+ console.log(req.body.mode)
+ if (req.body.mode == "admin") {
      filePath = `public/problem_sets/problem_${problem_id}.json`
  }
 
@@ -33,7 +34,7 @@ app.post('/problem_set', upload.none(), function(req, respond) {
     //     console.log(JSON.stringify(body));
     console.log(req.body.mode);
         fs.writeFile(filePath,  req.body.json.toString(), function() {
-            respond.end();
+            respond.end("{}");
         });
     // });
 });

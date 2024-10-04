@@ -2,12 +2,7 @@
   "holes": [
     {
       "expression": "(S (NP (N Sigmund)) (VP (V fainted)))",
-      "notes": "",
-      "progress": [
-        9,
-        16,
-        9
-      ]
+      "notes": ""
     },
     {
       "expression": "(S (NP (N Sigmund)) (VP (V spotted) (NP (Det an) (N auctioneer))))",
