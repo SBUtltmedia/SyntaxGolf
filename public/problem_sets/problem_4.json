@@ -1,20 +1,20 @@
 {
   "holes": [
     {
-      "expression": "(NP (D the) (N Alice))",
-      "notes": "undefined"
+      "expression": "(NP (Det the) (N Alice))",
+      "notes": ""
     },
     {
       "expression": "(CP (NP who ^1) (VP (V see) (NP who ^t1)))",
-      "notes": "undefined"
+      "notes": ""
     },
     {
       "expression": "(CP (NP who ^1) (C' (C did) (S (NP Lucy) (VP (V see) (NP who ^t1)))))",
-      "notes": "undefined"
+      "notes": ""
     },
     {
       "expression": "(S (NP Alice) (VP (V chased) (NP (D the) (N rabbit))))",
-      "notes": "undefined"
+      "notes": ""
     }
   ],
   "description": "This is a course for learning Syntax."

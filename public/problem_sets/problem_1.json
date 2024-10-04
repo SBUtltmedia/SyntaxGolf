@@ -33,7 +33,7 @@
       "notes": ""
     },
     {
-      "expression": "(S (NP (N Jack)) (VP (V finds) (NP (Det her) (N jokes)) (AdjP (Deg extremely) (Adj funny))))",
+      "expression": "(S (NP (N Jack)) (VP (V finds) (NP (Det her) (N jokes)) (AdjP (Deg extremely) (Adj funny)))))",
       "notes": ""
     }
   ],

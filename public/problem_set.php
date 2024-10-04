@@ -10,11 +10,14 @@ if(isset($_SESSION['mail'])){
 
   
 if(isset($_POST["json"]) && isset($_SESSION['mail']) ){
+    if (strpos($_SERVER['REQUEST_URI'], "admin")) {
+      file_put_contents($file,$_POST["json"]);
+    } else {
+      file_put_contents($idFile,$_POST["json"]);
+    }
     if(!file_exists($idFile)){
         mkdir(dirname($idFile), 0755, true);
         }
-   
-    file_put_contents($idFile,$_POST["json"]);
 
    print($_POST["json"]);
 }
