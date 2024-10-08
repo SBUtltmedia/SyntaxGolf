@@ -143,6 +143,9 @@ function loadSentence(sentenceID) {
 
 function intro() {
     var intro = introJs();
+    let dragVideo= "<video src='images/dragVideo.mp4'  autoplay class='introVideo' />"
+    let parseVideo= "<video src='images/parseVideo.mp4'  autoplay class='introVideo' />"
+    let labelInput = "<video src='images/labelInput.mp4'  autoplay class='introVideo' />"
     intro.setOptions({
         steps: [{
             intro: problemJSON.description
@@ -160,12 +163,14 @@ function intro() {
             position: 'left'
         }, {
             element: '#row_id_0',
-            intro: "You will parse from here",
+            intro: `You will parse from here. <hr/> ${parseVideo}`,
             position: 'left'
         }, {
             element: '#label_row_0',
-            intro: "You will choose part of the sentence that this line belong to",
+            intro: `You will choose part of the sentence that this line belong to. <hr/> ${labelInput}`,
             position: 'left'
+        }, {
+            intro: `You can drag words around the tree. <hr/> ${dragVideo}`
         }, {
             element: '#tourButton',
             intro: 'This button can be clicked to view this tour again at any time. You can click anywhere outside thie popup to begin.',
@@ -1168,7 +1173,6 @@ function finishDialog(properties) {
 
         })
     })
-    let meme = "<img src='images/Chomsky_meme.png' id='finishMeme' />"
     document.querySelector("#sentenceContainer").append(dialog);
     dialog.show();
     // $("#dialog").append(meme)
