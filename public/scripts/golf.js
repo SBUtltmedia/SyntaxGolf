@@ -207,7 +207,7 @@ function getTraceInfo(el, source){
     return moveThing
 }
 
-function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode) {
+function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode, label) {
     console.log(sentence)
     // sentence is a string of words
     // row is the number of the div to put these words into
@@ -224,6 +224,10 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
     let sentenceArray = [] // will fill with words from sentence then be converted to string
     let traceIndexOffset = 0;
+    let af = true
+    if (label == "&") {
+        af = false
+    }
 
     sentence.split(' ').forEach((word, index) => {
         let noPad =""
@@ -240,27 +244,12 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
             {
                 noPad = "noPad"
             }
-
-        let wordContainer = $("<div/>", { html: word, "data-uid": Math.random(), "data-index": index+traceIndexOffset+fudge, class: `wordContainer ${noPad}` }).on({
-
-            mousemove: function (e) {
-                if (e.buttons == 1) {
-                    selected(this)
-                }
-            },
-
-            // for mobile compatibility
-
-            "touching": function (e) {
-                selected(this)
-            },
-
-            "touchmove": function (e) {
-                let elem = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)
-                $(elem).trigger("touching")
-            }
-        });
-        sentenceArray.push(wordContainer); // at end of loop, will contain all words in current constituent
+        if (selectionMode == "morphology") {
+            word.split('').forEach((letter) => {
+                sentenceArray = containerSetUpAndInput(letter, index, traceIndexOffset, fudge, `letterContainer`, sentenceArray)
+            })
+        } else {
+            sentenceArray = containerSetUpAndInput(word, index, traceIndexOffset, fudge, `wordContainer ${noPad}`, sentenceArray)}
     })
 
     // put constituent block div in proper row div
@@ -296,14 +285,14 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
                 blockIndex = $(`#${blockID}`).attr("data-blockindex") // in case it was updated
                 console.log(selectedJQ, $(`#${blockID}`), selectedWords[0])
-                let constituent = sentenceArrayToSentence(selectedWords)
+                let constituent = sentenceArrayToSentence(selectedWords, selectionMode)
                 newIndex = parseInt(blockIndex) + parseInt(selectedWords[0].dataset.index)
                 console.log(constituent, blockIndex, newIndex, selectedWords)
 
                 // check if constituent is valid before calling recursion
                 // if in automatic checking mode
                 if (mode == 'automatic') {
-
+                    let xlabel = ""
                     // parse and give steps if correct
                     let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
                     let childRow = treeToRows(parse(bracketedSentence))[row + 2]
@@ -311,14 +300,20 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                     let treeRow = treeToRows(parse(bracketedSentence))
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
+                    let match = trueRow.some(x => {if ((
+                        (x.constituent === constituent)&&
+                         (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow))))){
+                            console.log($(this).children()[1])
+                            xlabel = x.label
+                            // $(this).children()[1].attr("data-nextElLabel", x.label)
+                            return true
+                         } else {return false}})
                     if (trueRow
-                         && trueRow.some(x => {return (
-                            (x.constituent === constituent)&&
-                             (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow))
+                         && match
                             //   || x.column === newIndex
                             //   || tracePad(trueRow, x.column, newIndex)
-                            ))})) {
-                        makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode);
+                            ) {
+                        makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode, xlabel);
                         selectedJQ.addClass("faded").removeClass("selected")
                         ++stepsUsed
                         ++positivePoint
@@ -360,9 +355,9 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         }
 
     }).append([
-        $("<div/>", { class: "labelDiv", id: `label_row_${row}`, html: "?" }).on({
-            "click": generateMenu
-        }).css({ "cursor": "pointer" }),
+        (af ? $("<div/>", { class: "labelDiv", id: `label_row_${row}`, html: "?" }).on({
+            "click": generateMenu,
+        }).css({ "cursor": "pointer" }): $("<div/>", { class: "labelDiv morphoHide"})),
         $("<div/>", { class: "constituentContainer", id:`row_id_${row}` }).append(sentenceArray)])
 
     // dragula([...document.getElementsByClassName("container")], {
@@ -430,8 +425,37 @@ function selected(el) {
     }
 }
 
-function sentenceArrayToSentence(sentenceArray) {
+function sentenceArrayToSentence(sentenceArray, selectionMode) {
+    if (selectionMode == "morphology") {
+        return $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join("");
+    }
     return $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join(" ");
+}
+
+function containerSetUpAndInput(text, index, traceIndexOffset, fudge, className, sentenceArray) {
+    let container =  $("<div/>", { html: text, "data-uid": Math.random(), "data-index": index+traceIndexOffset+fudge, class: className })
+                .on({
+        
+                    mousemove: function (e) {
+                        if (e.buttons == 1) {
+                            selected(this)
+                            console.log($(this))
+                        }
+                    },
+        
+                    // for mobile compatibility
+        
+                    "touching": function (e) {
+                        selected(this)
+                    },
+        
+                    "touchmove": function (e) {
+                        let elem = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY)
+                        $(elem).trigger("touching")
+                    }
+                });
+                sentenceArray.push(container)
+    return sentenceArray;
 }
 
 function drawLines() {
@@ -737,14 +761,18 @@ function generateMenu(e) {
     // //console.log($(this).parent().attr("data-blockindex"))
     let column = parseInt($(this).parent().attr("data-blockindex"))
     let treeRow = treeToRows(parse(bracketedSentence))
-    console.log(column, constituent,treeRow[row])
-
-    // only used in auto mode
+    let reference = treeRow[row].find(item => item.constituent === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
+    if ($(".letterContainer").length) {
+        constituent = $(this).parent().find(".constituentContainer").find(".letterContainer").toArray().map((letterContainer) => { return letterContainer.innerHTML }).join("")
+        reference = treeRow[row].find(item => item.constituent.replace(/\s/g, '') === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
+    }
+        // only used in auto mode
     //+ (tracePad(row, item.column, column, treeRow))
     // item.constituent === constituent & 
-    let reference = treeRow[row].find(item => item.constituent === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
     let goldlabel = reference?.label
     console.log(reference, goldlabel, constituent, column, $(this).parent().data())
+
+    console.log(column, constituent,treeRow[row])
 
     $(this).css({ "cursor": "auto"})
     let labelArrayID = 1;
@@ -776,8 +804,10 @@ function generateMenu(e) {
         "click": function (e) {
             let labelHTML = $(this).html()
             for (symbol of Object.keys(symbolMap)) {
+                console.log(symbol, labelHTML)
                 if (symbol != labelHTML) {
                     $(this).parent().parent().find(".labelItem").removeClass(symbolMap[symbol])
+                    labelFilters($(`.labelItem`), labelFilterSet[labelArrayID], "non");
                 }
             }
             let typedLabel = $(".labelItem")
@@ -785,7 +815,9 @@ function generateMenu(e) {
                 typedLabel = $(".labelItem").filter(el => ($(".labelItem")[el].innerHTML != ("aux")))
             }
             typedLabel.toggleClass(symbolMap[labelHTML])
-            labelFilters($(`.${symbolMap[labelHTML]}`), labelFilterSet[labelArrayID], symbolMap[labelHTML]);
+            if ($(`.${symbolMap[labelHTML]}`).length) {
+                labelFilters($(`.${symbolMap[labelHTML]}`), labelFilterSet[labelArrayID], symbolMap[labelHTML]);
+            } else {labelFilters($(`.labelItem`), labelFilterSet[labelArrayID], "non");}
         }
     })
 
@@ -1467,12 +1499,17 @@ function getCornerPercentages(elem) {
 function getMinStep(bracketedSentence) {
     let str = bracketedSentence
     let minStep = 0
+    let numberOfAf = 0;
     for (let i = 0; i < str.length; i++) {
         if (str.charAt(i) == "(") {
             minStep++
         }
+        if (str.charAt(i) == "&") {
+            numberOfAf++
+        }
     }
     minStep = minStep * 2 - 1;
+    minStep -= numberOfAf;
     return minStep
 }
 

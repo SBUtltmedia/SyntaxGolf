@@ -44,6 +44,12 @@
             color: var(--word);
         }
 
+        .letterContainer {
+            font-size: 3em;
+            display: inline-block;
+            color: var(--word);
+        }
+
         .arrow {
             z-index: -1;
         }
@@ -62,7 +68,7 @@
         }
 
         .hide {
-            color: var(--labelDiv);
+            visibility: hidden;
             pointer-events: none;
         }
 
@@ -70,6 +76,12 @@
             color: var(--faded);
             /* visibility: hidden; */
             /* display: none; */
+        }
+
+        .morphoHide {
+            visibility: hidden;
+            pointer-events: none;
+            padding: 0 !important;
         }
 
         @keyframes animateWrong {
@@ -212,6 +224,10 @@
 
         #sentenceContainer .wordContainer {
             padding:.5em .25em .3em .25em;
+        }
+
+        #sentenceContainer .letterContainer {
+            padding: .2em 0 .3em 0;
         }
 
         .block {
