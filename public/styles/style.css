@@ -28,7 +28,7 @@
             --shadow: #414833;
             --faded: #8caf8c; 
             --wrong: #790909;
-            --label:rgba(88, 226, 186, 0.208);
+            --labelDiv:rgb(54, 125, 105);
             --disable:#15241d;
           }
 
@@ -44,6 +44,10 @@
             color: var(--word);
         }
 
+        .arrow {
+            z-index: -1;
+        }
+
         .selected {
             /* font-weight: bold; */
             background-color: var(--highlight);
@@ -55,6 +59,11 @@
             /* display: none; */
             visibility: hidden;
             height: 2em;
+        }
+
+        .hide {
+            color: var(--labelDiv);
+            pointer-events: none;
         }
 
         .faded {
@@ -306,7 +315,7 @@
 
         .button,
         .labelDiv {
-            background-color: rgba(88, 226, 186, 0.208);
+            background-color: var(--labelDiv);
             border-radius: 10%;
             border: .2em solid rgba(255, 255, 255, .8);
         }

@@ -127,7 +127,12 @@ function loadSentence(sentenceID) {
     // use config file?
 
     // $(foundation).append($("<div/>", { "data-row": 99, class: "container first-row" })) // start with just row 0 div
-    makeSelectable(sentence, 0, 0, bracketedSentence) // this will allow highlighting/selecting, parsing through recursion
+    // syntax mode or morphology mode
+    let selectionMode = "syntax"
+    if (bracketedSentence.includes("&")) {
+        selectionMode = "morphology"
+    }
+    makeSelectable(sentence, 0, 0, bracketedSentence, selectionMode) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({
         mousedown: function (e) {
             // console.log($(e))
@@ -170,7 +175,7 @@ function intro() {
             intro: `You will choose part of the sentence that this line belong to. <hr/> ${labelInput}`,
             position: 'left'
         }, {
-            intro: `You can drag words around the tree. <hr/> ${dragVideo}`
+            intro: `You can drag words around the tree by moving the label. <hr/> ${dragVideo}`
         }, {
             element: '#tourButton',
             intro: 'This button can be clicked to view this tour again at any time. You can click anywhere outside thie popup to begin.',
@@ -202,7 +207,7 @@ function getTraceInfo(el, source){
     return moveThing
 }
 
-function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
+function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode) {
     console.log(sentence)
     // sentence is a string of words
     // row is the number of the div to put these words into
@@ -313,7 +318,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
                             //   || x.column === newIndex
                             //   || tracePad(trueRow, x.column, newIndex)
                             ))})) {
-                        makeSelectable(constituent, row + 1, newIndex, bracketedSentence);
+                        makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode);
                         selectedJQ.addClass("faded").removeClass("selected")
                         ++stepsUsed
                         ++positivePoint
@@ -337,7 +342,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence) {
 
 
                 } else {
-                    makeSelectable(constituent, row + 1, newIndex, bracketedSentence);
+                    makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode);
                     selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
 
                 }
@@ -742,18 +747,25 @@ function generateMenu(e) {
     console.log(reference, goldlabel, constituent, column, $(this).parent().data())
 
     $(this).css({ "cursor": "auto"})
-
-    let labels = ["N", "V", "P", "Adj", "Adv", "Det", "C", "T", "S", "Deg"]
+    let labelArrayID = 1;
+    let labels = [
+    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg"]
+    ,
+    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "aux", "PossN"]
+    ]
     let typeMenu = $("<div/>", { class: "typeMenu" }).append(
             [$("<div/>", { class: "typeItem", html: "'" }), $("<div/>", { class: "typeItem", html: "P" })])
 
     let labelDivArray = []
 
-    for (i of labels) {
+    for (i of labels[labelArrayID]) {
         labelDivArray.push($("<div/>", { html: i, class: "labelItem" }))
     }
 
+    let labelFilterSet = [{"phrase": ["S"], "bar": ["S"]}, {"phrase": ["S", "T"], "non" : ["aux"], "bar": ["S", "aux"]}]
+
     $(this).append($("<div/>", { class: "labelMenu" }).append([...labelDivArray, typeMenu]))
+    labelFilters($(`.labelItem`), labelFilterSet[labelArrayID], "non");
 
     // drawLines()
     resizeWindow()
@@ -768,8 +780,12 @@ function generateMenu(e) {
                     $(this).parent().parent().find(".labelItem").removeClass(symbolMap[symbol])
                 }
             }
-            $(this).parent().parent().find(".labelItem").toggleClass(symbolMap[labelHTML])
-
+            let typedLabel = $(".labelItem")
+            if (labelHTML == "P") {
+                typedLabel = $(".labelItem").filter(el => ($(".labelItem")[el].innerHTML != ("aux")))
+            }
+            typedLabel.toggleClass(symbolMap[labelHTML])
+            labelFilters($(`.${symbolMap[labelHTML]}`), labelFilterSet[labelArrayID], symbolMap[labelHTML]);
         }
     })
 
@@ -801,6 +817,28 @@ function generateMenu(e) {
         }
     })
 
+}
+
+function labelFilters(labelDiv, filterArray, status){
+    $(".hide").removeClass("hide")
+    if (filterArray[status]) {
+    labelDiv.filter(x => {filterArray[status].forEach(y =>
+        { 
+            if (y == labelDiv[x].innerHTML){
+            $(labelDiv[x]).addClass("hide")
+        }
+        })})}
+}
+
+function tenseSelection(tenseElement) {
+    var select = Object.assign(document.createElement("select"),{id:"tenseSelect", innerHTML:"Select for tense"});
+    let optionSet = ["-s", "past", "∅"]
+    optionSet.forEach(x => {
+        let option = Object.assign(document.createElement("option"),{innerHTML:`${x}`, class: "tense"})
+        select.appendChild(option);
+    })
+    console.log(select)
+    tenseElement.append(select)
 }
 
 function removeMenu(labelItem = $(".labelDiv"), label = "?") {
@@ -1390,6 +1428,17 @@ function drawArrows() {
 
     })
 }
+
+function bezierCurve(t, initial, p1, p2, final) {
+    return (
+        (1 - t) * (1 - t) * (1 - t) * initial
+        +
+        3 * (1 - t) * (1 - t) * t * p1
+        +
+        3 * (1 - t) * t * t * p2
+        +
+        t * t * t * final
+    );}
 
 
 function getSize() {
