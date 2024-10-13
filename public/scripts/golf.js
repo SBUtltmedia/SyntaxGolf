@@ -207,8 +207,8 @@ function getTraceInfo(el, source){
     return moveThing
 }
 
-function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode, label) {
-    console.log(sentence)
+function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode="syntax", different ="") {
+    console.log(sentence, row, blockIndex, bracketedSentence, selectionMode, different)
     // sentence is a string of words
     // row is the number of the div to put these words into
     console.log(parse(bracketedSentence))
@@ -225,7 +225,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
     let sentenceArray = [] // will fill with words from sentence then be converted to string
     let traceIndexOffset = 0;
     let af = true
-    if (label == "&") {
+    if (different == "&") {
         af = false
     }
 
@@ -251,9 +251,20 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         } else {
             sentenceArray = containerSetUpAndInput(word, index, traceIndexOffset, fudge, `wordContainer ${noPad}`, sentenceArray)}
     })
+    let blockElement = [
+        (af ? $("<div/>", { class: "labelDiv", id: `label_row_${row}`, html: "?" }).on({
+            "click": generateMenu,
+        }).css({ "cursor": "pointer" }): $("<div/>", { class: "labelDiv morphoHide"})),
+        $("<div/>", { class: "constituentContainer", id:`row_id_${row}` }).append(sentenceArray)]
 
+    if (different == "auxItem") {
+        blockElement = [$("<div/>", { class: "labelDiv", id: `label_row_${row}`, html: "?" }).on({
+            "click": generateMenu}).css({ "cursor": "pointer" })]
+            tenseSelection(blockElement)
+            console.log(blockElement)
+        }
     // put constituent block div in proper row div
-
+    
     // get unique ID from timestamp
     let blockID = Date.now();
     let blockDiv = $("<div/>", { id: blockID, "data-blockindex": blockIndex, class: "block" }).on({
@@ -354,11 +365,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
             }
         }
 
-    }).append([
-        (af ? $("<div/>", { class: "labelDiv", id: `label_row_${row}`, html: "?" }).on({
-            "click": generateMenu,
-        }).css({ "cursor": "pointer" }): $("<div/>", { class: "labelDiv morphoHide"})),
-        $("<div/>", { class: "constituentContainer", id:`row_id_${row}` }).append(sentenceArray)])
+    }).append(blockElement)
 
     // dragula([...document.getElementsByClassName("container")], {
     //     moves: function (el, container, handle) {
@@ -433,6 +440,9 @@ function sentenceArrayToSentence(sentenceArray, selectionMode) {
 }
 
 function containerSetUpAndInput(text, index, traceIndexOffset, fudge, className, sentenceArray) {
+    if (text.includes("-")) {
+        return sentenceArray
+    }
     let container =  $("<div/>", { html: text, "data-uid": Math.random(), "data-index": index+traceIndexOffset+fudge, class: className })
                 .on({
         
@@ -756,11 +766,22 @@ function generateMenu(e) {
     let constituent = $(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
     //console.log(constituent)
     // console.log($(this).parent().parent().attr("data-row"))
-    let row = $(this).parent().parent().attr("data-row")
+    let row = parseInt($(this).parent().parent().attr("data-row"))
     // console.log($(this).parent().parent())
     // //console.log($(this).parent().attr("data-blockindex"))
     let column = parseInt($(this).parent().attr("data-blockindex"))
     let treeRow = treeToRows(parse(bracketedSentence))
+    let filterForTense = treeRow[row].find(item => item.constituent.includes("-"))
+    if (filterForTense.constituent.length > 1) {
+        filterForTense.constituent = filterForTense.constituent.replace(/ -(\w+)/g, "")
+        console.log(filterForTense)
+    }
+    if ($("#tenseSelect").length){
+        document.getElementById("tenseSelect").addEventListener('change', ()=>{
+            constituent = ("-").concat(document.getElementById("tenseSelect").value)
+            console.log(constituent)
+        });
+    }
     let reference = treeRow[row].find(item => item.constituent === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
     if ($(".letterContainer").length) {
         constituent = $(this).parent().find(".constituentContainer").find(".letterContainer").toArray().map((letterContainer) => { return letterContainer.innerHTML }).join("")
@@ -771,8 +792,7 @@ function generateMenu(e) {
     // item.constituent === constituent & 
     let goldlabel = reference?.label
     console.log(reference, goldlabel, constituent, column, $(this).parent().data())
-
-    console.log(column, constituent,treeRow[row])
+    console.log(column, constituent,treeRow[row+1])
 
     $(this).css({ "cursor": "auto"})
     let labelArrayID = 1;
@@ -832,6 +852,9 @@ function generateMenu(e) {
             ++stepsUsed
             console.log(label,goldlabel)
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
+                if (treeRow[row+1].some(x => x.label =="aux") && (goldlabel == "S" || goldlabel == "TP")) {
+                    makeSelectable("", row+1, 1, bracketedSentence, "syntax", "auxItem")
+                }
                 removeMenu($(this).parent().parent(), label)
                 ++positivePoint
                 finishAlarm()
@@ -864,13 +887,13 @@ function labelFilters(labelDiv, filterArray, status){
 
 function tenseSelection(tenseElement) {
     var select = Object.assign(document.createElement("select"),{id:"tenseSelect", innerHTML:"Select for tense"});
-    let optionSet = ["-s", "past", "∅"]
+    let optionSet = ["-","-s", "past", "∅"]
     optionSet.forEach(x => {
         let option = Object.assign(document.createElement("option"),{innerHTML:`${x}`, class: "tense"})
         select.appendChild(option);
     })
     console.log(select)
-    tenseElement.append(select)
+    tenseElement.push(select)
 }
 
 function removeMenu(labelItem = $(".labelDiv"), label = "?") {

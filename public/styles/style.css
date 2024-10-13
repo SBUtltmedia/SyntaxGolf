@@ -233,6 +233,7 @@
         .block {
             /* display: inline-block; */
             display: flex;
+            left:1;
             /* justify-content: space-around; */
             /* text-align: center; */
             white-space: nowrap;
