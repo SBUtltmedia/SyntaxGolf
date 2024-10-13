@@ -772,7 +772,7 @@ function generateMenu(e) {
     let column = parseInt($(this).parent().attr("data-blockindex"))
     let treeRow = treeToRows(parse(bracketedSentence))
     let filterForTense = treeRow[row].find(item => item.constituent.includes("-"))
-    if (filterForTense.constituent.length > 1) {
+    if (filterForTense) {
         filterForTense.constituent = filterForTense.constituent.replace(/ -(\w+)/g, "")
         console.log(filterForTense)
     }
