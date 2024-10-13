@@ -852,7 +852,7 @@ function generateMenu(e) {
             ++stepsUsed
             console.log(label,goldlabel)
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
-                if (treeRow[row+1].some(x => x.label =="aux") && (goldlabel == "S" || goldlabel == "TP")) {
+                if (treeRow[row+1] && treeRow[row+1].some(x => x.label =="aux") && (goldlabel == "S" || goldlabel == "TP")) {
                     makeSelectable("", row+1, 1, bracketedSentence, "syntax", "auxItem")
                 }
                 removeMenu($(this).parent().parent(), label)
