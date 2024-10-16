@@ -76,6 +76,8 @@
                     (V saw) 
                     (NP who ^t2)))))))))
 
+(S (NP (N student)) (aux -past) (VP (V was) (P here)))
+
 (CP 
         (NP who ^1) 
             (S 

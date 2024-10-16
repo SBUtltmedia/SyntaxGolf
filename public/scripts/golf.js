@@ -305,20 +305,22 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                 if (mode == 'automatic') {
                     let xlabel = ""
                     // parse and give steps if correct
-                    let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
-                    let childRow = treeToRows(parse(bracketedSentence))[row + 2]
+                    let trueRow = treeToRows(parse(bracketedSentence), undefined,undefined,undefined,selectionMode)[row + 1]
+                    let childRow = treeToRows(parse(bracketedSentence), undefined,undefined,undefined,selectionMode)[row + 2]
                     console.log(trueRow, newIndex, constituent)
-                    let treeRow = treeToRows(parse(bracketedSentence))
+                    let treeRow = treeToRows(parse(bracketedSentence), undefined,undefined,undefined,selectionMode)
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
-                    let match = trueRow.some(x => {if ((
-                        (x.constituent === constituent)&&
-                         (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow))))){
+                    let match = trueRow.some(x => {return ((x.constituent === constituent)&&
+                            (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow))))})
+                    if (selectionMode == "morphology") {
+                        match = trueRow.some(x => {if (x.constituent === constituent){
                             console.log($(this).children()[1])
                             xlabel = x.label
                             // $(this).children()[1].attr("data-nextElLabel", x.label)
                             return true
-                         } else {return false}})
+                         } else {return false}})}
+                    console.log(match)
                     if (trueRow
                          && match
                             //   || x.column === newIndex
@@ -333,7 +335,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
                         if (!wrongAnswers.find((item) => item == wrongArray)) {
                             wrongAnswers.push(wrongArray)
-                            console.log(treeToRows(parse(bracketedSentence))[row + 1])
+                            console.log(treeToRows(parse(bracketedSentence))[row + 1], undefined,undefined,undefined,selectionMode)
                             ++stepsUsed
                         }
                         selectedJQ.addClass("animateWrong")
@@ -443,6 +445,7 @@ function containerSetUpAndInput(text, index, traceIndexOffset, fudge, className,
     if (text.includes("-")) {
         return sentenceArray
     }
+    console.log(index,traceIndexOffset, fudge, className, sentenceArray)
     let container =  $("<div/>", { html: text, "data-uid": Math.random(), "data-index": index+traceIndexOffset+fudge, class: className })
                 .on({
         
@@ -780,6 +783,7 @@ function generateMenu(e) {
         document.getElementById("tenseSelect").addEventListener('change', ()=>{
             constituent = ("-").concat(document.getElementById("tenseSelect").value)
             console.log(constituent)
+
         });
     }
     let reference = treeRow[row].find(item => item.constituent === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
@@ -1033,7 +1037,7 @@ function treeToString(tree) {
 
 // function bracket to string was moved to separate file
 
-function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
+function treeToRows(tree, accumulator = [], row = 0, leaves = [], mode) {
     // try having index originate with leaves
     //console.log(leaves)
     //console.log(tree.trace, tree.index)
@@ -1060,7 +1064,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
         let column = 0
         tree.children.forEach(function (child, i) {
             //console.log(child, i)
-            let [word, index] = treeToRows(child, accumulator, row + 1, leaves)
+            let [word, index] = treeToRows(child, accumulator, row + 1, leaves, mode)
             //console.log(word, index)
             //console.log(child.trace)
             if (typeof child.trace === 'undefined') { // don't include trace words
@@ -1072,8 +1076,13 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
                 column = index
             }
         })
+        console.log(constituent)
         // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
         let newEntry = { label: tree.label, constituent: constituent.join(" "), column: column }
+        if (mode == "morphology") {
+            newEntry = { label: tree.label, constituent: constituent.join(""), column: column }
+            console.log(newEntry)
+        }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
         }
@@ -1084,6 +1093,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
         if (row == 0) {
             return accumulator
         } else {
+            if (mode == "morphology") {return [constituent.join(""), column]}
             return [constituent.join(" "), column]
         }
     }

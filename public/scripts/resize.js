@@ -1,5 +1,11 @@
 $(window).resize(resizeWindow);
 var aspect = 1/ 1.1;
+let width = $("#sentenceContainer")
+console.log(width)
+let test = 1
+if (test = 1) {
+  aspect = 1/0.8
+}
 if (/Android|webOS|iPhone|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   aspect = 9/16
 }
