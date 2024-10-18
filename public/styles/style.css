@@ -17,7 +17,11 @@
             overscroll-behavior-block: contain;
             overflow-x: hidden;
             overflow-y: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
         }
+
 
         :root {
             --grass:#fbf2e3;
@@ -241,6 +245,8 @@
             flex-direction: column;
             align-items: center;
             padding: 1em;
+            justify-content: start;
+            align-items: space-evenly;
         }
 
         .wordContainer {

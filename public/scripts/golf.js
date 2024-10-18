@@ -131,6 +131,7 @@ function loadSentence(sentenceID) {
     let selectionMode = "syntax"
     if (bracketedSentence.includes("&")) {
         selectionMode = "morphology"
+        $("#sentenceContainer").attr("data-selectionMode", selectionMode)
     }
     makeSelectable(sentence, 0, 0, bracketedSentence, selectionMode) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({
@@ -296,7 +297,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
                 blockIndex = $(`#${blockID}`).attr("data-blockindex") // in case it was updated
                 console.log(selectedJQ, $(`#${blockID}`), selectedWords[0])
-                let constituent = sentenceArrayToSentence(selectedWords, selectionMode)
+                let constituent = sentenceArrayToSentence(selectedWords, selectionMode, sentence)
                 newIndex = parseInt(blockIndex) + parseInt(selectedWords[0].dataset.index)
                 console.log(constituent, blockIndex, newIndex, selectedWords)
 
@@ -305,21 +306,19 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                 if (mode == 'automatic') {
                     let xlabel = ""
                     // parse and give steps if correct
-                    let trueRow = treeToRows(parse(bracketedSentence), undefined,undefined,undefined,selectionMode)[row + 1]
-                    let childRow = treeToRows(parse(bracketedSentence), undefined,undefined,undefined,selectionMode)[row + 2]
+                    let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
+                    let childRow = treeToRows(parse(bracketedSentence))[row + 2]
                     console.log(trueRow, newIndex, constituent)
-                    let treeRow = treeToRows(parse(bracketedSentence), undefined,undefined,undefined,selectionMode)
+                    let treeRow = treeToRows(parse(bracketedSentence))
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
-                    let match = trueRow.some(x => {return ((x.constituent === constituent)&&
-                            (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow))))})
-                    if (selectionMode == "morphology") {
-                        match = trueRow.some(x => {if (x.constituent === constituent){
+                    let match = trueRow.some(x => {if ((x.constituent === constituent)&&
+                            (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow)))){
                             console.log($(this).children()[1])
                             xlabel = x.label
                             // $(this).children()[1].attr("data-nextElLabel", x.label)
                             return true
-                         } else {return false}})}
+                         } else {return false}})
                     console.log(match)
                     if (trueRow
                          && match
@@ -335,7 +334,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
                         if (!wrongAnswers.find((item) => item == wrongArray)) {
                             wrongAnswers.push(wrongArray)
-                            console.log(treeToRows(parse(bracketedSentence))[row + 1], undefined,undefined,undefined,selectionMode)
+                            console.log(treeToRows(parse(bracketedSentence))[row + 1])
                             ++stepsUsed
                         }
                         selectedJQ.addClass("animateWrong")
@@ -434,9 +433,20 @@ function selected(el) {
     }
 }
 
-function sentenceArrayToSentence(sentenceArray, selectionMode) {
+function sentenceArrayToSentence(sentenceArray, selectionMode, sentence) {
     if (selectionMode == "morphology") {
-        return $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join("");
+        let selectedWord = $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join("");
+        let comparedWord = []
+        sentence.split(" ").forEach((word) => {
+            if (selectedWord.startsWith(word)) {
+                comparedWord.push(word)
+                selectedWord = selectedWord.substr(word.length)
+                console.log(selectedWord)
+            }
+        })
+        comparedWord.push(selectedWord)
+        console.log(comparedWord, comparedWord.join(" "), sentenceArray, selectedWord)
+        return comparedWord.join(" ").replace(/ $/g, '');
     }
     return $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join(" ");
 }
@@ -801,20 +811,26 @@ function generateMenu(e) {
     $(this).css({ "cursor": "auto"})
     let labelArrayID = 1;
     let labels = [
-    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg"]
-    ,
-    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "aux", "PossN"]
+    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg"],
+    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "aux", "PossN"],
+    ["N", "V", "P", "Adj", "Adv", "prefix", "suffix"]
     ]
     let typeMenu = $("<div/>", { class: "typeMenu" }).append(
             [$("<div/>", { class: "typeItem", html: "'" }), $("<div/>", { class: "typeItem", html: "P" })])
 
     let labelDivArray = []
 
+    if ($("#sentenceContainer").attr("data-selectionMode") == "morphology") {
+        labelArrayID = 2
+        typeMenu = "<br/>"
+    }
+
     for (i of labels[labelArrayID]) {
         labelDivArray.push($("<div/>", { html: i, class: "labelItem" }))
     }
 
-    let labelFilterSet = [{"phrase": ["S"], "bar": ["S"]}, {"phrase": ["S", "T"], "non" : ["aux"], "bar": ["S", "aux"]}]
+    let labelFilterSet = [{"phrase": ["S"], "bar": ["S"]}, 
+                        {"phrase": ["S", "T"], "non" : ["aux"], "bar": ["S", "aux"]}]
 
     $(this).append($("<div/>", { class: "labelMenu" }).append([...labelDivArray, typeMenu]))
     labelFilters($(`.labelItem`), labelFilterSet[labelArrayID], "non");
@@ -880,13 +896,13 @@ function generateMenu(e) {
 
 function labelFilters(labelDiv, filterArray, status){
     $(".hide").removeClass("hide")
-    if (filterArray[status]) {
+    if (filterArray) {
     labelDiv.filter(x => {filterArray[status].forEach(y =>
         { 
             if (y == labelDiv[x].innerHTML){
             $(labelDiv[x]).addClass("hide")
         }
-        })})}
+        })})} 
 }
 
 function tenseSelection(tenseElement) {
@@ -1037,7 +1053,7 @@ function treeToString(tree) {
 
 // function bracket to string was moved to separate file
 
-function treeToRows(tree, accumulator = [], row = 0, leaves = [], mode) {
+function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
     // try having index originate with leaves
     //console.log(leaves)
     //console.log(tree.trace, tree.index)
@@ -1064,7 +1080,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], mode) {
         let column = 0
         tree.children.forEach(function (child, i) {
             //console.log(child, i)
-            let [word, index] = treeToRows(child, accumulator, row + 1, leaves, mode)
+            let [word, index] = treeToRows(child, accumulator, row + 1, leaves)
             //console.log(word, index)
             //console.log(child.trace)
             if (typeof child.trace === 'undefined') { // don't include trace words
@@ -1079,10 +1095,6 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], mode) {
         console.log(constituent)
         // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
         let newEntry = { label: tree.label, constituent: constituent.join(" "), column: column }
-        if (mode == "morphology") {
-            newEntry = { label: tree.label, constituent: constituent.join(""), column: column }
-            console.log(newEntry)
-        }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
         }
