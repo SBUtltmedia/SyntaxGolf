@@ -128,12 +128,7 @@ function loadSentence(sentenceID) {
 
     // $(foundation).append($("<div/>", { "data-row": 99, class: "container first-row" })) // start with just row 0 div
     // syntax mode or morphology mode
-    let selectionMode = "syntax"
-    if (bracketedSentence.includes("&")) {
-        selectionMode = "morphology"
-        $("#sentenceContainer").attr("data-selectionMode", selectionMode)
-    }
-    makeSelectable(sentence, 0, 0, bracketedSentence, selectionMode) // this will allow highlighting/selecting, parsing through recursion
+    makeSelectable(sentence, 0, 0, bracketedSentence) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({
         mousedown: function (e) {
             // console.log($(e))
@@ -142,6 +137,14 @@ function loadSentence(sentenceID) {
             if (!labelList.some(el => $(e.target).hasClass(el))) { removeMenu() }
             document.querySelector("#dialog")?.remove();
             // e.stopPropagation();
+            // if ($("#tenseSelect").length){
+            //     document.getElementById("tenseSelect").addEventListener('change', ()=>{
+            //         ++stepsUsed
+            //         constituent = ("-").concat(document.getElementById("tenseSelect").value)
+            //         console.log(constituent)
+        
+            //     }); 
+            // } //event listener for change event on created selection box for tense
         }
     })
     setUpDrake();
@@ -208,7 +211,7 @@ function getTraceInfo(el, source){
     return moveThing
 }
 
-function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode="syntax", different ="") {
+function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode="", different ="") {
     console.log(sentence, row, blockIndex, bracketedSentence, selectionMode, different)
     // sentence is a string of words
     // row is the number of the div to put these words into
@@ -221,6 +224,21 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
         //dragula(document.getElementsByTagName("div"), {copy:true, direction: 'horizontal', slideFactorX: 1, slideFactorY: 1})
         //dragula([...document.getElementsByClassName("container")], {});
+    }
+
+    let nextRow = treeToRows(parse(bracketedSentence))[row + 1] || []
+    let filterRow = nextRow.filter(n => n.column >= blockIndex && n.column < (blockIndex + sentence.split(" ").length))
+    console.log(blockIndex, filterRow, nextRow, blockIndex + sentence.split(" ").length)
+    let modeChange = false
+    filterRow.forEach(x => {
+        if (x.label == "Af" || x.label == "&") {
+            modeChange = true
+        }
+        console.log(x, x.label)
+    })
+    if (modeChange) {
+        selectionMode = "morphology"
+        // $(this).attr("data-selectionMode", selectionMode)
     }
 
     let sentenceArray = [] // will fill with words from sentence then be converted to string
@@ -258,17 +276,17 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         }).css({ "cursor": "pointer" }): $("<div/>", { class: "labelDiv morphoHide"})),
         $("<div/>", { class: "constituentContainer", id:`row_id_${row}` }).append(sentenceArray)]
 
-    if (different == "auxItem") {
-        blockElement = [$("<div/>", { class: "labelDiv", id: `label_row_${row}`, html: "?" }).on({
-            "click": generateMenu}).css({ "cursor": "pointer" })]
-            tenseSelection(blockElement)
-            console.log(blockElement)
-        }
+    // if (different == "auxItem") {
+    //     blockElement = [$("<div/>", { class: "labelDiv", id: `label_row_${row}`, html: "?" }).on({
+    //         "click": generateMenu}).css({ "cursor": "pointer" })]
+    //         tenseSelection(blockElement)
+    //         console.log(blockElement)
+    //     } //create selection box for tense
     // put constituent block div in proper row div
     
     // get unique ID from timestamp
     let blockID = Date.now();
-    let blockDiv = $("<div/>", { id: blockID, "data-blockindex": blockIndex, class: "block" }).on({
+    let blockDiv = $("<div/>", { id: blockID, "data-blockindex": blockIndex, "data-selectionMode": selectionMode, class: `block` }).on({
         mousemove: function (e) {
             console.log($(this).prev().attr("data-blockindex"), $(this).prev(), $(this))
             if ($(this).prev().attr("data-wastraced")!=undefined || $(this).prev().attr("data-blockindex") == $(this).attr("data-blockindex")){
@@ -312,7 +330,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                     let treeRow = treeToRows(parse(bracketedSentence))
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
-                    let match = trueRow.some(x => {if ((x.constituent === constituent)&&
+                    let match = trueRow && trueRow.some(x => {if ((x.constituent === constituent)&&
                             (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow)))){
                             console.log($(this).children()[1])
                             xlabel = x.label
@@ -320,8 +338,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                             return true
                          } else {return false}})
                     console.log(match)
-                    if (trueRow
-                         && match
+                    if (match
                             //   || x.column === newIndex
                             //   || tracePad(trueRow, x.column, newIndex)
                             ) {
@@ -789,13 +806,6 @@ function generateMenu(e) {
         filterForTense.constituent = filterForTense.constituent.replace(/ -(\w+)/g, "")
         console.log(filterForTense)
     }
-    if ($("#tenseSelect").length){
-        document.getElementById("tenseSelect").addEventListener('change', ()=>{
-            constituent = ("-").concat(document.getElementById("tenseSelect").value)
-            console.log(constituent)
-
-        });
-    }
     let reference = treeRow[row].find(item => item.constituent === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
     if ($(".letterContainer").length) {
         constituent = $(this).parent().find(".constituentContainer").find(".letterContainer").toArray().map((letterContainer) => { return letterContainer.innerHTML }).join("")
@@ -811,16 +821,16 @@ function generateMenu(e) {
     $(this).css({ "cursor": "auto"})
     let labelArrayID = 1;
     let labels = [
-    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg"],
-    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "aux", "PossN"],
-    ["N", "V", "P", "Adj", "Adv", "prefix", "suffix"]
+    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "C"],
+    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "Aux", "PossN", "C", "Perf", "Prog"],
+    ["N", "V", "P", "Adj", "Adv", "Af"]
     ]
     let typeMenu = $("<div/>", { class: "typeMenu" }).append(
             [$("<div/>", { class: "typeItem", html: "'" }), $("<div/>", { class: "typeItem", html: "P" })])
 
     let labelDivArray = []
 
-    if ($("#sentenceContainer").attr("data-selectionMode") == "morphology") {
+    if ($(this).parent().attr("data-selectionMode") == "morphology") {
         labelArrayID = 2
         typeMenu = "<br/>"
     }
@@ -872,9 +882,9 @@ function generateMenu(e) {
             ++stepsUsed
             console.log(label,goldlabel)
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
-                if (treeRow[row+1] && treeRow[row+1].some(x => x.label =="aux") && (goldlabel == "S" || goldlabel == "TP")) {
-                    makeSelectable("", row+1, 1, bracketedSentence, "syntax", "auxItem")
-                }
+                // if (treeRow[row+1] && treeRow[row+1].some(x => x.label =="aux") && (goldlabel == "S" || goldlabel == "TP")) {
+                //     makeSelectable("", row+1, 1, bracketedSentence, "syntax", "auxItem")
+                // } //creating selection box for tense like -past
                 removeMenu($(this).parent().parent(), label)
                 ++positivePoint
                 finishAlarm()
