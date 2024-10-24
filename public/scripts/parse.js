@@ -23,9 +23,9 @@ let leftPlaceHolder=0;
 tree.children=[]
 // tree.index=[]
 // tree.trace=[]
-
-prevChar = ""
-hasTrace = false
+let prevPrevChar = ""
+let prevChar = ""
+let hasTrace = false
 
 sentence.split("").forEach((char,index)=>{
     
@@ -48,6 +48,10 @@ sentence.split("").forEach((char,index)=>{
 
     }
 
+    if (char == "f" && prevChar == "A" && prevPrevChar == "(" & parenCount==1) {
+        tree.mode = "morphology"
+    }
+
     if (char=="(") {
     parenCount++
     if(parenCount==2){
@@ -66,6 +70,7 @@ sentence.split("").forEach((char,index)=>{
         }
     }
     // console.log(prevChar)
+    prevPrevChar = prevChar
     prevChar = char
     // console.log(prevChar)
 })

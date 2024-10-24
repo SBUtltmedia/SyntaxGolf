@@ -215,7 +215,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
     console.log(sentence, row, blockIndex, bracketedSentence, selectionMode, different)
     // sentence is a string of words
     // row is the number of the div to put these words into
-    console.log(parse(bracketedSentence))
+    console.log(bracketedSentence, parse(bracketedSentence))
     // index is the position in the row, the initial index of the first word
     console.log(treeToString(parse(bracketedSentence)))
     if (!($(`[data-row="${row}"]`)).length) {
@@ -259,7 +259,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
             traceIndexOffset -=1;
             return
         }
-        if (word.includes(`'`))
+        if (word.includes(`'`) || word == $("#sentenceContainer").attr("data-morphologyparts"))
             {
                 noPad = "noPad"
             }
@@ -840,7 +840,7 @@ function generateMenu(e) {
     }
 
     let labelFilterSet = [{"phrase": ["S"], "bar": ["S"]}, 
-                        {"phrase": ["S", "T"], "non" : ["aux"], "bar": ["S", "aux"]}]
+                        {"phrase": ["S", "T"], "non" : ["Aux"], "bar": ["S", "Aux"]}]
 
     $(this).append($("<div/>", { class: "labelMenu" }).append([...labelDivArray, typeMenu]))
     labelFilters($(`.labelItem`), labelFilterSet[labelArrayID], "non");
@@ -1077,6 +1077,9 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
         leaves.push(tree.children)
         // accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
         let newEntry = { label: tree.label, constituent: tree.children, column: index }
+        if (typeof tree.mode !== 'undefined' && $("#sentenceContainer").attr("data-morphologyparts") == undefined) {
+            $("#sentenceContainer").attr("data-morphologyparts", tree.children)
+        }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
         }
@@ -1107,6 +1110,9 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
         let newEntry = { label: tree.label, constituent: constituent.join(" "), column: column }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
+        }
+        if (typeof tree.mode !== 'undefined' && $("#sentenceContainer").attr("data-morphologyparts") == undefined) {
+            $("#sentenceContainer").attr("data-morphologyparts", tree.children)
         }
         if (typeof tree.index !== 'undefined') {
             newEntry['destination'] = tree.index
