@@ -259,7 +259,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
             traceIndexOffset -=1;
             return
         }
-        if (word.includes(`'`) || word == $("#sentenceContainer").attr("data-morphologyparts"))
+        if (word.includes(`'`) || ($("#sentenceContainer").attr("data-morphologyparts") && $("#sentenceContainer").attr("data-morphologyparts").includes(word)))
             {
                 noPad = "noPad"
             }
@@ -1063,11 +1063,10 @@ function treeToString(tree) {
 
 // function bracket to string was moved to separate file
 
-function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
+function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyParts = []) {
     // try having index originate with leaves
     //console.log(leaves)
     //console.log(tree.trace, tree.index)
-
     accumulator[row] = accumulator[row] || []
 
     //base case
@@ -1077,8 +1076,10 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
         leaves.push(tree.children)
         // accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
         let newEntry = { label: tree.label, constituent: tree.children, column: index }
-        if (typeof tree.mode !== 'undefined' && $("#sentenceContainer").attr("data-morphologyparts") == undefined) {
-            $("#sentenceContainer").attr("data-morphologyparts", tree.children)
+        if (typeof tree.mode !== 'undefined') {
+            morphologyParts.push(tree.children)
+            $("#sentenceContainer").attr("data-morphologyparts", morphologyParts)
+            console.log(morphologyParts, tree.children)
         }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
@@ -1093,7 +1094,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = []) {
         let column = 0
         tree.children.forEach(function (child, i) {
             //console.log(child, i)
-            let [word, index] = treeToRows(child, accumulator, row + 1, leaves)
+            let [word, index] = treeToRows(child, accumulator, row + 1, leaves, morphologyParts)
             //console.log(word, index)
             //console.log(child.trace)
             if (typeof child.trace === 'undefined') { // don't include trace words
