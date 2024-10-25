@@ -203,6 +203,7 @@ function getTraceInfo(el, source){
     let row = $(source).attr("data-row")
     if (isNaN($(el).attr("data-blockindex"))) {
         $(el).attr("data-blockindex", $(el).next().attr("data-blockindex"))
+        $(el).attr("style", `grid-column: ${parseInt($(el).next().attr("data-blockindex"))+1}`)
     }
     let index = $(el).attr("data-blockindex")
     let rows = treeToRows(parse(bracketedSentence)) 
@@ -211,7 +212,7 @@ function getTraceInfo(el, source){
     return moveThing
 }
 
-function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode="", different ="") {
+function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode=undefined, different ="") {
     console.log(sentence, row, blockIndex, bracketedSentence, selectionMode, different)
     // sentence is a string of words
     // row is the number of the div to put these words into
@@ -220,7 +221,15 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
     console.log(treeToString(parse(bracketedSentence)))
     if (!($(`[data-row="${row}"]`)).length) {
         // create row div if it doesn't exist
-        $(foundation).append($("<div/>", { "data-row": row, class: "container" }))
+        let thisRow = treeToRows(parse(bracketedSentence))[row]
+        // console.log(thisRow.length, thisRow)
+        // let gridColumnStyle = `grid-template-columns: repeat(${thisRow.length}, 1fr);`
+        let columnLength = $("#problemConstituent").attr("data-totalColumn")
+        let gridColumnStyle = `grid-template-columns: repeat(${columnLength}, 1fr);`
+        if (thisRow.length == 1) {
+            gridColumnStyle = ""
+        }
+        $(foundation).append($("<div/>", { "data-row": row, class: "container", style:gridColumnStyle }))
 
         //dragula(document.getElementsByTagName("div"), {copy:true, direction: 'horizontal', slideFactorX: 1, slideFactorY: 1})
         //dragula([...document.getElementsByClassName("container")], {});
@@ -286,12 +295,13 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
     
     // get unique ID from timestamp
     let blockID = Date.now();
-    let blockDiv = $("<div/>", { id: blockID, "data-blockindex": blockIndex, "data-selectionMode": selectionMode, class: `block` }).on({
+    let blockDiv = $("<div/>", { id: blockID, "data-blockindex": blockIndex, "data-selectionMode": selectionMode, class: `block`, style:`grid-column: ${blockIndex+1}`}).on({
         mousemove: function (e) {
             console.log($(this).prev().attr("data-blockindex"), $(this).prev(), $(this))
             if ($(this).prev().attr("data-wastraced")!=undefined || $(this).prev().attr("data-blockindex") == $(this).attr("data-blockindex")){
                 let newBlockIndex = parseInt($(this).prev().attr("data-blockindex"))+1
                 $(this).attr("data-blockindex", newBlockIndex)
+                $(this).attr("style", `grid-column: ${newBlockIndex+1}`)
             }
         },
         mousedown: function (e) {
@@ -584,6 +594,7 @@ function setUpDrake() {
         }
         //console.log(newBlockIndex)
         $(el).attr("data-blockindex", newBlockIndex)
+        $(el).attr("style", `grid-column: ${parseInt(newBlockIndex)+1}`)
         // console.log($(el).attr("data-blockindex")) 
         //console.log(findParent($(el)))
         if (getTraceInfo(el, target)?.trace) {
@@ -630,8 +641,9 @@ function setUpDrake() {
         })
 
         leftPad($(target))
-        // drawLines() 
-        resizeWindow()
+        // drawLines() \
+        requestAnimationFrame(x=> {resizeWindow()}) //wait until previous program finished
+        // setTimeout(x=> {resizeWindow()}, 1000) 
         return true
     })
 }
@@ -766,7 +778,7 @@ function drawDot(elem) {
 }
 
 function getCorners(elem) {
-    //console.log(elem)
+    // console.log(elem)
     let width = elem[0].offsetWidth
     let height = elem[0].offsetHeight
     let top = elem.position().top
@@ -777,7 +789,7 @@ function getCorners(elem) {
     let centerY = (top + bottom) / 2
 
     //return Object.values({left, top, right, bottom})
-    console.log({ left, top, right, bottom, centerX, centerY })
+    console.log(elem, { left, top, right, bottom, centerX, centerY })
     return [left, top, right, bottom, centerX, centerY]
 }
 
@@ -1068,7 +1080,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
     //console.log(leaves)
     //console.log(tree.trace, tree.index)
     accumulator[row] = accumulator[row] || []
-
+    let highestColumn = 0
     //base case
     //string child
     if (!Array.isArray(tree.children)) {
@@ -1095,6 +1107,9 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         tree.children.forEach(function (child, i) {
             //console.log(child, i)
             let [word, index] = treeToRows(child, accumulator, row + 1, leaves, morphologyParts)
+            if (index > highestColumn) {
+                highestColumn = index
+            }
             //console.log(word, index)
             //console.log(child.trace)
             if (typeof child.trace === 'undefined') { // don't include trace words
@@ -1122,6 +1137,8 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         if (row == 0) {
             return accumulator
         } else {
+            let totalColumn = $("#problemConstituent").attr("data-totalColumn")
+            if (totalColumn == undefined || parseInt(totalColumn) < highestColumn) {$("#problemConstituent").attr("data-totalColumn", highestColumn+1)}
             if (mode == "morphology") {return [constituent.join(""), column]}
             return [constituent.join(" "), column]
         }
