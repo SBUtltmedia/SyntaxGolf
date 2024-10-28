@@ -6,7 +6,7 @@ let examples = [`(S
     (VP
        (V chased)
        (NP
-          (D the)
+          (Det the)
           (N rabbit))))`, 
     `(CP 
         (NP who ^1) 
@@ -18,9 +18,9 @@ let examples = [`(S
                     (V see) 
                     (NP who ^t1)))))`, 
     `(CP 
-        (AP 
-            (A' 
-            (A where)) ^1) 
+        (AdvP 
+            (Adv' 
+            (Adv where)) ^1) 
             (C' 
             (C did ^2) 
             (TP 
@@ -32,15 +32,34 @@ let examples = [`(S
                     (VP 
                         (V' 
                             (V get) 
-(AP 
-    (A' 
-        (A where)) ^t1) 
-        (DP 
-            (D' 
-                (D that) 
+(AdvP 
+    (Adv' 
+        (Adv where)) ^t1) 
+        (DetP 
+            (Det' 
+                (Det that) 
                 (NP 
                     (N' 
-                        (N hat)))))))))))`
+                        (N hat)))))))))))`, 
+    `(S (NP Mary) (Aux (T will) (Perf have)) (VP (V go) (Af ne#en)))`, 
+    `(N (V (Af re) (V creat#create)) (Af ion))`, 
+    `(CP 
+        (NP who ^1) 
+        (C' 
+            (C did) 
+            (S 
+                (NP Lucy) 
+                (VP 
+                    (V think) 
+(CP
+        (NP who ^2^t1)
+        (C' 
+            (C that) 
+            (S 
+                (NP Max) 
+                (VP
+                    (V saw) 
+                    (NP who ^t2)))))))))`
     ]
 examples.forEach(example=>{
     document.querySelector("#examples").append(Object.assign(document.createElement("a"), {innerHTML:bracketToString(example), href:`test.html?string=${encodeURIComponent(example)}`}))

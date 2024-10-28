@@ -256,7 +256,6 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
     if (different == "&") {
         af = false
     }
-
     sentence.split(' ').forEach((word, index) => {
         let noPad =""
         let fudge = 0
@@ -264,6 +263,22 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         //     fudge=2
         // }
         console.log(word)
+        if (word.includes("#")) {
+            $("#sentenceContainer").attr("data-changedword", word)
+        }
+        if ($("#sentenceContainer").attr("data-changedword")) {
+        let changedWord = $("#sentenceContainer").attr("data-changedword")
+        let intersect = changedWord.indexOf("#")
+        const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
+        let PartsOfChangedWord = splitAt(intersect, changedWord)
+        if (word == PartsOfChangedWord[0]|| word == changedWord ) {
+            if (row == 0) {
+                word = PartsOfChangedWord[0]
+            } else {
+                word = PartsOfChangedWord[1]
+            }
+            console.log(word)
+        }}
         if (word == "") {
             traceIndexOffset -=1;
             return
@@ -295,7 +310,10 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
     
     // get unique ID from timestamp
     let blockID = Date.now();
-    let blockDiv = $("<div/>", { id: blockID, "data-blockindex": blockIndex, "data-selectionMode": selectionMode, class: `block`, style:`grid-column: ${blockIndex+1}`}).on({
+    let blockDiv = $("<div/>", { id: blockID, "data-blockindex": blockIndex, "data-selectionMode": selectionMode, class: `block`
+        , style:`grid-column:${blockIndex+1} `
+        // , style:`grid-column:${blockIndex-row+2} `
+        }).on({
         mousemove: function (e) {
             console.log($(this).prev().attr("data-blockindex"), $(this).prev(), $(this))
             if ($(this).prev().attr("data-wastraced")!=undefined || $(this).prev().attr("data-blockindex") == $(this).attr("data-blockindex")){
@@ -642,7 +660,7 @@ function setUpDrake() {
 
         leftPad($(target))
         // drawLines() \
-        requestAnimationFrame(x=> {resizeWindow()}) //wait until previous program finished
+        requestAnimationFrame(()=> {resizeWindow()}) //wait until previous program finished
         // setTimeout(x=> {resizeWindow()}, 1000) 
         return true
     })
@@ -1086,8 +1104,19 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
     if (!Array.isArray(tree.children)) {
         let index = leaves.length
         leaves.push(tree.children)
+        let constituent = tree.children
+        if (tree.children.includes("#")) {
+            const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
+            let intersect = tree.children.indexOf("#")
+            let constituentsSet = splitAt(intersect, tree.children)
+            if (row != 0) {
+                constituent = constituentsSet[1]
+            } else {
+                constituent = constituentsSet[0]
+            }
+        }
         // accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
-        let newEntry = { label: tree.label, constituent: tree.children, column: index }
+        let newEntry = { label: tree.label, constituent: constituent, column: index }
         if (typeof tree.mode !== 'undefined') {
             morphologyParts.push(tree.children)
             $("#sentenceContainer").attr("data-morphologyparts", morphologyParts)
@@ -1123,7 +1152,36 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         })
         console.log(constituent)
         // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
-        let newEntry = { label: tree.label, constituent: constituent.join(" "), column: column }
+        let groupedConstituent = constituent.join(" ")
+        if (groupedConstituent.includes("#")) {
+            const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
+            let space = groupedConstituent.indexOf(" ")
+            let words = splitAt(space, groupedConstituent)
+            let targetWord;
+            let rest;
+            if (words[0].includes("#")) {
+                targetWord = words[0]; 
+                rest = words[1]
+                let intersect = targetWord.indexOf("#")
+                let targetWordSet = splitAt(intersect, targetWord)
+                if (row == 0) {
+                    groupedConstituent = targetWordSet[1].concat(" ", rest)
+                } else {
+                    groupedConstituent = targetWordSet[0].concat(" ", rest)
+                }
+            } else {
+                targetWord = words[1]; 
+                rest = words[0]
+                let intersect = targetWord.indexOf("#")
+                let targetWordSet = splitAt(intersect, targetWord)
+                if (row == 0) {
+                    groupedConstituent = rest.concat(" ", targetWordSet[1])
+                } else {
+                    groupedConstituent = rest.concat(" ", targetWordSet[0])
+                }
+            }
+        }
+        let newEntry = { label: tree.label, constituent: groupedConstituent, column: column }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
         }

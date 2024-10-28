@@ -379,7 +379,7 @@
             grid-template-columns: repeat(6, 1fr);
             /* justify-content: center; */
             align-items: center;
-            margin: 0 10em 0 10em;
+            margin: 3em 10em 0 10em;
             cursor: pointer;
         }
 
