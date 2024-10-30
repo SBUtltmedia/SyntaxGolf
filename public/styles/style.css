@@ -280,7 +280,7 @@
 
         #sentenceContainer .labelMenu {
             display: grid;
-            grid-template-rows: repeat(5, 0.6em)  2em;
+            grid-template-rows: repeat(auto-fit, 0.6em);
             grid-template-columns: repeat(3, 2.3em);
             /* flex-wrap: wrap; */
              /* justify-content: center; */

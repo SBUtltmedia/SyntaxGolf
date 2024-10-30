@@ -273,11 +273,13 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         let PartsOfChangedWord = splitAt(intersect, changedWord)
         if (word == PartsOfChangedWord[0]|| word == changedWord ) {
             if (row == 0) {
+                sentence = sentence.replace(` ${word} `, ` ${PartsOfChangedWord[0]} `)
                 word = PartsOfChangedWord[0]
             } else {
+                sentence = sentence.replace(` ${word}`, ` ${PartsOfChangedWord[1]}`)
                 word = PartsOfChangedWord[1]
             }
-            console.log(word)
+            console.log(word, sentence)
         }}
         if (word == "") {
             traceIndexOffset -=1;
@@ -482,8 +484,10 @@ function sentenceArrayToSentence(sentenceArray, selectionMode, sentence) {
     if (selectionMode == "morphology") {
         let selectedWord = $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join("");
         let comparedWord = []
+        let changedWord = $("#sentenceContainer").attr("data-changedword");
         sentence.split(" ").forEach((word) => {
-            if (selectedWord.startsWith(word)) {
+            console.log(sentenceArray, sentence, word, selectedWord)
+            if (word == selectedWord.substr(word.length)) {
                 comparedWord.push(word)
                 selectedWord = selectedWord.substr(word.length)
                 console.log(selectedWord)
@@ -831,15 +835,16 @@ function generateMenu(e) {
     // //console.log($(this).parent().attr("data-blockindex"))
     let column = parseInt($(this).parent().attr("data-blockindex"))
     let treeRow = treeToRows(parse(bracketedSentence))
-    let filterForTense = treeRow[row].find(item => item.constituent.includes("-"))
-    if (filterForTense) {
-        filterForTense.constituent = filterForTense.constituent.replace(/ -(\w+)/g, "")
-        console.log(filterForTense)
-    }
+    // let filterForTense = treeRow[row].find(item => item.constituent.includes("-"))
+    // // if (filterForTense) {
+    // //     filterForTense.constituent = filterForTense.constituent.replace(/ -(\w+)/g, "")
+    // //     console.log(filterForTense)
+    // // }
     let reference = treeRow[row].find(item => item.constituent === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
     if ($(".letterContainer").length) {
         constituent = $(this).parent().find(".constituentContainer").find(".letterContainer").toArray().map((letterContainer) => { return letterContainer.innerHTML }).join("")
         reference = treeRow[row].find(item => item.constituent.replace(/\s/g, '') === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
+        console.log(reference, treeRow, constituent)
     }
         // only used in auto mode
     //+ (tracePad(row, item.column, column, treeRow))
@@ -892,7 +897,7 @@ function generateMenu(e) {
             }
             let typedLabel = $(".labelItem")
             if (labelHTML == "P") {
-                typedLabel = $(".labelItem").filter(el => ($(".labelItem")[el].innerHTML != ("aux")))
+                typedLabel = $(".labelItem").filter(el => ($(".labelItem")[el].innerHTML != ("Aux")))
             }
             typedLabel.toggleClass(symbolMap[labelHTML])
             if ($(`.${symbolMap[labelHTML]}`).length) {
@@ -1106,14 +1111,8 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         leaves.push(tree.children)
         let constituent = tree.children
         if (tree.children.includes("#")) {
-            const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
-            let intersect = tree.children.indexOf("#")
-            let constituentsSet = splitAt(intersect, tree.children)
-            if (row != 0) {
-                constituent = constituentsSet[1]
-            } else {
-                constituent = constituentsSet[0]
-            }
+            constituent = changedWordDetector(tree.children, row)
+            console.log(constituent)
         }
         // accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
         let newEntry = { label: tree.label, constituent: constituent, column: index }
@@ -1154,32 +1153,8 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
         let groupedConstituent = constituent.join(" ")
         if (groupedConstituent.includes("#")) {
-            const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
-            let space = groupedConstituent.indexOf(" ")
-            let words = splitAt(space, groupedConstituent)
-            let targetWord;
-            let rest;
-            if (words[0].includes("#")) {
-                targetWord = words[0]; 
-                rest = words[1]
-                let intersect = targetWord.indexOf("#")
-                let targetWordSet = splitAt(intersect, targetWord)
-                if (row == 0) {
-                    groupedConstituent = targetWordSet[1].concat(" ", rest)
-                } else {
-                    groupedConstituent = targetWordSet[0].concat(" ", rest)
-                }
-            } else {
-                targetWord = words[1]; 
-                rest = words[0]
-                let intersect = targetWord.indexOf("#")
-                let targetWordSet = splitAt(intersect, targetWord)
-                if (row == 0) {
-                    groupedConstituent = rest.concat(" ", targetWordSet[1])
-                } else {
-                    groupedConstituent = rest.concat(" ", targetWordSet[0])
-                }
-            }
+            groupedConstituent = changedWordDetector(groupedConstituent, row)
+            console.log(groupedConstituent)
         }
         let newEntry = { label: tree.label, constituent: groupedConstituent, column: column }
         if (typeof tree.trace !== 'undefined') {
@@ -1202,6 +1177,29 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         }
     }
 
+}
+
+function changedWordDetector(constituents, row) {
+    const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
+    let wordsSet = constituents.trim().split(/\s+/);
+    let wordCount = wordsSet.length;
+    for (i = 0; i < wordCount; i ++) {
+        if (wordsSet[i].includes("#")) {
+            let targetWord = wordsSet[i];
+            wordsSet.splice(i, i);
+            let intersect = targetWord.indexOf("#")
+            let targetWordSet = splitAt(intersect, targetWord)
+            if (row == 0) {
+                wordsSet.splice(i, 0, targetWordSet[0]);
+                if (wordCount == 1) {return targetWordSet[0]}
+                return wordsSet.join(" ");
+            } else {
+                wordsSet.splice(i, 0, targetWordSet[1]);
+                if (wordCount == 1) {return targetWordSet[1]}
+                return wordsSet.join(" ");
+            }
+        }
+    }
 }
 
 function getRows() {
