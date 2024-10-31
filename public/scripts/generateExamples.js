@@ -41,7 +41,7 @@ let examples = [`(S
                 (NP 
                     (N' 
                         (N hat)))))))))))`, 
-    `(S (NP Mary) (Aux (T will) (Perf have)) (VP (V go) (Af ne#en)))`, 
+    `(S (NP Mary) (Aux (T will) (Perf have)) (V (V go) (Af ne#en)))`, 
     `(N (V (Af re) (V creat#create)) (Af ion))`, 
     `(CP 
         (NP who ^1) 

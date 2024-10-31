@@ -271,15 +271,11 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         let intersect = changedWord.indexOf("#")
         const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
         let PartsOfChangedWord = splitAt(intersect, changedWord)
+        let changedWordIndex = Math.min(row, 1)
         if (word == PartsOfChangedWord[0]|| word == changedWord ) {
-            if (row == 0) {
-                sentence = sentence.replace(` ${word} `, ` ${PartsOfChangedWord[0]} `)
-                word = PartsOfChangedWord[0]
-            } else {
-                sentence = sentence.replace(` ${word}`, ` ${PartsOfChangedWord[1]}`)
-                word = PartsOfChangedWord[1]
-            }
-            console.log(word, sentence)
+            sentence = sentence.replace(` ${word} `, ` ${PartsOfChangedWord[changedWordIndex]} `)
+            word = PartsOfChangedWord[changedWordIndex]
+            console.log(word, sentence, changedWordIndex)
         }}
         if (word == "") {
             traceIndexOffset -=1;
@@ -356,11 +352,11 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                     // parse and give steps if correct
                     let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
                     let childRow = treeToRows(parse(bracketedSentence))[row + 2]
-                    console.log(trueRow, newIndex, constituent)
                     let treeRow = treeToRows(parse(bracketedSentence))
+                    console.log(trueRow, newIndex, constituent)
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
-                    let match = trueRow && trueRow.some(x => {if ((x.constituent === constituent)&&
+                    let match = trueRow && trueRow.some(x => {if ((x.constituent === changedWordDetector(constituent))&&
                             (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow)))){
                             console.log($(this).children()[1])
                             xlabel = x.label
@@ -484,10 +480,10 @@ function sentenceArrayToSentence(sentenceArray, selectionMode, sentence) {
     if (selectionMode == "morphology") {
         let selectedWord = $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join("");
         let comparedWord = []
-        let changedWord = $("#sentenceContainer").attr("data-changedword");
+        let changedWord = $("#sentenceContainer").attr("data-changedword")
         sentence.split(" ").forEach((word) => {
             console.log(sentenceArray, sentence, word, selectedWord)
-            if (word == selectedWord.substr(word.length)) {
+            if (word == selectedWord.substr(0, word.length)) {
                 comparedWord.push(word)
                 selectedWord = selectedWord.substr(word.length)
                 console.log(selectedWord)
@@ -528,6 +524,23 @@ function containerSetUpAndInput(text, index, traceIndexOffset, fudge, className,
                 });
                 sentenceArray.push(container)
     return sentenceArray;
+}
+
+function changedWordDetector(constituents) {
+    let changedWord = $("#sentenceContainer").attr("data-changedword");
+    const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
+    let wordsSet = constituents.trim().split(/\s+/);
+    let wordCount = wordsSet.length;
+    let intersect = changedWord.indexOf("#")
+    let changedWordSet = splitAt(intersect, changedWord)
+    for (i = 0; i < wordCount; i ++) {
+            if (wordsSet[i] == changedWordSet[0] || wordsSet[i] == changedWordSet[1]) {
+                wordsSet.splice(i, 1, changedWord);
+                if (wordCount == 1) {return changedWord}
+                return wordsSet.join(" ");
+            }
+    }
+    return constituents
 }
 
 function drawLines() {
@@ -826,6 +839,7 @@ function generateMenu(e) {
     }
     console.log($(this))
     console.log($(this).parent())
+    console.log($(this).parent().find(".constituentContainer").find(".letterContainer"))
     // console.log($(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" "))
     let constituent = $(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
     //console.log(constituent)
@@ -840,17 +854,17 @@ function generateMenu(e) {
     // //     filterForTense.constituent = filterForTense.constituent.replace(/ -(\w+)/g, "")
     // //     console.log(filterForTense)
     // // }
-    let reference = treeRow[row].find(item => item.constituent === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
-    if ($(".letterContainer").length) {
+    let reference = treeRow[row].find(item => item.constituent === changedWordDetector(constituent) && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
+    if ($(this).parent().find(".constituentContainer").find(".letterContainer").length) {
         constituent = $(this).parent().find(".constituentContainer").find(".letterContainer").toArray().map((letterContainer) => { return letterContainer.innerHTML }).join("")
-        reference = treeRow[row].find(item => item.constituent.replace(/\s/g, '') === constituent & item.column === column + (tracePad(row+1, item.column, column, treeRow)))
+        reference = treeRow[row].find(item => item.constituent.replace(/\s/g, '') === changedWordDetector(constituent) && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
         console.log(reference, treeRow, constituent)
     }
         // only used in auto mode
     //+ (tracePad(row, item.column, column, treeRow))
     // item.constituent === constituent & 
     let goldlabel = reference?.label
-    console.log(reference, goldlabel, constituent, column, $(this).parent().data())
+    console.log(reference, goldlabel, constituent, column, $(this).parent().data(), changedWordDetector(constituent))
     console.log(column, constituent,treeRow[row+1])
 
     $(this).css({ "cursor": "auto"})
@@ -1110,10 +1124,6 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         let index = leaves.length
         leaves.push(tree.children)
         let constituent = tree.children
-        if (tree.children.includes("#")) {
-            constituent = changedWordDetector(tree.children, row)
-            console.log(constituent)
-        }
         // accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
         let newEntry = { label: tree.label, constituent: constituent, column: index }
         if (typeof tree.mode !== 'undefined') {
@@ -1152,10 +1162,6 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         console.log(constituent)
         // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
         let groupedConstituent = constituent.join(" ")
-        if (groupedConstituent.includes("#")) {
-            groupedConstituent = changedWordDetector(groupedConstituent, row)
-            console.log(groupedConstituent)
-        }
         let newEntry = { label: tree.label, constituent: groupedConstituent, column: column }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
@@ -1173,33 +1179,11 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
             let totalColumn = $("#problemConstituent").attr("data-totalColumn")
             if (totalColumn == undefined || parseInt(totalColumn) < highestColumn) {$("#problemConstituent").attr("data-totalColumn", highestColumn+1)}
             if (mode == "morphology") {return [constituent.join(""), column]}
+            console.log([constituent.join(" "), column])
             return [constituent.join(" "), column]
         }
     }
 
-}
-
-function changedWordDetector(constituents, row) {
-    const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
-    let wordsSet = constituents.trim().split(/\s+/);
-    let wordCount = wordsSet.length;
-    for (i = 0; i < wordCount; i ++) {
-        if (wordsSet[i].includes("#")) {
-            let targetWord = wordsSet[i];
-            wordsSet.splice(i, i);
-            let intersect = targetWord.indexOf("#")
-            let targetWordSet = splitAt(intersect, targetWord)
-            if (row == 0) {
-                wordsSet.splice(i, 0, targetWordSet[0]);
-                if (wordCount == 1) {return targetWordSet[0]}
-                return wordsSet.join(" ");
-            } else {
-                wordsSet.splice(i, 0, targetWordSet[1]);
-                if (wordCount == 1) {return targetWordSet[1]}
-                return wordsSet.join(" ");
-            }
-        }
-    }
 }
 
 function getRows() {
@@ -1351,8 +1335,6 @@ function finishAlarm() {
         console.log(color)
         $(`#${currentSentenceID}`).attr("style", color)
         // if (PJ.progress.length == 1) {enableNext()}
-   
-        // makeModal(alarm)
     let problem_id = parseQuery(window.location.search).problem_id || 1
     
 	if (!(typeof ses=== "undefined")){
@@ -1397,22 +1379,6 @@ function getProgressSignal(stepUsed, weightedPar, minStep) {
     else if (stepUsed <= weightedPar) {
         return {"flagColor":"green", "alarm":{ div: ["Wonderful! You got par!", `You completed this hole in ${stepUsed} attempts.`, "<img src='images/tree_meme.png' id='finishMeme' />"]}}
     }
-}
-
-function makeModal(properties) {
-    document.querySelector("#dialog")?.remove();
-    let dialog = Object.assign(document.createElement("dialog"), { "id": "dialog" })
-    Object.keys(properties).forEach((prop) => {
-        properties[prop].forEach((line) => {
-            let current = Object.assign(document.createElement(prop), { "innerHTML": line })
-            current.addEventListener("click", (e) => { this.listen(e) })
-            dialog.appendChild(current)
-
-        })
-    })
-
-    document.querySelector("#screen").append(dialog);
-    dialog.show();
 }
 
 function globalScore(problemJSON) {
