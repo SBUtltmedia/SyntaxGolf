@@ -287,7 +287,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
             }
         if (selectionMode == "morphology") {
             word.split('').forEach((letter) => {
-                sentenceArray = containerSetUpAndInput(letter, index, traceIndexOffset, fudge, `letterContainer`, sentenceArray)
+                sentenceArray = containerSetUpAndInput(letter, index, traceIndexOffset, fudge, `letterContainer noPad`, sentenceArray)
             })
         } else {
             sentenceArray = containerSetUpAndInput(word, index, traceIndexOffset, fudge, `wordContainer ${noPad}`, sentenceArray)}
@@ -338,9 +338,17 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                 // if(selectedJQ.parent().find(".faded").length == selectedJQ.parent().children().length) {
                 //     selectedJQ.parent().addClass("hidden")
                 // }
-
+                let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
+                let thisRow = treeToRows(parse(bracketedSentence))[row]
+                let treeRow = treeToRows(parse(bracketedSentence))
+                console.log(selectedWords, selectionMode, sentence)
                 blockIndex = $(`#${blockID}`).attr("data-blockindex") // in case it was updated
                 console.log(selectedJQ, $(`#${blockID}`), selectedWords[0])
+                if ($("#sentenceContainer").attr("data-changedword")) {
+                    thisRow.some(x => {if (x.changed === sentence) {
+                        sentence = x.constituent
+                    }})
+                }
                 let constituent = sentenceArrayToSentence(selectedWords, selectionMode, sentence)
                 newIndex = parseInt(blockIndex) + parseInt(selectedWords[0].dataset.index)
                 console.log(constituent, blockIndex, newIndex, selectedWords)
@@ -350,13 +358,10 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                 if (mode == 'automatic') {
                     let xlabel = ""
                     // parse and give steps if correct
-                    let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
-                    let childRow = treeToRows(parse(bracketedSentence))[row + 2]
-                    let treeRow = treeToRows(parse(bracketedSentence))
-                    console.log(trueRow, newIndex, constituent)
+                    console.log(trueRow, newIndex, constituent, treeRow)
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
-                    let match = trueRow && trueRow.some(x => {if ((x.constituent === changedWordDetector(constituent))&&
+                    let match = trueRow && trueRow.some(x => {if ((x.constituent === constituent || (x.changed === constituent && row == 0))&&
                             (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow)))){
                             console.log($(this).children()[1])
                             xlabel = x.label
@@ -480,7 +485,6 @@ function sentenceArrayToSentence(sentenceArray, selectionMode, sentence) {
     if (selectionMode == "morphology") {
         let selectedWord = $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join("");
         let comparedWord = []
-        let changedWord = $("#sentenceContainer").attr("data-changedword")
         sentence.split(" ").forEach((word) => {
             console.log(sentenceArray, sentence, word, selectedWord)
             if (word == selectedWord.substr(0, word.length)) {
@@ -500,7 +504,7 @@ function containerSetUpAndInput(text, index, traceIndexOffset, fudge, className,
     if (text.includes("-")) {
         return sentenceArray
     }
-    console.log(index,traceIndexOffset, fudge, className, sentenceArray)
+    console.log(text, index,traceIndexOffset, fudge, className, sentenceArray)
     let container =  $("<div/>", { html: text, "data-uid": Math.random(), "data-index": index+traceIndexOffset+fudge, class: className })
                 .on({
         
@@ -524,23 +528,6 @@ function containerSetUpAndInput(text, index, traceIndexOffset, fudge, className,
                 });
                 sentenceArray.push(container)
     return sentenceArray;
-}
-
-function changedWordDetector(constituents) {
-    let changedWord = $("#sentenceContainer").attr("data-changedword");
-    const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
-    let wordsSet = constituents.trim().split(/\s+/);
-    let wordCount = wordsSet.length;
-    let intersect = changedWord.indexOf("#")
-    let changedWordSet = splitAt(intersect, changedWord)
-    for (i = 0; i < wordCount; i ++) {
-            if (wordsSet[i] == changedWordSet[0] || wordsSet[i] == changedWordSet[1]) {
-                wordsSet.splice(i, 1, changedWord);
-                if (wordCount == 1) {return changedWord}
-                return wordsSet.join(" ");
-            }
-    }
-    return constituents
 }
 
 function drawLines() {
@@ -854,17 +841,17 @@ function generateMenu(e) {
     // //     filterForTense.constituent = filterForTense.constituent.replace(/ -(\w+)/g, "")
     // //     console.log(filterForTense)
     // // }
-    let reference = treeRow[row].find(item => item.constituent === changedWordDetector(constituent) && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
+    let reference = treeRow[row].find(item => item.constituent === constituent && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
     if ($(this).parent().find(".constituentContainer").find(".letterContainer").length) {
         constituent = $(this).parent().find(".constituentContainer").find(".letterContainer").toArray().map((letterContainer) => { return letterContainer.innerHTML }).join("")
-        reference = treeRow[row].find(item => item.constituent.replace(/\s/g, '') === changedWordDetector(constituent) && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
+        reference = treeRow[row].find(item => (item.constituent.replace(/\s/g, '') === constituent) && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
         console.log(reference, treeRow, constituent)
     }
         // only used in auto mode
     //+ (tracePad(row, item.column, column, treeRow))
     // item.constituent === constituent & 
     let goldlabel = reference?.label
-    console.log(reference, goldlabel, constituent, column, $(this).parent().data(), changedWordDetector(constituent))
+    console.log(reference, goldlabel, constituent, column, $(this).parent().data(), constituent)
     console.log(column, constituent,treeRow[row+1])
 
     $(this).css({ "cursor": "auto"})
@@ -1118,18 +1105,23 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
     //console.log(tree.trace, tree.index)
     accumulator[row] = accumulator[row] || []
     let highestColumn = 0
+    let changed = "";
     //base case
     //string child
     if (!Array.isArray(tree.children)) {
         let index = leaves.length
         leaves.push(tree.children)
-        let constituent = tree.children
+        let constituent;
+        [constituent, changed] = changedWordDetector(tree.children, row);
         // accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
         let newEntry = { label: tree.label, constituent: constituent, column: index }
         if (typeof tree.mode !== 'undefined') {
             morphologyParts.push(tree.children)
             $("#sentenceContainer").attr("data-morphologyparts", morphologyParts)
             console.log(morphologyParts, tree.children)
+        }
+        if (changed != "") {
+            newEntry['changed'] = changed
         }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
@@ -1161,10 +1153,14 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         })
         console.log(constituent)
         // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
-        let groupedConstituent = constituent.join(" ")
+        let groupedConstituent;
+        [groupedConstituent, changed]= changedWordDetector(constituent.join(" "), row);
         let newEntry = { label: tree.label, constituent: groupedConstituent, column: column }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
+        }
+        if (changed != "") {
+            newEntry['changed'] = changed
         }
         if (typeof tree.mode !== 'undefined' && $("#sentenceContainer").attr("data-morphologyparts") == undefined) {
             $("#sentenceContainer").attr("data-morphologyparts", tree.children)
@@ -1184,6 +1180,22 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         }
     }
 
+}
+
+function changedWordDetector(constituents, row) {
+    if (!(constituents.includes("#"))) {return [constituents, ""]}
+    const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
+    let wordsSet = constituents.trim().split(/\s+/);
+    let wordCount = wordsSet.length;
+    let changedWordIndex = Math.min(row, 1);
+    for (i = 0; i < wordCount; i ++) {
+            if (wordsSet[i].includes("#")) {
+                let intersect = wordsSet[i].indexOf("#")
+                let changedWordSet = splitAt(intersect, wordsSet[i])
+                if (wordCount == 1) {return [changedWordSet[changedWordIndex], changedWordSet[Math.abs(changedWordIndex-1)]]}
+                return [wordsSet.toSpliced(i, 1, changedWordSet[changedWordIndex]).join(" "), wordsSet.toSpliced(i, 1, changedWordSet[Math.abs(changedWordIndex-1)]).join(" ")];
+            }
+    }
 }
 
 function getRows() {
