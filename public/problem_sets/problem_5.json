@@ -78,7 +78,9 @@
 
 (S (NP (N student)) (aux -past) (VP (V was) (P here)))
 (N (V (& re) (V create)) (& ion))
+(N (V (Af re) (V creat#create)) (Af ion))
 (S (NP Mary) (Aux (T will) (Perf have)) (VP (V go) (Af ne#en)))
+(S (NP Mary) (Aux (T will) (Perf (V have) (Af n#en))) (V (V go) (Af ne#en)))
 
 (CP 
         (NP who ^1) 

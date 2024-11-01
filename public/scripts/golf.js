@@ -1072,9 +1072,43 @@ function showProblem(event, problem) {
     $("#problemInfo").remove()
     let note = problem.note || "";
     let problemInfo = `
-    ${bracketToString(problem.expression)} <hr/>   ${note} 
+    ${displayProblemRight(problem.expression)} <hr/>   ${note} 
     `
     $(stage).append($("<div/>", { id: "problemInfo", html: problemInfo}))
+}
+
+function displayProblemRight(bracketedString) {
+    let morphoDetecter;
+    let morphoDetecterForNext = false;
+    let morphoWords = [];
+    let displayString = ""
+    let string = bracketToString(bracketedString)
+    string.split(' ').forEach((word) => {
+        morphoDetecter = false;
+        console.log(word)
+        let wordIndex = bracketedString.indexOf(` ${word})`)
+        if (morphoDetecterForNext) {morphoDetecterForNext = false; morphoDetecter = true;}
+        if (bracketedString[wordIndex - 2] == "A" && bracketedString[wordIndex - 1] == "f") {
+            morphoWords.push(word);
+            if (bracketedString[wordIndex+word.length+3] == "(") {
+                morphoDetecterForNext = true;
+            } 
+            if (bracketedString[wordIndex+word.length+1] == ")") {
+                morphoDetecter = true;
+            }
+        }
+        if (word.includes("#")) {
+            let intersect = word.indexOf("#")
+            word = word.slice(0, intersect)
+        }
+        if (word.startsWith("'") || morphoDetecter) {
+            displayString = displayString.concat(word);
+        } else {
+            displayString = displayString.concat(" ", word);
+        }
+    })
+
+    return displayString;
 }
 
 function treeToString(tree) {
