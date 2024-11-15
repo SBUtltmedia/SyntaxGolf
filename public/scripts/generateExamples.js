@@ -59,7 +59,13 @@ let examples = [`(S
                 (NP Max) 
                 (VP
                     (V saw) 
-                    (NP who ^t2)))))))))`
+                    (NP who ^t2)))))))))`,
+`(N (Af non) 
+(N 
+(Adj 
+(V compar#compare) 
+(Af abil#able#able)) 
+(Af ity)))`
     ]
 examples.forEach(example=>{
     document.querySelector("#examples").append(Object.assign(document.createElement("a"), {innerHTML:bracketToString(example), href:`test.html?string=${encodeURIComponent(example)}`}))

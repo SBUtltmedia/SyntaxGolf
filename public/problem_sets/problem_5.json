@@ -134,3 +134,70 @@
                             (V see) 
                             (NP who ^t3)))
                     (C' (VP (V is)))))
+
+
+                    "label": "Adj",
+                    "children": [
+                        {
+                            "label": "V",
+                            "children": "compar",
+                            "showChildren": "compare"
+                        },
+                        {
+                            "label": "Af",
+                            "children": "abil",
+                            "showChildren": "able",
+                            "mode": "morphology"
+                        }
+                    ]
+
+                    
+
+[
+  [
+      {
+          "label": "N",
+          "constituent": "non compar abil ity",
+          "column": 0
+      }
+  ],
+  [
+      {
+          "label": "Af",
+          "constituent": "non",
+          "column": 0
+      },
+      {
+          "label": "N",
+          "constituent": "compar abil ity",
+          "column": 1
+      }
+  ],
+  [
+      {
+          "label": "Adj",
+          "constituent": "compar abil",
+          "showConsituent": "compar able",
+          "column": 1
+      },
+      {
+          "label": "Af",
+          "constituent": "ity",
+          "column": 3
+      }
+  ],
+  [
+      {
+          "label": "V",
+          "constituent": "compar",
+          "showConsituent": "compare",
+          "column": 1
+      },
+      {
+          "label": "Af",
+          "constituent": "abil",
+          "showConsituent": "able",
+          "column": 2
+      }
+  ]
+]

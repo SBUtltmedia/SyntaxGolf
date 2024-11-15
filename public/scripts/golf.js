@@ -204,6 +204,7 @@ function getTraceInfo(el, source){
     if (isNaN($(el).attr("data-blockindex"))) {
         $(el).attr("data-blockindex", $(el).next().attr("data-blockindex"))
         $(el).attr("style", `grid-column: ${parseInt($(el).next().attr("data-blockindex"))+1}`)
+        $(el).next().attr("style", `grid-column: ${parseInt($(el).next().attr("data-blockindex"))+2}`)
     }
     let index = $(el).attr("data-blockindex")
     let rows = treeToRows(parse(bracketedSentence)) 
@@ -219,6 +220,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
     console.log(bracketedSentence, parse(bracketedSentence))
     // index is the position in the row, the initial index of the first word
     console.log(treeToString(parse(bracketedSentence)))
+    console.log(treeToRows(parse(bracketedSentence)))
     if (!($(`[data-row="${row}"]`)).length) {
         // create row div if it doesn't exist
         let thisRow = treeToRows(parse(bracketedSentence))[row]
@@ -263,20 +265,19 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         //     fudge=2
         // }
         console.log(word)
-        if (word.includes("#")) {
-            $("#sentenceContainer").attr("data-changedword", word)
-        }
         if ($("#sentenceContainer").attr("data-changedword")) {
-        let changedWord = $("#sentenceContainer").attr("data-changedword")
-        let intersect = changedWord.indexOf("#")
-        const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
-        let PartsOfChangedWord = splitAt(intersect, changedWord)
-        let changedWordIndex = Math.min(row, 1)
-        if (word == PartsOfChangedWord[0]|| word == changedWord ) {
-            sentence = sentence.replace(` ${word} `, ` ${PartsOfChangedWord[changedWordIndex]} `)
-            word = PartsOfChangedWord[changedWordIndex]
-            console.log(word, sentence, changedWordIndex)
-        }}
+            let numberOfRows = $("#menu").attr("data-currentNumberOfRows");
+            let changedWord = $("#sentenceContainer").attr("data-changedword")
+            changedWord.split(",").forEach(x => {if (x.includes(word)) {changedWord = x}})
+            let changedWordSet = changedWord.trim().split("#");
+            let changedWordCount = changedWordSet.length;
+            console.log(changedWordCount, changedWordSet)
+            let changedWordIndex = Math.abs(Math.max(changedWordCount-(numberOfRows-row), 0));
+            if (changedWordSet.includes(word)|| word == changedWord ) {
+                sentence = sentence.replace(` ${word} `, ` ${changedWordSet[changedWordIndex]} `)
+                word = changedWordSet[changedWordIndex]
+                console.log(word, sentence, changedWordIndex, changedWordSet)
+            }}
         if (word == "") {
             traceIndexOffset -=1;
             return
@@ -314,7 +315,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         }).on({
         mousemove: function (e) {
             console.log($(this).prev().attr("data-blockindex"), $(this).prev(), $(this))
-            if ($(this).prev().attr("data-wastraced")!=undefined || $(this).prev().attr("data-blockindex") == $(this).attr("data-blockindex")){
+            if ($(this).prev().attr("data-blockindex") == $(this).attr("data-blockindex")){
                 let newBlockIndex = parseInt($(this).prev().attr("data-blockindex"))+1
                 $(this).attr("data-blockindex", newBlockIndex)
                 $(this).attr("style", `grid-column: ${newBlockIndex+1}`)
@@ -361,7 +362,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                     console.log(trueRow, newIndex, constituent, treeRow)
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
-                    let match = trueRow && trueRow.some(x => {if ((x.constituent === constituent || (x.changed === constituent && row == 0))&&
+                    let match = trueRow && trueRow.some(x => {if ((x.constituent === constituent || (x.changed === constituent))&&
                             (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow)))){
                             console.log($(this).children()[1])
                             xlabel = x.label
@@ -844,7 +845,7 @@ function generateMenu(e) {
     let reference = treeRow[row].find(item => item.constituent === constituent && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
     if ($(this).parent().find(".constituentContainer").find(".letterContainer").length) {
         constituent = $(this).parent().find(".constituentContainer").find(".letterContainer").toArray().map((letterContainer) => { return letterContainer.innerHTML }).join("")
-        reference = treeRow[row].find(item => (item.constituent.replace(/\s/g, '') === constituent) && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
+        reference = treeRow[row].find(item => (item.constituent.replace(/\s/g, '') === constituent || item.changed === constituent) && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
         console.log(reference, treeRow, constituent)
     }
         // only used in auto mode
@@ -1217,17 +1218,34 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
 }
 
 function changedWordDetector(constituents, row) {
+    let changedWordInput = []
+    console.log(constituents,row)
+    let numberOfRows = 4;
     if (!(constituents.includes("#"))) {return [constituents, ""]}
-    const splitAt = (index, xs) => [xs.slice(0, index), xs.slice(index+1)]
     let wordsSet = constituents.trim().split(/\s+/);
     let wordCount = wordsSet.length;
-    let changedWordIndex = Math.min(row, 1);
+    let changed = "";
+    let outputConstituent = constituents
     for (i = 0; i < wordCount; i ++) {
             if (wordsSet[i].includes("#")) {
-                let intersect = wordsSet[i].indexOf("#")
-                let changedWordSet = splitAt(intersect, wordsSet[i])
-                if (wordCount == 1) {return [changedWordSet[changedWordIndex], changedWordSet[Math.abs(changedWordIndex-1)]]}
-                return [wordsSet.toSpliced(i, 1, changedWordSet[changedWordIndex]).join(" "), wordsSet.toSpliced(i, 1, changedWordSet[Math.abs(changedWordIndex-1)]).join(" ")];
+                changedWordInput.push(wordsSet[i])
+                $("#sentenceContainer").attr("data-changedword", changedWordInput)
+                let changedWordSet = wordsSet[i].trim().split("#");
+                let changedWordCount = changedWordSet.length;
+                console.log(changedWordCount, changedWordSet)
+                let outputConstituentIndex =  Math.max(changedWordCount-(numberOfRows-row), 0);
+                let changedWordIndex =  Math.max(changedWordCount-(numberOfRows-(row-1)), 0);
+                if (wordCount == 1) {return [changedWordSet[outputConstituentIndex], changedWordSet[changedWordIndex]]}
+                outputConstituent = wordsSet.toSpliced(i, 1, changedWordSet[outputConstituentIndex]).join(" ")
+                console.log(outputConstituent, changedWordSet[outputConstituentIndex], changedWordIndex, row, changedWordCount, wordsSet)
+                if (changed != 0) {
+                    changed = changed.trim().split(/\s+/).toSpliced(i, 1, changedWordSet[changedWordIndex]).join(" ")
+                    console.log(changed, outputConstituent)
+                } else {changed = wordsSet.toSpliced(i, 1, changedWordSet[changedWordIndex]).join(" ")}
+                if (!(outputConstituent.includes("#"))) {return [outputConstituent,changed]} else {
+                    wordsSet = outputConstituent.trim().split(/\s+/)
+                    console.log(wordsSet, outputConstituent)
+                }
             }
     }
 }
