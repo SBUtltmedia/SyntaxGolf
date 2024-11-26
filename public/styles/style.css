@@ -281,8 +281,13 @@
 
         #sentenceContainer .labelMenu {
             display: grid;
+            position: absolute;
             grid-template-rows: repeat(auto-fit, 0.6em);
             grid-template-columns: repeat(3, 2.3em);
+            background-color: var(--labelDiv);
+            z-index: 1000;
+            /* border-radius: 10%; */
+            border: .02em solid rgba(255, 255, 255, .8);
             /* flex-wrap: wrap; */
              /* justify-content: center; */
              /* position:relative; */

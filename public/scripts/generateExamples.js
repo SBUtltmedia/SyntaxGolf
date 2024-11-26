@@ -42,7 +42,8 @@ let examples = [`(S
                     (N' 
                         (N hat)))))))))))`, 
     `(S (NP Mary) (Aux (T will) (Perf have)) (V (V go) (Af ne#en)))`, 
-    `(N (V (Af re) (V creat#create)) (Af ion))`, 
+    `(N (V (Af re) (V creat#create#create)) (Af ion))`, 
+    `(Adj (Af im#in#) (Adj (V measur#measure) (Af able)))`,
     `(CP 
         (NP who ^1) 
         (C' 

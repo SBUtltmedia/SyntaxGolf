@@ -1219,8 +1219,13 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
 
 function changedWordDetector(constituents, row) {
     let changedWordInput = []
+    let numberOfRows;
     console.log(constituents,row)
-    let numberOfRows = 4;
+    if ($("#menu").attr("data-currentNumberOfRows")) 
+        {numberOfRows = $("#menu").attr("data-currentNumberOfRows");} else {
+            numberOfRows = 4
+            return [constituents, ""]
+        }
     if (!(constituents.includes("#"))) {return [constituents, ""]}
     let wordsSet = constituents.trim().split(/\s+/);
     let wordCount = wordsSet.length;
