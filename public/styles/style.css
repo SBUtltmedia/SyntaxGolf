@@ -286,6 +286,8 @@
             grid-template-columns: repeat(3, 2.3em);
             background-color: var(--labelDiv);
             z-index: 1000;
+            left: -0.03em;
+            top:-0.02em;
             /* border-radius: 10%; */
             border: .02em solid rgba(255, 255, 255, .8);
             /* flex-wrap: wrap; */

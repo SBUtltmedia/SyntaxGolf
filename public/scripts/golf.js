@@ -1,12 +1,5 @@
-
-let foundation = "#problemConstituent"
-let menu = "#menu"
-let wrongAnswers = [];
 //let sentence = "Mary had a little lamb" // default sentence but can be replaced by input
 
-let startingSentence = parseQuery(window.location.search).string 
-// || "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
-//let sentence = treeToString(parse(bracketedSentence))
 let sentence
 let mode = parseQuery(window.location.search).mode || 'automatic'
 let stepsUsed
@@ -33,6 +26,9 @@ function init() {
 JSON_API(undefined, problem_id)
         .then((data) => {
             problemJSON = data
+            let startingSentence = parseQuery(window.location.search).string 
+            // || "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
+            //let sentence = treeToString(parse(bracketedSentence))
             if (startingSentence) {
                 problemJSON.holes[0].expression = startingSentence
                 problemJSON.holes = [problemJSON.holes[0]]
@@ -47,7 +43,7 @@ JSON_API(undefined, problem_id)
 
 function loadMenu(problemJSON) {
     if (mode == 'manual') {
-        $(menu).append($("<div/>", { html: "Check Answer", class: "button" }).on({
+        $("#menu").append($("<div/>", { html: "Check Answer", class: "button" }).on({
             "click": function (e) {
                 if (getTree().replace(/  +/g, ' ') == bracketedSentence) {
                     //console.log("Correct!") 
@@ -62,7 +58,7 @@ function loadMenu(problemJSON) {
             }
         }))
     } else { // display steps in automatic mode
-        $(menu).append($("<div/>", { id: "points" }))
+        $("#menu").append($("<div/>", { id: "points" }))
     }
     problemJSON.holes.forEach((problem, i) => {
         let minStep = getMinStep(problem.expression)
@@ -80,7 +76,7 @@ function loadMenu(problemJSON) {
         </div>`
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
-        $(menu).append([link])
+        $("#menu").append([link])
         // if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
     let button = `<img src="images/questionmark.svg" alt="Tour" id="tourButton"></img>`
@@ -179,7 +175,7 @@ function intro() {
             intro: `You will choose part of the sentence that this line belong to. <hr/> ${labelInput}`,
             position: 'left'
         }, {
-            intro: `You can drag words around the tree by moving the label. <hr/> ${dragVideo}`
+            intro: `You can drag words around the tree by moving the label. For moving to the front of a word, called B, you drag the word that you want to change space, called A, to cover B. For moving to the back of a word, called B, you drag the word that you want to change space, called A, to the right of B. <hr/> ${dragVideo}`
         }, {
             element: '#tourButton',
             intro: 'This button can be clicked to view this tour again at any time. You can click anywhere outside thie popup to begin.',
@@ -213,7 +209,7 @@ function getTraceInfo(el, source){
     return moveThing
 }
 
-function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode=undefined, different ="") {
+function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode=undefined, wrongAnswers = [], different ="") {
     console.log(sentence, row, blockIndex, bracketedSentence, selectionMode, different)
     // sentence is a string of words
     // row is the number of the div to put these words into
@@ -231,7 +227,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         if (thisRow.length == 1) {
             gridColumnStyle = ""
         }
-        $(foundation).append($("<div/>", { "data-row": row, class: "container", style:gridColumnStyle }))
+        $("#problemConstituent").append($("<div/>", { "data-row": row, class: "container", style:gridColumnStyle }))
 
         //dragula(document.getElementsByTagName("div"), {copy:true, direction: 'horizontal', slideFactorX: 1, slideFactorY: 1})
         //dragula([...document.getElementsByClassName("container")], {});
@@ -242,7 +238,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
     console.log(blockIndex, filterRow, nextRow, blockIndex + sentence.split(" ").length)
     let modeChange = false
     filterRow.forEach(x => {
-        if (x.label == "Af" || x.label == "&") {
+        if (x.label == "Af") {
             modeChange = true
         }
         console.log(x, x.label)
@@ -374,7 +370,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                             //   || x.column === newIndex
                             //   || tracePad(trueRow, x.column, newIndex)
                             ) {
-                        makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode, xlabel);
+                        makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode, wrongAnswers, xlabel);
                         selectedJQ.addClass("faded").removeClass("selected")
                         ++stepsUsed
                         ++positivePoint
@@ -398,7 +394,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
 
                 } else {
-                    makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode);
+                    makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode, wrongAnswers);
                     selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
 
                 }
@@ -551,7 +547,7 @@ function drawLines() {
 }
 
 function traverse(callback) {
-    $(foundation).children().each(function (row) {
+    $("#problemConstituent").children().each(function (row) {
         let rowThis = $(this)
         let rowIndex = parseInt(rowThis.attr("data-row"))
         if (rowIndex > 0) { // skip root node           
@@ -920,7 +916,7 @@ function generateMenu(e) {
             console.log(label,goldlabel)
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
                 // if (treeRow[row+1] && treeRow[row+1].some(x => x.label =="aux") && (goldlabel == "S" || goldlabel == "TP")) {
-                //     makeSelectable("", row+1, 1, bracketedSentence, "syntax", "auxItem")
+                //     makeSelectable("", row+1, 1, bracketedSentence, "syntax", wrongAnswer, "auxItem")
                 // } //creating selection box for tense like -past
                 removeMenu($(this).parent().parent(), label)
                 ++positivePoint
@@ -1259,7 +1255,7 @@ function getRows() {
     //for manual use only, so did not varified that should "data-index" be "data-blockindex" or not
     // makes row structure with labels and constituents from DOM
     let structure = []
-    $(foundation).find("[data-row]").each(function (row) {
+    $("#problemConstituent").find("[data-row]").each(function (row) {
         structure[row] = []
         // //console.log(row)
         //console.log($(this))
@@ -1492,7 +1488,7 @@ function leftPad(rowJQ) {
 }
 
 function leftPadAll() {
-    $(foundation).children().each(function (rownum, rowval) {
+    $("#problemConstituent").children().each(function (rownum, rowval) {
         console.log(rownum, rowval)
         leftPad($(rowval))
     })
