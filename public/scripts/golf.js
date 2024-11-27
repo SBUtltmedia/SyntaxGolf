@@ -1,18 +1,4 @@
 //let sentence = "Mary had a little lamb" // default sentence but can be replaced by input
-
-let sentence
-let mode = parseQuery(window.location.search).mode || 'automatic'
-let stepsUsed
-let minStep
-let positivePoint
-let problemJSON
-let currentSentenceID
-let progress
-let parFactor
-let drake
-//console.log(bracketedSentence)
-//console.log(sentence)
-
 $(document).ready(init)
 
 function init() {
@@ -36,12 +22,13 @@ JSON_API(undefined, problem_id)
             }
            // sendJSON(problemJSON, 1)
             loadMenu(problemJSON)
-            loadSentence(0)
-            intro()
+            loadSentence(0, problemJSON)
+            intro(problemJSON)
         })
 }
 
 function loadMenu(problemJSON) {
+    mode = parseQuery(window.location.search).mode || 'automatic'
     if (mode == 'manual') {
         $("#menu").append($("<div/>", { html: "Check Answer", class: "button" }).on({
             "click": function (e) {
@@ -90,7 +77,7 @@ function enableNext() {
     $(".disable").first().removeClass("disable")
 }
 // ready function
-function loadSentence(sentenceID) {
+function loadSentence(sentenceID, problemJSON) {
     document.querySelector("#dialog")?.remove();
     bracketedSentence = problemJSON.holes[sentenceID].expression
     if (bracketedSentence) {
@@ -99,13 +86,13 @@ function loadSentence(sentenceID) {
         bracketedSentence = bracketedSentence.replaceAll(")(", ") (");
         bracketedSentence = bracketedSentence.replaceAll("(det ", "(Det ");
         }
-    currentSentenceID = sentenceID
+    $("#sentenceContainer").attr("data-currentSentenceID", sentenceID)
     $("#sentenceContainer").attr("data-bracketedSentence", bracketedSentence)
-    stepsUsed = 0
-    minStep = getMinStep(bracketedSentence)
-    parFactor = getParFactor(minStep)
-    positivePoint = 0
-    sentence = bracketToString(bracketedSentence)
+    $("#problemConstituent").attr("data-stepsUsed", 0)
+    let minStep = getMinStep(bracketedSentence)
+    let parFactor = getParFactor(minStep)
+    $("#problemConstituent").attr("data-positivePoint", 0)
+    let sentence = bracketToString(bracketedSentence)
     getNumberOfRows(bracketedSentence)
     console.log(sentence)
     updatePoints()
@@ -146,7 +133,7 @@ function loadSentence(sentenceID) {
     setUpDrake();
 }
 
-function intro() {
+function intro(problemJSON) {
     var intro = introJs();
     let dragVideo= "<video src='images/dragVideo.mp4'  autoplay class='introVideo' />"
     let parseVideo= "<video src='images/parseVideo.mp4'  autoplay class='introVideo' />"
@@ -210,6 +197,7 @@ function getTraceInfo(el, source){
 }
 
 function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode=undefined, wrongAnswers = [], different ="") {
+    let mode = parseQuery(window.location.search).mode || 'automatic'
     console.log(sentence, row, blockIndex, bracketedSentence, selectionMode, different)
     // sentence is a string of words
     // row is the number of the div to put these words into
@@ -316,6 +304,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                 $(this).attr("data-blockindex", newBlockIndex)
                 $(this).attr("style", `grid-column: ${newBlockIndex+1}`)
             }
+            finishAlarm(problemJSON)
         },
         mousedown: function (e) {
             let clickedID = $(this).attr("id")
@@ -372,15 +361,15 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                             ) {
                         makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode, wrongAnswers, xlabel);
                         selectedJQ.addClass("faded").removeClass("selected")
-                        ++stepsUsed
-                        ++positivePoint
+                        $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
+                        $("#problemConstituent").attr("data-positivePoint", parseInt($("#problemConstituent").attr("data-positivePoint"))+1)
                     } else {
                         let wrongArray = selectedJQ.toArray().map(item => $(item).attr("data-uid")).join("")
 
                         if (!wrongAnswers.find((item) => item == wrongArray)) {
                             wrongAnswers.push(wrongArray)
                             console.log(treeToRows(parse(bracketedSentence))[row + 1])
-                            ++stepsUsed
+                            $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
                         }
                         selectedJQ.addClass("animateWrong")
                         selectedJQ[0].addEventListener("animationend", (event) => {
@@ -557,6 +546,8 @@ function traverse(callback) {
 }
 
 function setUpDrake() {
+    let drake
+    let mode = parseQuery(window.location.search).mode || 'automatic'
     if (drake) {drake.destroy();}
     drake = dragula([...document.getElementsByClassName("container")], {
         isContainer: function (el) {
@@ -634,7 +625,7 @@ function setUpDrake() {
             let trueRow = treeToRows(parse(bracketedSentence))[row]
             let trace = $(el).attr("data-traceIndex");
             let dest =  $(`#${destID}`).attr("data-dest");
-            ++stepsUsed
+            $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
             console.log(trace, dest, $(el).attr("data-traceIndex"), $(`#${destID}`).attr("data-dest"), typeof $(el).attr("data-traceIndex"), typeof $(`#${destID}`).attr("data-dest"))
             console.log(treeToRows(parse(bracketedSentence)))
             // trueRow.some(x => ((x.constituent === constituent)
@@ -643,7 +634,7 @@ function setUpDrake() {
             if (trace && (trace == dest)) {
                 console.log(trace, dest)
                 updateIndicesAfterTrace(el)
-                ++positivePoint
+                $("#problemConstituent").attr("data-positivePoint", parseInt($("#problemConstituent").attr("data-positivePoint"))+1)
                 if (!(traceInfo.destination)){
                     $(el).addClass("traced")
                 }
@@ -813,6 +804,7 @@ function getCorners(elem) {
 }
 
 function generateMenu(e) {
+    let mode = parseQuery(window.location.search).mode || 'automatic'
     let bracketedSentence = $("#sentenceContainer").attr("data-bracketedSentence")
     // let clickedOnQuestion = $(e.target).hasClass("labelDiv")
     if ($(e.target).text() != "?") { return }
@@ -912,15 +904,14 @@ function generateMenu(e) {
             let symbol = inverse(symbolMap)[intersect] || ""
             let label = $(this).html() + symbol
             // replace ? with label and close menu
-            ++stepsUsed
+            $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
             console.log(label,goldlabel)
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
                 // if (treeRow[row+1] && treeRow[row+1].some(x => x.label =="aux") && (goldlabel == "S" || goldlabel == "TP")) {
                 //     makeSelectable("", row+1, 1, bracketedSentence, "syntax", wrongAnswer, "auxItem")
                 // } //creating selection box for tense like -past
                 removeMenu($(this).parent().parent(), label)
-                ++positivePoint
-                finishAlarm()
+                $("#problemConstituent").attr("data-positivePoint", parseInt($("#problemConstituent").attr("data-positivePoint"))+1)
             } else {
                 $(this).parent().parent().addClass("animateWrong")
                 $(this).parent().parent()[0].addEventListener("animationend", (event) => {
@@ -1382,10 +1373,19 @@ function isAncestor(node1, node2, pcm) {
 }
 
 function updatePoints() {
+    let minStep = getMinStep($("#sentenceContainer").attr("data-bracketedSentence"))
+    let parFactor = getParFactor(minStep)
+    let stepsUsed = parseInt($("#problemConstituent").attr("data-stepsUsed"))
+    console.log($("#problemConstituent").attr("data-stepsUsed"))
     $("#points").html(`Par: ${parseInt(minStep+parFactor)}<br/>Steps Used: ${stepsUsed}`)
 }
 
-function finishAlarm() {
+function finishAlarm(problemJSON) {
+    let currentSentenceID = parseInt($("#sentenceContainer").attr("data-currentSentenceID"))
+    let minStep = getMinStep($("#sentenceContainer").attr("data-bracketedSentence"))
+    let parFactor = getParFactor(minStep)
+    let stepsUsed = parseInt($("#problemConstituent").attr("data-stepsUsed"))
+    let positivePoint = parseInt($("#problemConstituent").attr("data-positivePoint"))
     console.log(positivePoint,minStep)
     let good = parseInt(minStep+parFactor)
     if (positivePoint == minStep) {
