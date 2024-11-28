@@ -1,3 +1,4 @@
+let globals = {"problemJSON":null}
 //let sentence = "Mary had a little lamb" // default sentence but can be replaced by input
 $(document).ready(init)
 
@@ -12,6 +13,7 @@ function init() {
 JSON_API(undefined, problem_id)
         .then((data) => {
             problemJSON = data
+            globals.problemJSON = data
             let startingSentence = parseQuery(window.location.search).string 
             // || "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
             //let sentence = treeToString(parse(bracketedSentence))
@@ -186,8 +188,6 @@ function getTraceInfo(el, source){
     let row = $(source).attr("data-row")
     if (isNaN($(el).attr("data-blockindex"))) {
         $(el).attr("data-blockindex", $(el).next().attr("data-blockindex"))
-        $(el).attr("style", `grid-column: ${parseInt($(el).next().attr("data-blockindex"))+1}`)
-        $(el).next().attr("style", `grid-column: ${parseInt($(el).next().attr("data-blockindex"))+2}`)
     }
     let index = $(el).attr("data-blockindex")
     let rows = treeToRows(parse(bracketedSentence)) 
@@ -297,15 +297,16 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         , style:`grid-column:${blockIndex+1} `
         // , style:`grid-column:${blockIndex-row+2} `
         }).on({
-        mousemove: function (e) {
-            console.log($(this).prev().attr("data-blockindex"), $(this).prev(), $(this))
-            if ($(this).prev().attr("data-blockindex") == $(this).attr("data-blockindex")){
-                let newBlockIndex = parseInt($(this).prev().attr("data-blockindex"))+1
-                $(this).attr("data-blockindex", newBlockIndex)
-                $(this).attr("style", `grid-column: ${newBlockIndex+1}`)
-            }
-            finishAlarm(problemJSON)
-        },
+        // mousemove: function (e) {
+        //     console.log($(this).prev().attr("data-blockindex"), $(this).prev(), $(this))
+        //     if ($(this).prev().attr("data-blockindex") == $(this).attr("data-blockindex")){
+        //         let newBlockIndex = parseInt($(this).prev().attr("data-blockindex"))+1
+        //         $(this).attr("data-blockindex", newBlockIndex)
+        //     }
+        //     if ($(this).attr("data-blockindex") && !($(this).attr("style").includes(`grid-column: ${parseInt($(this).attr("data-blockindex"))+1}`))) {
+        //         $(this).attr("style", `grid-column: ${parseInt($(this).attr("data-blockindex"))+1}`)
+        //     }
+        // },
         mousedown: function (e) {
             let clickedID = $(this).attr("id")
 
@@ -497,7 +498,6 @@ function containerSetUpAndInput(text, index, traceIndexOffset, fudge, className,
                     mousemove: function (e) {
                         if (e.buttons == 1) {
                             selected(this)
-                            console.log($(this))
                         }
                     },
         
@@ -600,11 +600,10 @@ function setUpDrake() {
             newBlockIndex = parseInt($(el).prev().attr("data-blockindex")) + 1
         } else {
             //console.log("no prev")
-            newBlockIndex = $(el).next().attr("data-blockindex")
+            newBlockIndex = parseInt($(el).next().attr("data-blockindex"))
         }
-        //console.log(newBlockIndex)
+        console.log(newBlockIndex, $(el))
         $(el).attr("data-blockindex", newBlockIndex)
-        $(el).attr("style", `grid-column: ${parseInt(newBlockIndex)+1}`)
         // console.log($(el).attr("data-blockindex")) 
         //console.log(findParent($(el)))
         if (getTraceInfo(el, target)?.trace) {
@@ -617,12 +616,8 @@ function setUpDrake() {
 
         // test if this placement is valid for automatic mode
         if (mode == 'automatic') {
-            let sourceRow = $(source).attr("data-row")
-            let sourceColumn = $(source).attr("data-blockindex")
-            let constituent = $(el).find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
-            let row = $(target).attr("data-row")
-            let index = $(el).attr("data-blockindex")
-            let trueRow = treeToRows(parse(bracketedSentence))[row]
+            let targetRow = $(target).attr("data-row")
+            newBlockIndex = parseInt($(el).attr("data-blockindex")) //update blockIndex
             let trace = $(el).attr("data-traceIndex");
             let dest =  $(`#${destID}`).attr("data-dest");
             $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
@@ -632,6 +627,18 @@ function setUpDrake() {
             // && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))
             // && 
             if (trace && (trace == dest)) {
+                $(el).attr("style", `grid-column: ${newBlockIndex+1}`)
+                $(el).next().attr("style", `grid-column: ${newBlockIndex+2}`)
+                // let targetRowLength = treeToRows(parse(bracketedSentence))[targetRow]
+                // let nextObject = $(el)
+                // let nextCount = 1;
+                // for (let i = 0; i < targetRowLength; i++) {
+                // if (nextObject) {
+                //     console.log(nextObject,nextCount)
+                //     nextObject.attr("style", `grid-column: ${newBlockIndex+nextCount}`)
+                //     nextObject = nextObject.next()
+                //     ++nextCount
+                // }}
                 console.log(trace, dest)
                 updateIndicesAfterTrace(el)
                 $("#problemConstituent").attr("data-positivePoint", parseInt($("#problemConstituent").attr("data-positivePoint"))+1)
@@ -912,6 +919,7 @@ function generateMenu(e) {
                 // } //creating selection box for tense like -past
                 removeMenu($(this).parent().parent(), label)
                 $("#problemConstituent").attr("data-positivePoint", parseInt($("#problemConstituent").attr("data-positivePoint"))+1)
+                finishAlarm()
             } else {
                 $(this).parent().parent().addClass("animateWrong")
                 $(this).parent().parent()[0].addEventListener("animationend", (event) => {
@@ -1380,16 +1388,16 @@ function updatePoints() {
     $("#points").html(`Par: ${parseInt(minStep+parFactor)}<br/>Steps Used: ${stepsUsed}`)
 }
 
-function finishAlarm(problemJSON) {
+function finishAlarm() {
+    console.log(globals.problemJSON)
     let currentSentenceID = parseInt($("#sentenceContainer").attr("data-currentSentenceID"))
     let minStep = getMinStep($("#sentenceContainer").attr("data-bracketedSentence"))
     let parFactor = getParFactor(minStep)
     let stepsUsed = parseInt($("#problemConstituent").attr("data-stepsUsed"))
     let positivePoint = parseInt($("#problemConstituent").attr("data-positivePoint"))
-    console.log(positivePoint,minStep)
     let good = parseInt(minStep+parFactor)
     if (positivePoint == minStep) {
-        let PJ=problemJSON.holes[currentSentenceID];
+        let PJ=globals.problemJSON.holes[currentSentenceID];
         PJ.progress = PJ.progress || [] 
         PJ.progress.push(stepsUsed);
        console.log(JSON.stringify(PJ),stepsUsed)
@@ -1403,12 +1411,12 @@ function finishAlarm(problemJSON) {
     let problem_id = parseQuery(window.location.search).problem_id || 1
     
 	if (!(typeof ses=== "undefined")){
-        ses.grade= globalScore(problemJSON)/100;  
+        ses.grade= globalScore(globals.problemJSON)/100;  
         console.log(ses)
         postLTI(ses,"du"); 
     }
     
-    JSON_API(problemJSON, problem_id,"POST").then(console.log)
+    JSON_API(globals.problemJSON, problem_id,"POST").then(console.log)
     let {flagColor1, alarm} = getProgressSignal(stepsUsed,good,minStep)
     finishDialog(alarm)
     
