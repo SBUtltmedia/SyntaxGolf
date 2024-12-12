@@ -385,7 +385,7 @@
             /* grid-auto-columns: max-content; */
             grid-auto-flow: column;
             grid-template-rows: max-content;
-            grid-template-columns: repeat(6, 1fr);
+            /* grid-template-columns: repeat(1, 1fr); */
             /* justify-content: center; */
             align-items: center;
             margin: 3em 10em 0 10em;

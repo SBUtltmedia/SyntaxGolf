@@ -113,7 +113,11 @@ function loadSentence(sentenceID, problemJSON) {
 
     // $(foundation).append($("<div/>", { "data-row": 99, class: "container first-row" })) // start with just row 0 div
     // syntax mode or morphology mode
-    makeSelectable(sentence, 0, 0, bracketedSentence) // this will allow highlighting/selecting, parsing through recursion
+    let selectedMode = undefined;
+    if (bracketedSentence.startsWith(("(N ") || ("(V ") || ("P") || ("Adj") || ("Adv"))) {
+        selectedMode = "morphology";
+    }
+    makeSelectable(sentence, 0, 0, bracketedSentence, selectedMode) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({
         mousedown: function (e) {
             // console.log($(e))
@@ -218,7 +222,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         $("#problemConstituent").append($("<div/>", { "data-row": row, class: "container", style:gridColumnStyle }))
 
         //dragula(document.getElementsByTagName("div"), {copy:true, direction: 'horizontal', slideFactorX: 1, slideFactorY: 1})
-        //dragula([...document.getElementsByClassName("container")], {});
+        //dragula([...document.getElementsByClassName("container")], {})
     }
 
     let nextRow = treeToRows(parse(bracketedSentence))[row + 1] || []
@@ -853,7 +857,7 @@ function generateMenu(e) {
     $(this).css({ "cursor": "auto"})
     let labelArrayID = 1;
     let labels = [
-    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "C"],
+    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "C", "Perf", "Prog"],
     ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "Aux", "PossN", "C", "Perf", "Prog"],
     ["N", "V", "P", "Adj", "Adv", "Af"]
     ]
