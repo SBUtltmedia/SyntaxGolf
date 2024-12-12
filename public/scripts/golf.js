@@ -114,7 +114,7 @@ function loadSentence(sentenceID, problemJSON) {
     // $(foundation).append($("<div/>", { "data-row": 99, class: "container first-row" })) // start with just row 0 div
     // syntax mode or morphology mode
     let selectedMode = undefined;
-    if (bracketedSentence.startsWith(("(N ") || ("(V ") || ("P") || ("Adj") || ("Adv"))) {
+    if (bracketedSentence.startsWith(("(N ") || ("(V ") || ("(P ") || ("(Adj ") || ("(Adv "))) {
         selectedMode = "morphology";
     }
     makeSelectable(sentence, 0, 0, bracketedSentence, selectedMode) // this will allow highlighting/selecting, parsing through recursion
@@ -855,7 +855,10 @@ function generateMenu(e) {
     console.log(column, constituent,treeRow[row+1])
 
     $(this).css({ "cursor": "auto"})
-    let labelArrayID = 1;
+    let labelArrayID = 0;
+    if (bracketedSentence.includes("(Aux ")) {
+        labelArrayID = 1
+    }
     let labels = [
     ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "C", "Perf", "Prog"],
     ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "Aux", "PossN", "C", "Perf", "Prog"],
@@ -875,7 +878,7 @@ function generateMenu(e) {
         labelDivArray.push($("<div/>", { html: i, class: "labelItem" }))
     }
 
-    let labelFilterSet = [{"phrase": ["S"], "bar": ["S"]}, 
+    let labelFilterSet = [{"phrase": ["S"], "non" : [], "bar": ["S"]}, 
                         {"phrase": ["S", "T"], "non" : ["Aux"], "bar": ["S", "Aux"]}]
 
     $(this).append($("<div/>", { class: "labelMenu" }).append([...labelDivArray, typeMenu]))

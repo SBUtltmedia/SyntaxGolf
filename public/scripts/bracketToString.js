@@ -37,9 +37,9 @@ function bracketToString(bracket) {
     console.log(fixedBracket)
     let word = parseQuery(window.location.search).word || false;
     if (word) {
-        fixedBracket = fixedBracket.replace(/\s+/g, "").replaceAll(")&#x2000;", "").replaceAll("&#x2000;)", "")
+        fixedBracket = fixedBracket.replace(/\s+/g, "").replaceAll(")&#x2009;", "").replaceAll("&#x2009;)", "")
     } else {
-        fixedBracket = fixedBracket.replace(/\s+/g, "&#x2000;").replaceAll(")&#x2000;", ") ").replaceAll("&#x2000;)", ")")
+        fixedBracket = fixedBracket.replace(/\s+/g, "&#x2009;").replaceAll(")&#x2009;", ") ").replaceAll("&#x2009;)", ")")
     }
     // console.log(fixedBracket)
 
