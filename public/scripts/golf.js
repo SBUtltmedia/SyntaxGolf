@@ -12,8 +12,9 @@ function init() {
     
 JSON_API(undefined, problem_id)
         .then((data) => {
-            problemJSON = data
+            console.log({data})
             globals.problemJSON = data
+            let problemJSON = globals.problemJSON;
             let startingSentence = parseQuery(window.location.search).string 
             // || "(S (NP Mary) (VP (V had) (NP (D a) (N' (Adj little) (N lamb)))))"
             //let sentence = treeToString(parse(bracketedSentence))
@@ -23,13 +24,14 @@ JSON_API(undefined, problem_id)
                 problemJSON.description = "tests"
             }
            // sendJSON(problemJSON, 1)
-            loadMenu(problemJSON)
-            loadSentence(0, problemJSON)
-            intro(problemJSON)
+            loadMenu()
+            loadSentence(0)
+            intro()
         })
 }
 
-function loadMenu(problemJSON) {
+function loadMenu() {
+    let problemJSON = globals.problemJSON;
     mode = parseQuery(window.location.search).mode || 'automatic'
     if (mode == 'manual') {
         $("#menu").append($("<div/>", { html: "Check Answer", class: "button" }).on({
@@ -79,9 +81,10 @@ function enableNext() {
     $(".disable").first().removeClass("disable")
 }
 // ready function
-function loadSentence(sentenceID, problemJSON) {
+function loadSentence(sentenceID) {
     document.querySelector("#dialog")?.remove();
-    bracketedSentence = problemJSON.holes[sentenceID].expression
+    let problemJSON = globals.problemJSON;
+    let bracketedSentence = problemJSON.holes[sentenceID].expression
     if (bracketedSentence) {
         bracketedSentence = bracketedSentence.replaceAll("[", "(").replaceAll("]", ")");
         bracketedSentence = bracketedSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ');
@@ -137,9 +140,11 @@ function loadSentence(sentenceID, problemJSON) {
         }
     })
     setUpDrake();
+    document.getElementsByClassName("wordContainer")[0].focus()
 }
 
-function intro(problemJSON) {
+function intro() {
+    let problemJSON = globals.problemJSON;
     var intro = introJs();
     let dragVideo= "<video src='images/dragVideo.mp4'  autoplay class='introVideo' />"
     let parseVideo= "<video src='images/parseVideo.mp4'  autoplay class='introVideo' />"
@@ -496,7 +501,7 @@ function containerSetUpAndInput(text, index, traceIndexOffset, fudge, className,
         return sentenceArray
     }
     console.log(text, index,traceIndexOffset, fudge, className, sentenceArray)
-    let container =  $("<div/>", { html: text, "data-uid": Math.random(), "data-index": index+traceIndexOffset+fudge, class: className })
+    let container =  $("<div/>", { role:"checkbox","aria-checked":"false",html: text, "data-uid": Math.random(), "data-index": index+traceIndexOffset+fudge, class: className })
                 .on({
         
                     mousemove: function (e) {
