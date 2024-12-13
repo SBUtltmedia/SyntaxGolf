@@ -113,13 +113,13 @@ function jsonToDom(tree) {
 
     // draw curves between matching traces and destinations
     // maybe should be part of drawLines() ?
-    console.log($(`[data-wastraced]`), $(`[data-destination]`))
+    // console.log($(`[data-wastraced]`), $(`[data-destination]`))
     // try it here and move to drawLines() or new function drawCurve() later
     $(`[data-wastraced]`).each((i, block) => {
-        console.log(i, block)
-        console.log($(block).attr("data-wastraced"))
+        // console.log(i, block)
+        // console.log($(block).attr("data-wastraced"))
         let endPoint = $(block)
-        console.log($(`[data-destination=${$(block).attr("data-wastraced")}]`)) 
+        // console.log($(`[data-destination=${$(block).attr("data-wastraced")}]`)) 
         let startPoint = $(`[data-destination=${$(block).attr("data-wastraced")}]`)
         // how to find control point(s)? 
         // calculate point coordinates
@@ -127,8 +127,8 @@ function jsonToDom(tree) {
         let endCenterX = (endleft+endright) / 2
         let [startleft, starttop, startright, startbottom] = getCorners(startPoint)
         let startCenterX = (startleft+startright) / 2
-        console.log(endCenterX, endbottom)
-        console.log(startCenterX, startbottom)
+        // console.log(endCenterX, endbottom)
+        // console.log(startCenterX, startbottom)
         
         // test by drawing dots
         // var shape = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -155,6 +155,6 @@ function jsonToDom(tree) {
     })
 
 
-    console.log($("#lineContainer").children())
+    // console.log($("#lineContainer").children())
 
 }

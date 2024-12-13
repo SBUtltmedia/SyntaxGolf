@@ -80,7 +80,7 @@ if(tree.children.length==0)
     let [g,...text]=  sentence.split(" ")
 
     text = text.filter(word=>!word.includes("^"))   
-         console.log(text)
+        //  console.log(text)
     if (text.length > 1) {
         tree.children=text.join(" ").split(")")[0]
     //     // text.pop() // make this only affect ^ using includes
@@ -94,7 +94,7 @@ if(tree.children.length==0)
     // console.log(text)
     // console.log(tree.children)
 }
- console.log(tree)
+//  console.log(tree)
 return tree
 }
 

@@ -12,7 +12,7 @@ function init() {
     
 JSON_API(undefined, problem_id)
         .then((data) => {
-            console.log({data})
+            // console.log({data})
             globals.problemJSON = data
             let problemJSON = globals.problemJSON;
             let startingSentence = parseQuery(window.location.search).string 
@@ -98,8 +98,8 @@ function loadSentence(sentenceID) {
     let parFactor = getParFactor(minStep)
     $("#problemConstituent").attr("data-positivePoint", 0)
     let sentence = bracketToString(bracketedSentence)
-    getNumberOfRows(bracketedSentence)
-    console.log(sentence)
+    getNumberOfRows()
+    // console.log(sentence)
     updatePoints()
     $("#problemConstituent, #lineContainer").html("")
     resizeWindow()
@@ -120,7 +120,7 @@ function loadSentence(sentenceID) {
     if (bracketedSentence.startsWith(("(N ") || ("(V ") || ("(P ") || ("(Adj ") || ("(Adv "))) {
         selectedMode = "morphology";
     }
-    makeSelectable(sentence, 0, 0, bracketedSentence, selectedMode) // this will allow highlighting/selecting, parsing through recursion
+    makeSelectable(sentence, 0, 0, selectedMode) // this will allow highlighting/selecting, parsing through recursion
     $("#stage").on({
         mousedown: function (e) {
             // console.log($(e))
@@ -198,20 +198,24 @@ function getTraceInfo(el, source){
     if (isNaN($(el).attr("data-blockindex"))) {
         $(el).attr("data-blockindex", $(el).next().attr("data-blockindex"))
     }
+    console.log($(el))
     let index = $(el).attr("data-blockindex")
+    let bracketedSentence = $("#sentenceContainer").attr("data-bracketedSentence")
     let rows = treeToRows(parse(bracketedSentence)) 
-    console.log(row,index, rows)
+    // console.log(row,index, rows)
     let moveThing = rows[row].find(x => x.column == index)
     return moveThing
 }
 
-function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionMode=undefined, wrongAnswers = [], different ="") {
+function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wrongAnswers = [], different ="") {
+    let bracketedSentence = $("#sentenceContainer").attr("data-bracketedSentence")
     let mode = parseQuery(window.location.search).mode || 'automatic'
-    console.log(sentence, row, blockIndex, bracketedSentence, selectionMode, different)
+    console.log(sentence, row, blockIndex, bracketedSentence, selectionMode, wrongAnswers, different)
     // sentence is a string of words
     // row is the number of the div to put these words into
-    console.log(bracketedSentence, parse(bracketedSentence))
+    // console.log(bracketedSentence, parse(bracketedSentence))
     // index is the position in the row, the initial index of the first word
+    console.log(parse(bracketedSentence))
     console.log(treeToString(parse(bracketedSentence)))
     console.log(treeToRows(parse(bracketedSentence)))
     if (!($(`[data-row="${row}"]`)).length) {
@@ -232,13 +236,13 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
     let nextRow = treeToRows(parse(bracketedSentence))[row + 1] || []
     let filterRow = nextRow.filter(n => n.column >= blockIndex && n.column < (blockIndex + sentence.split(" ").length))
-    console.log(blockIndex, filterRow, nextRow, blockIndex + sentence.split(" ").length)
+    // console.log(blockIndex, filterRow, nextRow, blockIndex + sentence.split(" ").length)
     let modeChange = false
     filterRow.forEach(x => {
         if (x.label == "Af") {
             modeChange = true
         }
-        console.log(x, x.label)
+        // console.log(x, x.label)
     })
     if (modeChange) {
         selectionMode = "morphology"
@@ -257,19 +261,19 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
         // if (word == "see")  {
         //     fudge=2
         // }
-        console.log(word)
+        // console.log(word)
         if ($("#sentenceContainer").attr("data-changedword")) {
             let numberOfRows = $("#menu").attr("data-currentNumberOfRows");
             let changedWord = $("#sentenceContainer").attr("data-changedword")
             changedWord.split(",").forEach(x => {if (x.includes(word)) {changedWord = x}})
             let changedWordSet = changedWord.trim().split("#");
             let changedWordCount = changedWordSet.length;
-            console.log(changedWordCount, changedWordSet)
+            // console.log(changedWordCount, changedWordSet)
             let changedWordIndex = Math.abs(Math.max(changedWordCount-(numberOfRows-row), 0));
             if (changedWordSet.includes(word)|| word == changedWord ) {
                 sentence = sentence.replace(` ${word} `, ` ${changedWordSet[changedWordIndex]} `)
                 word = changedWordSet[changedWordIndex]
-                console.log(word, sentence, changedWordIndex, changedWordSet)
+                // console.log(word, sentence, changedWordIndex, changedWordSet)
             }}
         if (word == "") {
             traceIndexOffset -=1;
@@ -337,9 +341,9 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                 let trueRow = treeToRows(parse(bracketedSentence))[row + 1]
                 let thisRow = treeToRows(parse(bracketedSentence))[row]
                 let treeRow = treeToRows(parse(bracketedSentence))
-                console.log(selectedWords, selectionMode, sentence)
+                // console.log(selectedWords, selectionMode, sentence)
                 blockIndex = $(`#${blockID}`).attr("data-blockindex") // in case it was updated
-                console.log(selectedJQ, $(`#${blockID}`), selectedWords[0])
+                // console.log(selectedJQ, $(`#${blockID}`), selectedWords[0])
                 if ($("#sentenceContainer").attr("data-changedword")) {
                     thisRow.some(x => {if (x.changed === sentence) {
                         sentence = x.constituent
@@ -347,7 +351,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                 }
                 let constituent = sentenceArrayToSentence(selectedWords, selectionMode, sentence)
                 newIndex = parseInt(blockIndex) + parseInt(selectedWords[0].dataset.index)
-                console.log(constituent, blockIndex, newIndex, selectedWords)
+                // console.log(constituent, blockIndex, newIndex, selectedWords)
 
                 // check if constituent is valid before calling recursion
                 // if in automatic checking mode
@@ -359,17 +363,17 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
                     // x.constituent === constituent
                     let match = trueRow && trueRow.some(x => {if ((x.constituent === constituent || (x.changed === constituent))&&
                             (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow)))){
-                            console.log($(this).children()[1])
+                            // console.log($(this).children()[1])
                             xlabel = x.label
                             // $(this).children()[1].attr("data-nextElLabel", x.label)
                             return true
                          } else {return false}})
-                    console.log(match)
+                    // console.log(match)
                     if (match
                             //   || x.column === newIndex
                             //   || tracePad(trueRow, x.column, newIndex)
                             ) {
-                        makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode, wrongAnswers, xlabel);
+                        makeSelectable(constituent, row + 1, newIndex, selectionMode, wrongAnswers, xlabel);
                         selectedJQ.addClass("faded").removeClass("selected")
                         $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
                         $("#problemConstituent").attr("data-positivePoint", parseInt($("#problemConstituent").attr("data-positivePoint"))+1)
@@ -378,7 +382,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
                         if (!wrongAnswers.find((item) => item == wrongArray)) {
                             wrongAnswers.push(wrongArray)
-                            console.log(treeToRows(parse(bracketedSentence))[row + 1])
+                            // console.log(treeToRows(parse(bracketedSentence))[row + 1])
                             $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
                         }
                         selectedJQ.addClass("animateWrong")
@@ -393,7 +397,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
 
                 } else {
-                    makeSelectable(constituent, row + 1, newIndex, bracketedSentence, selectionMode, wrongAnswers);
+                    makeSelectable(constituent, row + 1, newIndex, selectionMode, wrongAnswers);
                     selectedJQ.addClass("faded").removeClass("selected") // appear grey and can't be selected again
 
                 }
@@ -451,7 +455,7 @@ function makeSelectable(sentence, row, blockIndex, bracketedSentence, selectionM
 
     //leftPad(rowJQ)
     leftPadAll()
-    console.log($(".noPad").prev().html())
+    // console.log($(".noPad").prev().html())
     $(".noPad").prev().css({"padding-right":0})
 }
 
@@ -482,15 +486,15 @@ function sentenceArrayToSentence(sentenceArray, selectionMode, sentence) {
         let selectedWord = $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join("");
         let comparedWord = []
         sentence.split(" ").forEach((word) => {
-            console.log(sentenceArray, sentence, word, selectedWord)
+            // console.log(sentenceArray, sentence, word, selectedWord)
             if (word == selectedWord.substr(0, word.length)) {
                 comparedWord.push(word)
                 selectedWord = selectedWord.substr(word.length)
-                console.log(selectedWord)
+                // console.log(selectedWord)
             }
         })
         comparedWord.push(selectedWord)
-        console.log(comparedWord, comparedWord.join(" "), sentenceArray, selectedWord)
+        // console.log(comparedWord, comparedWord.join(" "), sentenceArray, selectedWord)
         return comparedWord.join(" ").replace(/ $/g, '');
     }
     return $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join(" ");
@@ -500,7 +504,7 @@ function containerSetUpAndInput(text, index, traceIndexOffset, fudge, className,
     if (text.includes("-")) {
         return sentenceArray
     }
-    console.log(text, index,traceIndexOffset, fudge, className, sentenceArray)
+    // console.log(text, index,traceIndexOffset, fudge, className, sentenceArray)
     let container =  $("<div/>", { role:"checkbox","aria-checked":"false",html: text, "data-uid": Math.random(), "data-index": index+traceIndexOffset+fudge, class: className })
                 .on({
         
@@ -560,8 +564,8 @@ function setUpDrake() {
     if (drake) {drake.destroy();}
     drake = dragula([...document.getElementsByClassName("container")], {
         isContainer: function (el) {
-            console.log(el)
-            console.log($(el).attr("data-row"))
+            // console.log(el)
+            // console.log($(el).attr("data-row"))
             // console.log($(el).hasClass("container"))
             if ($(el).attr("data-row") == "0") {
                 return false
@@ -585,18 +589,18 @@ function setUpDrake() {
         if (getTraceInfo(el, source).destination) {
             let destNum = getTraceInfo(el, source).destination
             $(el).attr("data-dest", parseInt(destNum))
-            console.log($(el).attr("data-dest"))
+            // console.log($(el).attr("data-dest"))
         }
     })
     drake.on("drop", (el, target, source, sibling) => {//resizeWindow()
-        console.log({el, target, source, sibling})
+        // console.log({el, target, source, sibling})
         // $(".gu-mirror").remove()
         if (target === null) { // dropped back where it originated
-            console.log("no movement")
+            // console.log("no movement")
             return
         }
         let destID = $(el).attr("id")
-        console.log(destID)
+        // console.log(destID)
         $(el).attr("id", Date.now()) // new distinct id
         let index = $(`[data-wastraced]`).length + 1
         $(`#${destID}`).attr("data-destination", index)
@@ -611,17 +615,17 @@ function setUpDrake() {
             //console.log("no prev")
             newBlockIndex = parseInt($(el).next().attr("data-blockindex"))
         }
-        console.log(newBlockIndex, $(el))
+        // console.log(newBlockIndex, $(el))
         $(el).attr("data-blockindex", newBlockIndex)
         // console.log($(el).attr("data-blockindex")) 
         //console.log(findParent($(el)))
         if (getTraceInfo(el, target)?.trace) {
             let traceNum = getTraceInfo(el, target).trace
             $(el).attr("data-traceIndex", parseInt(traceNum))
-            console.log($(el))
+            // console.log($(el))
         }
         let traceInfo = getTraceInfo(el, target)
-        console.log(getTraceInfo(el, target))
+        // console.log(getTraceInfo(el, target))
 
         // test if this placement is valid for automatic mode
         if (mode == 'automatic') {
@@ -630,8 +634,8 @@ function setUpDrake() {
             let trace = $(el).attr("data-traceIndex");
             let dest =  $(`#${destID}`).attr("data-dest");
             $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
-            console.log(trace, dest, $(el).attr("data-traceIndex"), $(`#${destID}`).attr("data-dest"), typeof $(el).attr("data-traceIndex"), typeof $(`#${destID}`).attr("data-dest"))
-            console.log(treeToRows(parse(bracketedSentence)))
+            console.log(trace, dest)
+            // console.log(treeToRows(parse(bracketedSentence)))
             // trueRow.some(x => ((x.constituent === constituent)
             // && (x.column === newBlockIndex || tracePad(trueRow, x.column, newBlockIndex))
             // && 
@@ -648,14 +652,14 @@ function setUpDrake() {
                 //     nextObject = nextObject.next()
                 //     ++nextCount
                 // }}
-                console.log(trace, dest)
+                // console.log(trace, dest)
                 updateIndicesAfterTrace(el)
                 $("#problemConstituent").attr("data-positivePoint", parseInt($("#problemConstituent").attr("data-positivePoint"))+1)
                 if (!(traceInfo.destination)){
                     $(el).addClass("traced")
                 }
                 $(`#${destID}`).addClass("traced")
-                console.log($(`#${destID}`),$(el)[0],traceInfo)
+                // console.log($(`#${destID}`),$(el)[0],traceInfo)
             } else {
                 $(el).remove()
             }
@@ -679,12 +683,12 @@ function findParent(block) {
     let parent = false
     rowIndex = parseInt(block.parent().attr("data-row"))
     row = $(`[data-row="${rowIndex - 1}"]`)
-    console.log(row)
+    // console.log(row)
     indexVarificator = parseInt($(block).attr("data-blockindex"))
     row.children().each(function () {
         // console.log($(this), $(this).attr("data-blockindex"))
         // console.log($(block), $(block).attr("data-blockindex"), $(block)[0].dataset.blockindex)
-        console.log($(this))
+        // console.log($(this))
         if ($(this).attr("data-traceindex") && $(block).attr("data-wastraced")) {
             indexVarificator -= 1
         }
@@ -693,7 +697,7 @@ function findParent(block) {
         }
         parent = $(this)
     })
-    console.log(parent, block, indexVarificator)
+    // console.log(parent, block, indexVarificator)
     return parent
 }
 
@@ -745,7 +749,7 @@ function drawLine(child, parent) {
 
     let [, , , pbottomPercent, pCenterXPercent,] = getCornerPercentages(topElement)
     let [, ctopPercent, , , cCenterXPercent,] = getCornerPercentages(childLabel)
-    console.log(pbottomPercent, pCenterXPercent, ctopPercent, cCenterXPercent)
+    // console.log(pbottomPercent, pCenterXPercent, ctopPercent, cCenterXPercent)
 
     pbottomPercent = pbottomPercent + offset * needsOffset
     ctopPercent = ctopPercent - offset
@@ -815,7 +819,7 @@ function getCorners(elem) {
     let centerY = (top + bottom) / 2
 
     //return Object.values({left, top, right, bottom})
-    console.log(elem, { left, top, right, bottom, centerX, centerY })
+    // console.log(elem, { left, top, right, bottom, centerX, centerY })
     return [left, top, right, bottom, centerX, centerY]
 }
 
@@ -829,9 +833,9 @@ function generateMenu(e) {
     if ($(".labelMenu").length) {
         return;
     }
-    console.log($(this))
-    console.log($(this).parent())
-    console.log($(this).parent().find(".constituentContainer").find(".letterContainer"))
+    // console.log($(this))
+    // console.log($(this).parent())
+    // console.log($(this).parent().find(".constituentContainer").find(".letterContainer"))
     // console.log($(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer)=>{return wordContainer.innerHTML}).join(" "))
     let constituent = $(this).parent().find(".constituentContainer").find(".wordContainer").toArray().map((wordContainer) => { return wordContainer.innerHTML }).join(" ")
     //console.log(constituent)
@@ -857,7 +861,6 @@ function generateMenu(e) {
     // item.constituent === constituent & 
     let goldlabel = reference?.label
     console.log(reference, goldlabel, constituent, column, $(this).parent().data(), constituent)
-    console.log(column, constituent,treeRow[row+1])
 
     $(this).css({ "cursor": "auto"})
     let labelArrayID = 0;
@@ -898,7 +901,7 @@ function generateMenu(e) {
         "click": function (e) {
             let labelHTML = $(this).html()
             for (symbol of Object.keys(symbolMap)) {
-                console.log(symbol, labelHTML)
+                // console.log(symbol, labelHTML)
                 if (symbol != labelHTML) {
                     $(this).parent().parent().find(".labelItem").removeClass(symbolMap[symbol])
                     labelFilters($(`.labelItem`), labelFilterSet[labelArrayID], "non");
@@ -924,10 +927,10 @@ function generateMenu(e) {
             let label = $(this).html() + symbol
             // replace ? with label and close menu
             $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
-            console.log(label,goldlabel)
+            // console.log(label,goldlabel)
             if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
                 // if (treeRow[row+1] && treeRow[row+1].some(x => x.label =="aux") && (goldlabel == "S" || goldlabel == "TP")) {
-                //     makeSelectable("", row+1, 1, bracketedSentence, "syntax", wrongAnswer, "auxItem")
+                //     makeSelectable("", row+1, 1, "syntax", wrongAnswer, "auxItem")
                 // } //creating selection box for tense like -past
                 removeMenu($(this).parent().parent(), label)
                 $("#problemConstituent").attr("data-positivePoint", parseInt($("#problemConstituent").attr("data-positivePoint"))+1)
@@ -966,7 +969,7 @@ function tenseSelection(tenseElement) {
         let option = Object.assign(document.createElement("option"),{innerHTML:`${x}`, class: "tense"})
         select.appendChild(option);
     })
-    console.log(select)
+    // console.log(select)
     tenseElement.push(select)
 }
 
@@ -1076,7 +1079,7 @@ function treeAtNode(blockID, PCM) {
 }
 
 function showProblem(event, problem) {
-    console.log(event.clientY)
+    // console.log(event.clientY)
     $("#problemInfo").remove()
     let note = problem.note || "";
     let problemInfo = `
@@ -1093,7 +1096,7 @@ function displayProblemRight(bracketedString) {
     let string = bracketToString(bracketedString)
     string.split(' ').forEach((word) => {
         morphoDetecter = false;
-        console.log(word)
+        // console.log(word)
         let wordIndex = bracketedString.indexOf(` ${word})`)
         if (morphoDetecterForNext) {morphoDetecterForNext = false; morphoDetecter = true;}
         if (bracketedString[wordIndex - 2] == "A" && bracketedString[wordIndex - 1] == "f") {
@@ -1160,7 +1163,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         if (typeof tree.mode !== 'undefined') {
             morphologyParts.push(tree.children)
             $("#sentenceContainer").attr("data-morphologyparts", morphologyParts)
-            console.log(morphologyParts, tree.children)
+            // console.log(morphologyParts, tree.children)
         }
         if (changed != "") {
             newEntry['changed'] = changed
@@ -1193,7 +1196,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
                 column = index
             }
         })
-        console.log(constituent)
+        // console.log(constituent)
         // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
         let groupedConstituent;
         [groupedConstituent, changed]= changedWordDetector(constituent.join(" "), row);
@@ -1217,7 +1220,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
             let totalColumn = $("#problemConstituent").attr("data-totalColumn")
             if (totalColumn == undefined || parseInt(totalColumn) < highestColumn) {$("#problemConstituent").attr("data-totalColumn", highestColumn+1)}
             if (mode == "morphology") {return [constituent.join(""), column]}
-            console.log([constituent.join(" "), column])
+            // console.log([constituent.join(" "), column])
             return [constituent.join(" "), column]
         }
     }
@@ -1227,7 +1230,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
 function changedWordDetector(constituents, row) {
     let changedWordInput = []
     let numberOfRows;
-    console.log(constituents,row)
+    // console.log(constituents,row)
     if ($("#menu").attr("data-currentNumberOfRows")) 
         {numberOfRows = $("#menu").attr("data-currentNumberOfRows");} else {
             numberOfRows = 4
@@ -1244,19 +1247,19 @@ function changedWordDetector(constituents, row) {
                 $("#sentenceContainer").attr("data-changedword", changedWordInput)
                 let changedWordSet = wordsSet[i].trim().split("#");
                 let changedWordCount = changedWordSet.length;
-                console.log(changedWordCount, changedWordSet)
+                // console.log(changedWordCount, changedWordSet)
                 let outputConstituentIndex =  Math.max(changedWordCount-(numberOfRows-row), 0);
                 let changedWordIndex =  Math.max(changedWordCount-(numberOfRows-(row-1)), 0);
                 if (wordCount == 1) {return [changedWordSet[outputConstituentIndex], changedWordSet[changedWordIndex]]}
                 outputConstituent = wordsSet.toSpliced(i, 1, changedWordSet[outputConstituentIndex]).join(" ")
-                console.log(outputConstituent, changedWordSet[outputConstituentIndex], changedWordIndex, row, changedWordCount, wordsSet)
+                // console.log(outputConstituent, changedWordSet[outputConstituentIndex], changedWordIndex, row, changedWordCount, wordsSet)
                 if (changed != 0) {
                     changed = changed.trim().split(/\s+/).toSpliced(i, 1, changedWordSet[changedWordIndex]).join(" ")
-                    console.log(changed, outputConstituent)
+                    // console.log(changed, outputConstituent)
                 } else {changed = wordsSet.toSpliced(i, 1, changedWordSet[changedWordIndex]).join(" ")}
                 if (!(outputConstituent.includes("#"))) {return [outputConstituent,changed]} else {
                     wordsSet = outputConstituent.trim().split(/\s+/)
-                    console.log(wordsSet, outputConstituent)
+                    // console.log(wordsSet, outputConstituent)
                 }
             }
     }
@@ -1323,8 +1326,8 @@ function isValid(tree, subtree) {
 function tracePad(row, xCol, cCol, tree) {
     // x and c actually have equivalent columns if the element at c's column and all elements up to x
     // are traces
-    console.log(xCol, cCol)
-    console.log(tree[row], tree)
+    // console.log(xCol, cCol)
+    // console.log(tree[row], tree)
     // console.log(row.filter(n => n.column >= cCol && n.column < xCol))
 
     if (!tree[row]) {
@@ -1337,13 +1340,13 @@ function tracePad(row, xCol, cCol, tree) {
     let traceNum = 0
     for (let i = row; i < tree.length; i++) {
         let filterval = tree[i].filter(n => n.column >= 0 && n.column < xCol)
-        console.log(filterval)
+        // console.log(filterval)
         if (!filterval.length) { // is this how you do it?
             console.log("empty")
         }
         filterval.forEach(n => {
             // //console.log(typeof n.trace !== undefined)
-            console.log(n.trace)
+            // console.log(n.trace)
             if (n.trace) {
                 traceNum += 1
         }
@@ -1351,7 +1354,7 @@ function tracePad(row, xCol, cCol, tree) {
         // return n.trace
     })
     }
-    console.log(traceNum)
+    // console.log(traceNum)
     // let filterval = tree.filter(n => n.column >= 0 && n.column < xCol)
     // console.log(filterval)
     // if (!filterval.length) { // is this how you do it?
@@ -1396,12 +1399,12 @@ function updatePoints() {
     let minStep = getMinStep($("#sentenceContainer").attr("data-bracketedSentence"))
     let parFactor = getParFactor(minStep)
     let stepsUsed = parseInt($("#problemConstituent").attr("data-stepsUsed"))
-    console.log($("#problemConstituent").attr("data-stepsUsed"))
+    // console.log($("#problemConstituent").attr("data-stepsUsed"))
     $("#points").html(`Par: ${parseInt(minStep+parFactor)}<br/>Steps Used: ${stepsUsed}`)
 }
 
 function finishAlarm() {
-    console.log(globals.problemJSON)
+    // console.log(globals.problemJSON)
     let currentSentenceID = parseInt($("#sentenceContainer").attr("data-currentSentenceID"))
     let minStep = getMinStep($("#sentenceContainer").attr("data-bracketedSentence"))
     let parFactor = getParFactor(minStep)
@@ -1417,7 +1420,7 @@ function finishAlarm() {
 	 let {flagColor, alarmForBest} = getProgressSignal(bestStep,good,minStep)
         console.log(bestStep, good, minStep)
         color = `--color_fill: ${flagColor};`
-        console.log(color)
+        // console.log(color)
         $(`#${currentSentenceID}`).attr("style", color)
         // if (PJ.progress.length == 1) {enableNext()}
     let problem_id = parseQuery(window.location.search).problem_id || 1
@@ -1486,15 +1489,16 @@ function globalScore(problemJSON) {
     return globalS
 }
 
-function getNumberOfRows(bracketedSentence) {
+function getNumberOfRows() {
+    let bracketedSentence = $("#sentenceContainer").attr("data-bracketedSentence")
     let currentNumberOfRows = treeToRows(parse(bracketedSentence)).length;
     $("#menu").attr("data-currentNumberOfRows", currentNumberOfRows)
-    console.log(currentNumberOfRows)
+    // console.log(currentNumberOfRows)
 }
 
 function leftPad(rowJQ) {
     //console.log(rowJQ.children().first())
-    console.log(rowJQ)
+    // console.log(rowJQ)
     let firstItem = rowJQ.children().first()
     firstItem.addClass("first")
     let firstIndex = firstItem.attr("data-blockindex")
@@ -1509,7 +1513,7 @@ function leftPad(rowJQ) {
 
 function leftPadAll() {
     $("#problemConstituent").children().each(function (rownum, rowval) {
-        console.log(rownum, rowval)
+        // console.log(rownum, rowval)
         leftPad($(rowval))
     })
 }
@@ -1517,15 +1521,15 @@ function leftPadAll() {
 function findRowInPCM(id, pcm) {
 
     function findRowInPCM2(id, count = 0) {
-        console.log(id)
-        console.log(pcm)
-        console.log(Object.keys(pcm))
-        console.log(count, $(`#${id}`))
+        // console.log(id)
+        // console.log(pcm)
+        // console.log(Object.keys(pcm))
+        // console.log(count, $(`#${id}`))
         //let count = 0
         // start from top? and count how many times it needs to recurse
         // or find parent and keep going until it reaches the top and count how many steps
         let parentID = Object.keys(pcm).filter(x => pcm[x].includes(id))[0]
-        console.log(parentID)
+        // console.log(parentID)
 
         if (parentID === undefined) {
             console.log(count)
@@ -1536,7 +1540,7 @@ function findRowInPCM(id, pcm) {
             //count = count + findRowInPCM2(parentID, count+1)
             let nextStep = findRowInPCM2(parentID, count + 1)
             count += nextStep
-            console.log(nextStep)
+            // console.log(nextStep)
             console.log(count)
             return count
             // this gets too large
@@ -1549,13 +1553,13 @@ function findRowInPCM(id, pcm) {
 // delete?
 
 function updateIndicesAfterTrace(trace) {
-    console.log($(trace))
+    // console.log($(trace))
     let j = $(trace).attr("data-blockindex")
     $("[data-blockindex].block").filter(function () {
-        console.log($(this))
+        // console.log($(this))
         return $(this).attr("data-blockindex") >= j
     }).each((i, e) => {
-        console.log($(e))
+        // console.log($(e))
         // update all except element itself and its ancestors
         if (!($(e).attr("id") === $(trace).attr("id") || isAncestor($(e), $(trace), getParentChildrenMap()))) {
             $(e).attr("data-blockindex", parseInt($(e).attr("data-blockindex")) + 1)
@@ -1567,7 +1571,7 @@ function updateIndicesAfterTrace(trace) {
 function drawArrows() {
     // $("#lineContainer").empty()
 
-    console.log($(`[data-wastraced]`), $(`[data-destination]`))
+    // console.log($(`[data-wastraced]`), $(`[data-destination]`))
 
     // recreate defs for arrows
     var defs = document.createElementNS("http://www.w3.org/2000/svg", "defs")
@@ -1591,18 +1595,18 @@ function drawArrows() {
         if (block.classList.contains("gu-mirror")) {
             return;
         }
-        console.log(i, block)
-        console.log($(block).attr("data-wastraced"))
+        // console.log(i, block)
+        // console.log($(block).attr("data-wastraced"))
         let endPoint = $(block).find(".constituentContainer")
 
-        console.log($(`[data-destination=${$(block).attr("data-wastraced")}]`))
+        // console.log($(`[data-destination=${$(block).attr("data-wastraced")}]`))
         let startPoint = $(`[data-destination=${$(block).attr("data-wastraced")}]`).find(".constituentContainer")
 
         // drawDot(endPoint)
         // drawDot(startPoint)
 
-        console.log(endPoint)
-        console.log(startPoint)
+        // console.log(endPoint)
+        // console.log(startPoint)
 
         // end point includes padding which is a problem
         // note: endpoint and startpoint are mixed up?
@@ -1665,9 +1669,9 @@ function getSize() {
 
 function getCornerPercentages(elem) {
     let [left, top, right, bottom] = getCorners(elem)
-    console.log(left, top, right, bottom)
+    // console.log(left, top, right, bottom)
     let [containerWidth, containerHeight] = getSize()
-    console.log(containerWidth, containerHeight)
+    // console.log(containerWidth, containerHeight)
     let leftPercent = left / containerWidth * 100
     let rightPercent = right / containerWidth * 100
     let topPercent = top / containerHeight * 100
@@ -1676,7 +1680,7 @@ function getCornerPercentages(elem) {
 
     let centerXPercent = (leftPercent + rightPercent) / 2
     let centerYPercent = (topPercent + bottomPercent) / 2
-    console.log(leftPercent, topPercent, rightPercent, bottomPercent, centerXPercent, centerYPercent)
+    // console.log(leftPercent, topPercent, rightPercent, bottomPercent, centerXPercent, centerYPercent)
     return [leftPercent, topPercent, rightPercent, bottomPercent, centerXPercent, centerYPercent]
 
     // replace calculations in drawLine with this
@@ -1712,6 +1716,6 @@ function bestProgress(progress) {
     }
     // function(a, b){return a - b}
     let sortedProgress = progressCopy.sort(function(a, b){return a - b})
-    console.log(sortedProgress)
+    // console.log(sortedProgress)
     return sortedProgress[0]
 }

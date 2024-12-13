@@ -13,7 +13,7 @@ function parseQuery(queryString) {
     return query;
 }
 let braketedSentence = parseQuery(window.location.search).string
-console.log(braketedSentence)
+// console.log(braketedSentence)
 let lines = [];
 let currentLine = 0; 
 (function ($) {
@@ -108,7 +108,7 @@ let currentLine = 0;
 
 		// };
 		function makeTree(tree, parent, index, cssWidth) {
-			console.log(tree, parent, index, cssWidth)
+			// console.log(tree, parent, index, cssWidth)
 			let newParent = `${parent}_${index}`
 			let select=`${newParent}_select`
 			$(`#${parent}`).append(
@@ -160,9 +160,9 @@ let currentLine = 0;
 		
 				tree.children.forEach((child,index)=>{
 					let childText= treeToString(child).trim()
-					console.log({childText,sentence})
+					// console.log({childText,sentence})
 					if(childText==sentence){
-						console.log($(this).parent().attr("id"),index)
+						// console.log($(this).parent().attr("id"),index)
 						revealSelect($(this).parent().attr("id"),index)
 					};
 
@@ -191,7 +191,7 @@ let currentLine = 0;
 					let childText= treeToString(child).trim()
 					// console.log({childText,sentence})
 					if(childText==sentence){
-						console.log($(this).parent().attr("id"),index)
+						// console.log($(this).parent().attr("id"),index)
 						revealSelect($(this).parent().attr("id"),index)
 					};
 
@@ -312,7 +312,7 @@ let currentLine = 0;
 				zIndex: 100,
 
 				popItemClick: function (globalThis) {
-					console.log($(event.target))
+					// console.log($(event.target))
 					if($(event.target).is(":visible")){
 				
 					let label = JSON.parse($(`#${elId}`).parent().parent().attr("data-tree")).label
@@ -322,7 +322,7 @@ let currentLine = 0;
 					if(container==label){
 						$(`#${elId}`).html(container)
 						revealText($(`#${elId}`).parent().parent().attr("id"))
-						console.log($(`#${elId}`).parent().parent().attr("id"))
+						// console.log($(`#${elId}`).parent().parent().attr("id"))
 					}
 					else{
 						$(`#${elId}`).html("?")
@@ -348,7 +348,7 @@ function getId(id) {
   }
   
   function getOffset( el ) {
-	  console.log(el)
+	//   console.log(el)
 	  var rect = el.getBoundingClientRect();
 	  return {
 		  left: rect.left + window.pageXOffset,

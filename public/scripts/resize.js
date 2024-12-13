@@ -1,7 +1,7 @@
 $(window).resize(resizeWindow);
 var aspect = 1/ 1.1;
 let width = $("#sentenceContainer")
-console.log(width)
+// console.log(width)
 let test = 1
 if (test = 1) {
   aspect = 1/0.8
@@ -22,12 +22,12 @@ var stageHeight,  stageWidth;
 function resizeWindow() {
   var viewport =  $(window)
   var numberOfRows = $("#menu").attr("data-currentNumberOfRows");
-  console.log(numberOfRows);
-  console.log(viewport.width(),$(window).height(), $("#stage").css("height"))
+  // console.log(numberOfRows);
+  // console.log(viewport.width(),$(window).height(), $("#stage").css("height"))
 
   var w = window.innerWidth;
   var h = window.innerHeight;
-console.log(w,h)
+// console.log(w,h)
 
 
   var calcw = w;
@@ -61,7 +61,7 @@ else{
     width: $("#problemConstituent").width(),
     height: $("#problemConstituent").height()
   });
-  console.log(numberOfRows)
+  // console.log(numberOfRows)
   $("#sentenceContainer").css({"font-size":fontSize(numberOfRows) + "rem"});
   // $("#sentenceContainer").css("background-color", "blue");
   // $("#sentenceContainer").css("cssText", `font-size:${0.1*numberOfRows}rem !important;`);

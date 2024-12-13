@@ -25,11 +25,11 @@ function JSON_API(json = {}, id = 1, method = "GET", mode = "user") {
         URL = `problem_set.php?id=${problem_id}${query}`
     }
     param.unshift(URL);
-    console.log(param)
+    // console.log(param)
     return fetch(...param)
         .then(res => {
             if (res.status >= 200 && res.status < 300) {
-                console.log(res);
+                // console.log(res);
                 return res.json()
             } else {
                 throw new Error();

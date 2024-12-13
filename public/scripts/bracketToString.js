@@ -34,14 +34,14 @@ function bracketToString(bracket) {
     .replace(/ \^[^ ]*/g, ')') // get rid of carets
     .replace(/ $/g, '') // get rid of space at end of line
 
-    console.log(fixedBracket)
+    // console.log(fixedBracket)
     let word = parseQuery(window.location.search).word || false;
     if (word) {
         fixedBracket = fixedBracket.replace(/\s+/g, "").replaceAll(")&#x2009;", "").replaceAll("&#x2009;)", "")
     } else {
         fixedBracket = fixedBracket.replace(/\s+/g, "&#x2009;").replaceAll(")&#x2009;", ") ").replaceAll("&#x2009;)", ")")
     }
-    // console.log(fixedBracket)
+    console.log(fixedBracket)
 
     return fixedBracket
     .replace(/\)/g, '') // get rid of right parenthesis
