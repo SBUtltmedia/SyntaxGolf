@@ -198,7 +198,6 @@ function getTraceInfo(el, source){
     if (isNaN($(el).attr("data-blockindex"))) {
         $(el).attr("data-blockindex", $(el).next().attr("data-blockindex"))
     }
-    console.log($(el))
     let index = $(el).attr("data-blockindex")
     let bracketedSentence = $("#sentenceContainer").attr("data-bracketedSentence")
     let rows = treeToRows(parse(bracketedSentence)) 
@@ -586,6 +585,7 @@ function setUpDrake() {
     // drake.on("out",resizeWindow)
     // drake.on("shadow",resizeWindow)
     drake.on("drag", (el, source)=> {
+        console.log(el, el.id)
         if (getTraceInfo(el, source).destination) {
             let destNum = getTraceInfo(el, source).destination
             $(el).attr("data-dest", parseInt(destNum))
@@ -600,19 +600,21 @@ function setUpDrake() {
             return
         }
         let destID = $(el).attr("id")
-        // console.log(destID)
+        console.log(destID)
         $(el).attr("id", Date.now()) // new distinct id
         let index = $(`[data-wastraced]`).length + 1
         $(`#${destID}`).attr("data-destination", index)
         $(el).attr("data-wastraced", index)
+        
         //console.log($(el).prev().attr("data-blockindex"))
         // updating block index
         let newBlockIndex = $(el).attr("data-blockindex")
-        if ($(el).prev()) {
-            //console.log("prev exists")
+        console.log(el.id, document.getElementById(el.id),document.getElementById(el.id).previousElementSibling)
+        if (document.getElementById(el.id).previousElementSibling) {
+            console.log("prev exists")
             newBlockIndex = parseInt($(el).prev().attr("data-blockindex")) + 1
         } else {
-            //console.log("no prev")
+            console.log("no prev")
             newBlockIndex = parseInt($(el).next().attr("data-blockindex"))
         }
         // console.log(newBlockIndex, $(el))
@@ -629,7 +631,6 @@ function setUpDrake() {
 
         // test if this placement is valid for automatic mode
         if (mode == 'automatic') {
-            let targetRow = $(target).attr("data-row")
             newBlockIndex = parseInt($(el).attr("data-blockindex")) //update blockIndex
             let trace = $(el).attr("data-traceIndex");
             let dest =  $(`#${destID}`).attr("data-dest");
@@ -642,17 +643,6 @@ function setUpDrake() {
             if (trace && (trace == dest)) {
                 $(el).attr("style", `grid-column: ${newBlockIndex+1}`)
                 $(el).next().attr("style", `grid-column: ${newBlockIndex+2}`)
-                // let targetRowLength = treeToRows(parse(bracketedSentence))[targetRow]
-                // let nextObject = $(el)
-                // let nextCount = 1;
-                // for (let i = 0; i < targetRowLength; i++) {
-                // if (nextObject) {
-                //     console.log(nextObject,nextCount)
-                //     nextObject.attr("style", `grid-column: ${newBlockIndex+nextCount}`)
-                //     nextObject = nextObject.next()
-                //     ++nextCount
-                // }}
-                // console.log(trace, dest)
                 updateIndicesAfterTrace(el)
                 $("#problemConstituent").attr("data-positivePoint", parseInt($("#problemConstituent").attr("data-positivePoint"))+1)
                 if (!(traceInfo.destination)){
