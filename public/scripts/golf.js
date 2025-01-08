@@ -453,7 +453,7 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
     // firstItem.css({"padding-left":`${firstIndex * 10}rem`})
 
     //leftPad(rowJQ)
-    leftPadAll()
+    // leftPadAll()
     // console.log($(".noPad").prev().html())
     $(".noPad").prev().css({"padding-right":0})
 }
@@ -528,6 +528,31 @@ function containerSetUpAndInput(text, index, traceIndexOffset, fudge, className,
     return sentenceArray;
 }
 
+function labelEmptyGridColumns(gridContainer) {
+    const gridChildren = Array.from(gridContainer.children);
+    console.log(gridContainer, gridChildren)
+    // Determine the maximum grid-column value
+    const columnValues = gridChildren.map(child => 
+        parseInt(getComputedStyle(child).gridColumnStart, 10)
+    );
+    const maxColumn = Math.max(...columnValues);
+
+    // Loop through each column in the grid
+    for (let i = 1; i <= maxColumn; i++) {
+        const isEmpty = !gridChildren.some(child => 
+            parseInt(getComputedStyle(child).gridColumnStart, 10) === i
+        );
+
+        if (isEmpty) {
+            // Add a label or marker for empty columns
+            const label = document.createElement('div');
+            label.className = 'empty-column-label';
+            label.style.gridColumn = i;
+            gridContainer.appendChild(label);
+        }
+    }
+}
+
 function drawLines() {
     // resizeWindow()
 
@@ -591,6 +616,10 @@ function setUpDrake() {
             $(el).attr("data-dest", parseInt(destNum))
             // console.log($(el).attr("data-dest"))
         }
+        let targetRow = parseInt($("#problemConstituent").attr("data-targetRow"))
+        let target = document.querySelectorAll(`[data-row='${targetRow}']`)[0]
+        console.log(target)
+        if (target) {labelEmptyGridColumns(target)}
     })
     drake.on("drop", (el, target, source, sibling) => {//resizeWindow()
         // console.log({el, target, source, sibling})
@@ -605,13 +634,22 @@ function setUpDrake() {
         let index = $(`[data-wastraced]`).length + 1
         $(`#${destID}`).attr("data-destination", index)
         $(el).attr("data-wastraced", index)
-        
         //console.log($(el).prev().attr("data-blockindex"))
         // updating block index
         let newBlockIndex = $(el).attr("data-blockindex")
-        console.log(el.id, document.getElementById(el.id),document.getElementById(el.id).previousElementSibling)
-        if (document.getElementById(el.id).previousElementSibling) {
-            console.log("prev exists")
+        console.log($(el).next(), $(el).prev())
+        let nextDetector;
+        if ($(el).next()[0] == undefined) {nextDetector = false} else {nextDetector = $(el).next()[0].className == "empty-column-label"}
+        if (nextDetector) {
+            console.log("empty space")
+            $(el).remove()
+            $('.empty-column-label').remove()
+            requestAnimationFrame(()=> {resizeWindow()})
+            return true
+        } else {
+        $('.empty-column-label').remove()
+        if ($(el).prev()) {
+            console.log('prev exist');
             newBlockIndex = parseInt($(el).prev().attr("data-blockindex")) + 1
         } else {
             console.log("no prev")
@@ -660,11 +698,11 @@ function setUpDrake() {
             "click": generateMenu
         })
 
-        leftPad($(target))
+        // leftPad($(target))
         // drawLines() \
         requestAnimationFrame(()=> {resizeWindow()}) //wait until previous program finished
         // setTimeout(x=> {resizeWindow()}, 1000) 
-        return true
+        return true }
     })
 }
 
@@ -1160,6 +1198,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
+            $("#problemConstituent").attr("data-targetRow", row)
         }
         if (typeof tree.index !== 'undefined') {
             newEntry['destination'] = tree.index
@@ -1193,6 +1232,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         let newEntry = { label: tree.label, constituent: groupedConstituent, column: column }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
+            $("#problemConstituent").attr("data-targetRow", row)
         }
         if (changed != "") {
             newEntry['changed'] = changed
