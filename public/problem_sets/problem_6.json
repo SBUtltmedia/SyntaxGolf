@@ -1,0 +1,21 @@
+{
+    "holes": [
+      {
+        "expression": "(N (Af un) (N (V employ) (Af ment)))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (Adj (Af in) (Adj activ#active#active)) (Af ity))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (V (Af dis) (V agree)) (Af ment))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (Adj (V (Af re) (V us#use#use)) (Af abil#able#able#)) (Af ity))",
+        "notes": ""
+      }
+    ],
+    "description": ""
+  }

@@ -140,7 +140,7 @@ function loadSentence(sentenceID) {
         }
     })
     setUpDrake();
-    document.getElementsByClassName("wordContainer")[0].focus()
+    // document.getElementsByClassName("wordContainer")[0].focus()
 }
 
 function intro() {
