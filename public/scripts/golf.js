@@ -151,7 +151,7 @@ function intro() {
     let labelInput = "<video src='images/labelInput.mp4'  autoplay class='introVideo' />"
     intro.setOptions({
         steps: [{
-            intro: problemJSON.description
+            intro: problemJSON.description || "Here is your instructions"
         }, {
             element: document.querySelector('#menu'),
             intro: "You choose different hole and see progress by looking at the color of flag, with white for incomplete, red for do it again, green for finished but could be better, and blue for wonderful",
@@ -222,7 +222,7 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
         let thisRow = treeToRows(parse(bracketedSentence))[row]
         // console.log(thisRow.length, thisRow)
         // let gridColumnStyle = `grid-template-columns: repeat(${thisRow.length}, 1fr);`
-        let columnLength = $("#problemConstituent").attr("data-totalColumn")
+        let columnLength = treeToRows(parse(bracketedSentence)).length
         let gridColumnStyle = `grid-template-columns: repeat(${columnLength}, 1fr);`
         if (thisRow.length == 1) {
             gridColumnStyle = ""
@@ -1247,8 +1247,6 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         if (row == 0) {
             return accumulator
         } else {
-            let totalColumn = $("#problemConstituent").attr("data-totalColumn")
-            if (totalColumn == undefined || parseInt(totalColumn) < highestColumn) {$("#problemConstituent").attr("data-totalColumn", highestColumn+1)}
             if (mode == "morphology") {return [constituent.join(""), column]}
             // console.log([constituent.join(" "), column])
             return [constituent.join(" "), column]

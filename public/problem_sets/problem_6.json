@@ -15,6 +15,42 @@
       {
         "expression": "(N (Adj (V (Af re) (V us#use#use)) (Af abil#able#able#)) (Af ity))",
         "notes": ""
+      }, 
+      {
+        "expression": "(N (Af non) (N (Adj (V compar#compare) (Af abil#able#able)) (Af ity)))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adv (Adj (N (Af dis) (N proportion)) (Af ate)) (Af ly))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adv (Adj (Af un) (Adj (V question) (Af ab#able#able#able))) (Af ly))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (Af inter)(Adj (N continent) (Af al)))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (Af inter)(Adj (N disciplin#discipline) (Af ary)))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (Af im#in#) (Adj (V measur#measure) (Af able)))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (V (Af en) (N courage)) (Af ment))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (Af hyper) (N (Adj (V act) (Af iv#ive#ive)) (Af ity)))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (V (Af dis) (V comfort)) (Af able))",
+        "notes": ""
       }
     ],
     "description": ""
