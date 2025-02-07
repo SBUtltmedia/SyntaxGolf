@@ -1,0 +1,45 @@
+{
+    "holes": [
+      {
+        "expression": "(N (N high) (N school))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N air) (N port))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N bath) (N room))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N tooth) (N brush))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N first) (N aid))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N cow) (N boy))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N vending) (N machine))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (V play) (N ground))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N video) (N game))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (Adj any) (N body))",
+        "notes": ""
+      }
+    ],
+    "description": ""
+  }

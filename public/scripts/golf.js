@@ -8,7 +8,7 @@ function init() {
         fetch(`/set_NetID?netID=liu36`)
     }
 
-    let problem_id = parseQuery(window.location.search).problem_id || 1
+    let problem_id = parseQuery(window.location.search).problem_id || 7
     
 JSON_API(undefined, problem_id)
         .then((data) => {
@@ -891,7 +891,7 @@ function generateMenu(e) {
     console.log(reference, goldlabel, constituent, column, $(this).parent().data(), constituent)
 
     $(this).css({ "cursor": "auto"})
-    let labelArrayID = 0;
+    let labelArrayID = 1;
     if (bracketedSentence.includes("(Aux ")) {
         labelArrayID = 1
     }
@@ -1126,7 +1126,7 @@ function displayProblemRight(bracketedString) {
         morphoDetecter = false;
         // console.log(word)
         let wordIndex = bracketedString.indexOf(` ${word})`)
-        if (morphoDetecterForNext) {morphoDetecterForNext = false; morphoDetecter = true;}
+        if (morphoDetecterForNext || bracketedString.startsWith(("(N ") || ("(V ") || ("(P ") || ("(Adj ") || ("(Adv "))) {morphoDetecterForNext = false; morphoDetecter = true;}
         if (bracketedString[wordIndex - 2] == "A" && bracketedString[wordIndex - 1] == "f") {
             morphoWords.push(word);
             if (bracketedString[wordIndex+word.length+3] == "(") {

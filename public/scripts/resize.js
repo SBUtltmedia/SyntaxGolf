@@ -22,6 +22,9 @@ var stageHeight,  stageWidth;
 function resizeWindow() {
   var viewport =  $(window)
   var numberOfRows = $("#menu").attr("data-currentNumberOfRows");
+  // var constituentSet = [...document.getElementById("row_id_0").children].map(x=>x.innerHTML)
+
+  
   // console.log(numberOfRows);
   // console.log(viewport.width(),$(window).height(), $("#stage").css("height"))
 
@@ -78,3 +81,4 @@ function fontSize(numberOfRows) {
   let longestFont = 1.5;
   return ((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont)
 }
+
