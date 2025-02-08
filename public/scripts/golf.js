@@ -222,7 +222,8 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
         let thisRow = treeToRows(parse(bracketedSentence))[row]
         // console.log(thisRow.length, thisRow)
         // let gridColumnStyle = `grid-template-columns: repeat(${thisRow.length}, 1fr);`
-        let columnLength = treeToRows(parse(bracketedSentence)).length
+
+        let columnLength = leafNode(parse(bracketedSentence))
         let gridColumnStyle = `grid-template-columns: repeat(${columnLength}, 1fr);`
         if (thisRow.length == 1) {
             gridColumnStyle = ""
@@ -456,6 +457,16 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
     // leftPadAll()
     // console.log($(".noPad").prev().html())
     $(".noPad").prev().css({"padding-right":0})
+}
+
+function leafNode(parsedSentence, accumulator = 0) {
+        for (let i = 0; i < parsedSentence.children.length; i++) {
+            if (typeof parsedSentence.children[i] != "string") {
+                console.log(parsedSentence.children[i], accumulator)
+                accumulator += parseInt(leafNode(parsedSentence.children[i], accumulator))
+            } else {
+                return 1
+        }}
 }
 
 function selected(el) {
@@ -887,8 +898,8 @@ function generateMenu(e) {
         // only used in auto mode
     //+ (tracePad(row, item.column, column, treeRow))
     // item.constituent === constituent & 
-    let goldlabel = reference?.label
-    console.log(reference, goldlabel, constituent, column, $(this).parent().data(), constituent)
+    let correctLabel = reference?.label
+    console.log(reference, correctLabel, constituent, column, $(this).parent().data(), constituent)
 
     $(this).css({ "cursor": "auto"})
     let labelArrayID = 1;
@@ -956,7 +967,7 @@ function generateMenu(e) {
             // replace ? with label and close menu
             $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
             // console.log(label,goldlabel)
-            if ((mode == 'manual') || (mode == 'automatic' && label == goldlabel)) {
+            if ((mode == 'manual') || (mode == 'automatic' && label == correctLabel)) {
                 // if (treeRow[row+1] && treeRow[row+1].some(x => x.label =="aux") && (goldlabel == "S" || goldlabel == "TP")) {
                 //     makeSelectable("", row+1, 1, "syntax", wrongAnswer, "auxItem")
                 // } //creating selection box for tense like -past
@@ -1121,7 +1132,8 @@ function displayProblemRight(bracketedString) {
     let morphoDetecterForNext = false;
     let morphoWords = [];
     let displayString = ""
-    let string = bracketToString(bracketedString)
+    let string = bracketToString(bracketedString).replaceAll("&#x2009;", " ")
+    console.log(string)
     string.split(' ').forEach((word) => {
         morphoDetecter = false;
         // console.log(word)
@@ -1712,6 +1724,22 @@ function getCornerPercentages(elem) {
     return [leftPercent, topPercent, rightPercent, bottomPercent, centerXPercent, centerYPercent]
 
     // replace calculations in drawLine with this
+}
+
+function templateHelper(bracketedSentence) {
+    let sentence = parse(bracketedSentence)
+    let totalColumn = 0
+    while (typeof sentence.children != string) {
+        sentence.forEach(x => {
+            if (typeof x.children == string) {
+                totalColumn += x.children.split("\\s+").length
+            } else {
+                sentenceArray = x
+            }
+        })
+    }
+    console.log(totalColumn)
+    return totalColumn
 }
 
 function getMinStep(bracketedSentence) {

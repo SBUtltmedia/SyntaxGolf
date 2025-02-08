@@ -22,7 +22,11 @@ var stageHeight,  stageWidth;
 function resizeWindow() {
   var viewport =  $(window)
   var numberOfRows = $("#menu").attr("data-currentNumberOfRows");
-  // var constituentSet = [...document.getElementById("row_id_0").children].map(x=>x.innerHTML)
+  let charactersNum = 1;
+  let bracketedSentence = $("#sentenceContainer").attr("data-bracketedsentence")
+  if (displayProblemRight(bracketedSentence).length >50) {
+    charactersNum = displayProblemRight(bracketedSentence).length/50
+  }
 
   
   // console.log(numberOfRows);
@@ -65,7 +69,7 @@ else{
     height: $("#problemConstituent").height()
   });
   // console.log(numberOfRows)
-  $("#sentenceContainer").css({"font-size":fontSize(numberOfRows) + "rem"});
+  $("#sentenceContainer").css({"font-size":fontSize(numberOfRows, charactersNum) + "rem"});
   // $("#sentenceContainer").css("background-color", "blue");
   // $("#sentenceContainer").css("cssText", `font-size:${0.1*numberOfRows}rem !important;`);
 
@@ -74,11 +78,12 @@ else{
 
 }
 
-function fontSize(numberOfRows) {
+function fontSize(numberOfRows, charactersNum) {
   let shortest = 0.9;
   let longest = 10.5;
   let smallestFont = 0.40;
   let longestFont = 1.5;
-  return ((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont)
+  let fontSize = (((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont))/charactersNum;
+  return fontSize;
 }
 
