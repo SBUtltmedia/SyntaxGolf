@@ -223,7 +223,7 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
         // console.log(thisRow.length, thisRow)
         // let gridColumnStyle = `grid-template-columns: repeat(${thisRow.length}, 1fr);`
 
-        let columnLength = leafNode(parse(bracketedSentence))
+        let columnLength = totalColumn(treeToRows(parse(bracketedSentence)))
         let gridColumnStyle = `grid-template-columns: repeat(${columnLength}, 1fr);`
         if (thisRow.length == 1) {
             gridColumnStyle = ""
@@ -459,14 +459,17 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
     $(".noPad").prev().css({"padding-right":0})
 }
 
-function leafNode(parsedSentence, accumulator = 0) {
-        for (let i = 0; i < parsedSentence.children.length; i++) {
-            if (typeof parsedSentence.children[i] != "string") {
-                console.log(parsedSentence.children[i], accumulator)
-                accumulator += parseInt(leafNode(parsedSentence.children[i], accumulator))
-            } else {
-                return 1
-        }}
+function totalColumn(nodeSentence) {
+    let totalColumn = 0
+    nodeSentence.forEach(x=> {
+        x.forEach(y => {
+            if (y.column > totalColumn) {
+                totalColumn = y.column +1
+                console.log(totalColumn)
+            }
+        })
+    })
+    return totalColumn;
 }
 
 function selected(el) {
