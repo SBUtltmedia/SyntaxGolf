@@ -902,7 +902,7 @@ function generateMenu(e) {
     //+ (tracePad(row, item.column, column, treeRow))
     // item.constituent === constituent & 
     let correctLabel = reference?.label
-    console.log(reference, correctLabel, constituent, column, $(this).parent().data(), constituent)
+    console.log(reference, correctLabel, constituent, column)
 
     $(this).css({ "cursor": "auto"})
     let labelArrayID = 1;
@@ -937,7 +937,7 @@ function generateMenu(e) {
     // drawLines()
     resizeWindow()
 
-    let symbolMap = { "'": "bar", "P": "phrase" }
+    let symbolMap = { "'": "bar", "P": "phrase", "P's": "possPhrase"}
 
     $(this).find(".typeItem").on({
         "click": function (e) {
@@ -951,7 +951,10 @@ function generateMenu(e) {
             }
             let typedLabel = $(".labelItem")
             if (labelHTML == "P") {
-                typedLabel = $(".labelItem").filter(el => ($(".labelItem")[el].innerHTML != ("Aux")))
+                typedLabel = $(".labelItem").filter(el => ($(".labelItem")[el].innerHTML != ("Aux"))) //no add P after Aux
+                let PossObject = $(".labelItem").filter(el => ($(".labelItem")[el].innerHTML == ("PossN")))
+                typedLabel.push(PossObject) 
+                PossObject.toggleClass(symbolMap["P's"]) //add not only P but add P's to PossN
             }
             typedLabel.toggleClass(symbolMap[labelHTML])
             if ($(`.${symbolMap[labelHTML]}`).length) {
@@ -967,6 +970,7 @@ function generateMenu(e) {
             let intersect = [...classes].filter(i => types.has(i))[0] || ""
             let symbol = inverse(symbolMap)[intersect] || ""
             let label = $(this).html() + symbol
+            console.log(label)
             // replace ? with label and close menu
             $("#problemConstituent").attr("data-stepsUsed", parseInt($("#problemConstituent").attr("data-stepsUsed"))+1)
             // console.log(label,goldlabel)

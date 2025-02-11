@@ -36,7 +36,10 @@
             --disable:#15241d;
           }
 
-        .gu-transit { display: none }
+        .gu-transit { 
+            opacity:0.8;
+            transition:all 0.3s ease-in-out 33;
+        }
         /* #oneDiv {
             color: blueviolet;
         } */
@@ -307,6 +310,10 @@
 
         .phrase::after {
             content: "P"
+        }
+
+        .possPhrase::after {
+            content: "P's"
         }
 
         #sentenceContainer .typeMenu {
