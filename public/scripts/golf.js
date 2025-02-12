@@ -464,12 +464,12 @@ function totalColumn(nodeSentence) {
     nodeSentence.forEach(x=> {
         x.forEach(y => {
             if (y.column > totalColumn) {
-                totalColumn = y.column +1
+                totalColumn = y.column
                 console.log(totalColumn)
             }
         })
     })
-    return totalColumn;
+    return totalColumn +1;
 }
 
 function selected(el) {

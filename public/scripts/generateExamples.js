@@ -66,7 +66,12 @@ let examples = [`(S
 (Adj 
 (V compar#compare) 
 (Af abil#able#able)) 
-(Af ity)))`
+(Af ity)))`,
+`(S 
+(NP 
+(PossNP's Sam's#Sam) 
+(N homework)) 
+(VP was well done))`
     ]
 examples.forEach(example=>{
     document.querySelector("#examples").append(Object.assign(document.createElement("a"), {innerHTML:bracketToString(example), href:`test.html?string=${encodeURIComponent(example)}`}))

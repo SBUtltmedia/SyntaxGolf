@@ -1,7 +1,7 @@
 {
     "holes": [
       {
-        "expression": "(N (N high) (N school))",
+        "expression": "(N (Adj high) (N school))",
         "notes": ""
       },
       {
@@ -17,7 +17,7 @@
         "notes": ""
       },
       {
-        "expression": "(N (N first) (N aid))",
+        "expression": "(N (Adj black) (N board))",
         "notes": ""
       },
       {
@@ -37,7 +37,7 @@
         "notes": ""
       },
       {
-        "expression": "(N (Adj any) (N body))",
+        "expression": "(N (Adj wet) (N suit))",
         "notes": ""
       }
     ],
