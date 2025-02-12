@@ -279,7 +279,7 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
             traceIndexOffset -=1;
             return
         }
-        if (word.includes(`'`) || ($("#sentenceContainer").attr("data-morphologyparts") && $("#sentenceContainer").attr("data-morphologyparts").includes(word)))
+        if (word.startsWith(`'`) || ($("#sentenceContainer").attr("data-morphologyparts") && $("#sentenceContainer").attr("data-morphologyparts").includes(word)))
             {
                 noPad = "noPad"
             }
@@ -892,7 +892,7 @@ function generateMenu(e) {
     // //     filterForTense.constituent = filterForTense.constituent.replace(/ -(\w+)/g, "")
     // //     console.log(filterForTense)
     // // }
-    let reference = treeRow[row].find(item => item.constituent === constituent && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
+    let reference = treeRow[row].find(item => item.constituent.replace(/\s/g, '') === constituent.replace(/\s/g, '') && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
     if ($(this).parent().find(".constituentContainer").find(".letterContainer").length) {
         constituent = $(this).parent().find(".constituentContainer").find(".letterContainer").toArray().map((letterContainer) => { return letterContainer.innerHTML }).join("")
         reference = treeRow[row].find(item => (item.constituent.replace(/\s/g, '') === constituent || item.changed === constituent) && item.column === column + (tracePad(row+1, item.column, column, treeRow)))
@@ -902,7 +902,7 @@ function generateMenu(e) {
     //+ (tracePad(row, item.column, column, treeRow))
     // item.constituent === constituent & 
     let correctLabel = reference?.label
-    console.log(reference, correctLabel, constituent, column)
+    console.log(reference, correctLabel, constituent, column, treeRow[row])
 
     $(this).css({ "cursor": "auto"})
     let labelArrayID = 1;
@@ -945,7 +945,7 @@ function generateMenu(e) {
             for (symbol of Object.keys(symbolMap)) {
                 // console.log(symbol, labelHTML)
                 if (symbol != labelHTML) {
-                    $(this).parent().parent().find(".labelItem").removeClass(symbolMap[symbol])
+                    $(this).parent().parent().find(".labelItem").removeClass(symbolMap[symbol]).removeClass("possPhrase")
                     labelFilters($(`.labelItem`), labelFilterSet[labelArrayID], "non");
                 }
             }
@@ -999,6 +999,7 @@ function generateMenu(e) {
 
 function labelFilters(labelDiv, filterArray, status){
     $(".hide").removeClass("hide")
+    if (status == "non") {$(".labelItem").filter(el => ($(".labelItem")[el].innerHTML == ("PossN"))).removeClass("possPhrase")}
     if (filterArray) {
     labelDiv.filter(x => {filterArray[status].forEach(y =>
         { 
