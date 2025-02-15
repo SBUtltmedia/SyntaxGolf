@@ -73,7 +73,7 @@ function submitCourse(courseID){
     })
     console.log(problemJSON)
     JSON_API(problemJSON,courseID,"POST", "admin")
-    alert("You successfully upload your problem set!");
+    alert("You successfully submitted your problem set!");
     loadCourse(courseID)
 }
 function br(){

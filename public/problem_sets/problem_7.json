@@ -25,7 +25,7 @@
         "notes": ""
       },
       {
-        "expression": "(NP (N vending) (N machine))",
+        "expression": "(N (V vending)*(N machine))",
         "notes": ""
       },
       {
@@ -37,7 +37,7 @@
         "notes": ""
       },
       {
-        "expression": "(NP (Adj wet) (N suit))",
+        "expression": "(N (Adj wet) (N suit))",
         "notes": ""
       }
     ],

@@ -284,8 +284,15 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
                 noPad = "noPad"
             }
         if (selectionMode == "morphology") {
+            noPad = "noPad"
             word.split('').forEach((letter) => {
-                sentenceArray = containerSetUpAndInput(letter, index, traceIndexOffset, fudge, `letterContainer noPad`, sentenceArray)
+                if (letter == "*") {
+                    noPad = ""
+                    index += 1
+                    return
+                }
+                sentenceArray = containerSetUpAndInput(letter, index, traceIndexOffset, fudge, `letterContainer ${noPad}`, sentenceArray)
+                noPad = "noPad"
             })
         } else {
             sentenceArray = containerSetUpAndInput(word, index, traceIndexOffset, fudge, `wordContainer ${noPad}`, sentenceArray)}
@@ -1167,7 +1174,7 @@ function displayProblemRight(bracketedString) {
         }
     })
 
-    return displayString;
+    return displayString.replaceAll("*", " ");
 }
 
 function treeToString(tree) {
