@@ -1,0 +1,81 @@
+{
+    "holes": [
+      {
+        "expression": "(V (V writt#write) (Af en))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (V (N modern) (Af iz#ize#ize)) (Af able))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N basket) (N ball))",
+        "notes": ""
+      },
+      {
+        "expression": "(V (V walk) (Af ed))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N ice)*(N cream))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N (N text) (N book)) (Af s))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adv (Adj (V consider) (Af ab#able#able)) (Af ly))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (V teach) (Af er))",
+        "notes": ""
+      },
+      {
+        "expression": "(V (V danc#dance) (Af ed))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (Adj (V (Af dis) (V respect)) (Af ful)) (Af ness))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N class) (N room))",
+        "notes": ""
+      },
+      {
+        "expression": "(V (V forgott#forgot) (Af en))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N moon) (N light))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (Adj (V comfort) (Af abil#able#able)) (Af ity))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N sun) (N flower))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (Adj pretti#pretty) (Af er))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (V cook) (Af er))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (N (V educat#educate#educate) (Af ion)) (Af al))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (Adj larg#large) (Af est))",
+        "notes": ""
+      }
+    ],
+    "description": ""
+  }

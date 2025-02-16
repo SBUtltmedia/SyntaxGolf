@@ -65,9 +65,16 @@ function loadMenu() {
         </svg>
         <div style="font-size:1em">hole ${i + 1} <br/> Par: ${par}</div>
         </div>`
+        if (i < 14) {
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
-        $("#menu").append([link])
+            $("#menu").append([link])
+        } else {
+            let top = `${(i-14)*3+3.4}em`
+            let link2 = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})`, style: `position:fixed;left:6.3em;top:${top}`}).append(flag)
+            .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
+            $("#menu").append([link2])
+        }
         // if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
     let button = `<img src="images/questionmark.svg" alt="Tour" id="tourButton"></img>`
@@ -506,12 +513,22 @@ function sentenceArrayToSentence(sentenceArray, selectionMode, sentence) {
         let selectedWord = $.makeArray(sentenceArray).map(wordDiv => wordDiv.innerHTML).join("");
         let comparedWord = []
         sentence.split(" ").forEach((word) => {
-            // console.log(sentenceArray, sentence, word, selectedWord)
-            if (word == selectedWord.substr(0, word.length)) {
+            console.log(sentenceArray, sentence, word, selectedWord)
+            let preWord = word;
+            let changedWord = word;
+            if (word.includes("#")){
+                preWord = word.substr(0,word.indexOf("#"))
+                changedWord = word.substr(word.indexOf("#")+1)
+                console.log(preWord,changedWord)
+            }
+            if (preWord == selectedWord.substr(0, preWord.length)) {
+                word = preWord
+            } else if (changedWord == selectedWord.substr(0, changedWord.length)) {
+                word = changedWord
+            } else {return}
                 comparedWord.push(word)
                 selectedWord = selectedWord.substr(word.length)
-                // console.log(selectedWord)
-            }
+                console.log(comparedWord)
         })
         comparedWord.push(selectedWord)
         // console.log(comparedWord, comparedWord.join(" "), sentenceArray, selectedWord)
