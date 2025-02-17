@@ -5,7 +5,7 @@
         "notes": ""
       },
       {
-        "expression": "(N (Adj (Af in) (Adj activ#active#active)) (Af ity))",
+        "expression": "(N (Adj (Af in) (Adj (V act) (Af iv#ive#ive#ive))) (Af ity))",
         "notes": ""
       },
       {
@@ -45,11 +45,11 @@
         "notes": ""
       },
       {
-        "expression": "(N (Af hyper) (N (Adj (V act) (Af iv#ive#ive)) (Af ity)))",
+        "expression": "(N (Adj (Af ir) (Adj regular)) (Af ity))",
         "notes": ""
       },
       {
-        "expression": "(Adj (V (Af dis) (V comfort)) (Af able))",
+        "expression": "(Adj (Af un) (Adj (N comfort) (Af able)))",
         "notes": ""
       }
     ],
