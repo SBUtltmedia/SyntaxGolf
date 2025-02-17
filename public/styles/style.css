@@ -183,6 +183,12 @@
             
         }
 
+        #problemSet {
+            display: grid;
+            grid-template-columns: repeat(2, fit-content(6em));
+            grid-template-rows: repeat(14,fit-content(5em));
+        }
+
         .hole {
             text-decoration: none;
             color: var(--word);

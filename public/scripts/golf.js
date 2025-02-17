@@ -50,6 +50,7 @@ function loadMenu() {
         }))
     } else { // display steps in automatic mode
         $("#menu").append($("<div/>", { id: "points" }))
+        $("#menu").append($("<div/>", { id: "problemSet" }))
     }
     problemJSON.holes.forEach((problem, i) => {
         let minStep = getMinStep(problem.expression)
@@ -65,15 +66,14 @@ function loadMenu() {
         </svg>
         <div style="font-size:1em">hole ${i + 1} <br/> Par: ${par}</div>
         </div>`
-        if (i < 14) {
-        let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})` }).append(flag)
+        if (i < 13) {
+        let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})`, style: `grid-column:1; grid-row:${i+1}` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
-            $("#menu").append([link])
+            $("#problemSet").append([link])
         } else {
-            let top = `${(i-14)*3+3.4}em`
-            let link2 = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})`, style: `position:fixed;left:6.3em;top:${top}`}).append(flag)
+            let link2 = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})`, style: `grid-column:2; grid-row:${i-12}`}).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
-            $("#menu").append([link2])
+            $("#problemSet").append([link2])
         }
         // if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
