@@ -50,7 +50,7 @@ function loadMenu() {
         }))
     } else { // display steps in automatic mode
         $("#menu").append($("<div/>", { id: "points" }))
-        $("#menu").append($("<div/>", { id: "problemSet" }))
+        // $("#menu").append($("<div/>", { id: "problemSet" }))
     }
     problemJSON.holes.forEach((problem, i) => {
         let minStep = getMinStep(problem.expression)
@@ -69,11 +69,11 @@ function loadMenu() {
         if (i < 13) {
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})`, style: `grid-column:1; grid-row:${i+1}` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
-            $("#problemSet").append([link])
+            $("#menu").append([link])
         } else {
             let link2 = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})`, style: `grid-column:2; grid-row:${i-12}`}).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
-            $("#problemSet").append([link2])
+            $("#menu").append([link2])
         }
         // if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
@@ -292,11 +292,16 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
             }
         if (selectionMode == "morphology") {
             noPad = "noPad"
-            word.split('').forEach((letter) => {
+            word.split('').forEach((letter, letterI) => {
                 if (letter == "*") {
                     noPad = ""
                     index += 1
                     return
+                }
+                let letterIndex = parseInt(letterI)
+                for (i = 0; i< parseInt(index)+1; i++) {
+                    letterIndex += parseInt(sentence.split(' ')[i].length)
+                    console.log(sentence.split(' ')[i],letterIndex)
                 }
                 sentenceArray = containerSetUpAndInput(letter, index, traceIndexOffset, fudge, `letterContainer ${noPad}`, sentenceArray)
                 noPad = "noPad"
