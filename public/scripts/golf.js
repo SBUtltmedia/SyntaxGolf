@@ -292,16 +292,11 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
             }
         if (selectionMode == "morphology") {
             noPad = "noPad"
-            word.split('').forEach((letter, letterI) => {
+            word.split('').forEach((letter) => {
                 if (letter == "*") {
                     noPad = ""
                     index += 1
                     return
-                }
-                let letterIndex = parseInt(letterI)
-                for (i = 0; i< parseInt(index)+1; i++) {
-                    letterIndex += parseInt(sentence.split(' ')[i].length)
-                    console.log(sentence.split(' ')[i],letterIndex)
                 }
                 sentenceArray = containerSetUpAndInput(letter, index, traceIndexOffset, fudge, `letterContainer ${noPad}`, sentenceArray)
                 noPad = "noPad"
