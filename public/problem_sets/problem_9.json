@@ -1,0 +1,41 @@
+{
+    "holes": [
+      {
+        "expression": "(N (N class) (N room))",
+        "notes": ""
+      },
+      {
+        "expression": "(V (V forgott#forgot) (Af en))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N moon) (N light))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (Adj (V comfort) (Af abil#able#able)) (Af ity))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N sun) (N flower))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (Adj pretti#pretty) (Af er))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (V cook) (Af er))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (N (V educat#educate#educate) (Af ion)) (Af al))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (Adj larg#large) (Af est))",
+        "notes": ""
+      }
+    ],
+    "description": ""
+  }

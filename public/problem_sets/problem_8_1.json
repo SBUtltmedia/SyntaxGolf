@@ -1,0 +1,45 @@
+{
+    "holes": [
+      {
+        "expression": "(V (V writt#write) (Af en))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adj (V (Adj modern) (Af iz#ize#ize)) (Af able))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N basket) (N ball))",
+        "notes": ""
+      },
+      {
+        "expression": "(V (V walk) (Af ed))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N ice)*(N cream))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (N (N text) (N book)) (Af s))",
+        "notes": ""
+      },
+      {
+        "expression": "(Adv (Adj (V consider) (Af ab#able#able)) (Af ly))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (V teach) (Af er))",
+        "notes": ""
+      },
+      {
+        "expression": "(V (V danc#dance) (Af ed))",
+        "notes": ""
+      },
+      {
+        "expression": "(N (Adj (N (Af dis) (N respect)) (Af ful)) (Af ness))",
+        "notes": ""
+      }
+    ],
+    "description": ""
+  }
