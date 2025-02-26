@@ -375,6 +375,7 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
                     // x.constituent === constituent
                     let match = trueRow && trueRow.some(x => {
                         if ((x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow)))){
+                            if ($("#sentenceContainer").attr("data-flexAf")){
                             let flexAfs = $("#sentenceContainer").attr("data-flexAf").split(",")
                             if (constituent == flexAfs[0] ||constituent == flexAfs[1]) {
                                 if ((x.constituent === flexAfs[0] || (x.changed === flexAfs[1]))) {
@@ -382,7 +383,7 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
                                     constituent = flexAfs[0]
                                     return true
                                 } 
-                            }
+                            } 
                             if (constituent.slice(constituent.length-flexAfs[2].length) == flexAfs[2]) {
                                 let noAfConstituent = constituent.substring(0, constituent.length - (flexAfs[2].length+1))
                                 console.log(noAfConstituent, constituent)
@@ -391,7 +392,7 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
                                     constituent = noAfConstituent
                                     return true
                                 } 
-                            }
+                            }}
                             if ((x.constituent === constituent || (x.changed === constituent))) {
                                 xlabel = x.label
                                 return true

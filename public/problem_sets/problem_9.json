@@ -14,7 +14,7 @@
       },
       {
         "expression": "(N (Adj (V comfort) (Af abil#able#able)) (Af ity))",
-        "notes": "check for the af first"
+        "notes": ""
       },
       {
         "expression": "(N (N sun) (N flower))",
