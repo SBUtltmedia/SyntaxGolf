@@ -50,7 +50,7 @@ function loadMenu() {
         }))
     } else { // display steps in automatic mode
         $("#menu").append($("<div/>", { id: "points" }))
-        // $("#menu").append($("<div/>", { id: "problemSet" }))
+        $("#menu").append($("<div/>", { id: "problemSet" }))
     }
     problemJSON.holes.forEach((problem, i) => {
         let minStep = getMinStep(problem.expression)
@@ -66,15 +66,9 @@ function loadMenu() {
         </svg>
         <div style="font-size:1em">hole ${i + 1} <br/> Par: ${par}</div>
         </div>`
-        if (i < 13) {
         let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})`, style: `grid-column:1; grid-row:${i+1}` }).append(flag)
             .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
-            $("#menu").append([link])
-        } else {
-            let link2 = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})`, style: `grid-column:2; grid-row:${i-12}`}).append(flag)
-            .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
-            $("#menu").append([link2])
-        }
+            $("#problemSet").append([link])
         // if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
     let button = `<img src="images/questionmark.svg" alt="Tour" id="tourButton"></img>`
@@ -282,6 +276,10 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
                 word = changedWordSet[changedWordIndex]
                 // console.log(word, sentence, changedWordIndex, changedWordSet)
             }}
+        if ($("#sentenceContainer").attr("data-flexAf") && word.includes("|")) {
+            let affixIntersect = word.indexOf("|")
+            word = word.slice(0, affixIntersect)
+        }
         if (word == "") {
             traceIndexOffset -=1;
             return
@@ -292,7 +290,7 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
             }
         if (selectionMode == "morphology") {
             noPad = "noPad"
-            word.split('').forEach((letter) => {
+            word.split('').forEach((letter, lIntex) => {
                 if (letter == "*") {
                     noPad = ""
                     index += 1
@@ -375,13 +373,32 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
                     console.log(trueRow, newIndex, constituent, treeRow)
                     // console.log(trueRow.some(x => ((x.constituent === constituent))), constituent)
                     // x.constituent === constituent
-                    let match = trueRow && trueRow.some(x => {if ((x.constituent === constituent || (x.changed === constituent))&&
-                            (x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow)))){
+                    let match = trueRow && trueRow.some(x => {
+                        if ((x.column === newIndex + (tracePad(row+1, x.column, newIndex, treeRow)))){
+                            let flexAfs = $("#sentenceContainer").attr("data-flexAf").split(",")
+                            if (constituent == flexAfs[0] ||constituent == flexAfs[1]) {
+                                if ((x.constituent === flexAfs[0] || (x.changed === flexAfs[1]))) {
+                                    xlabel = x.label
+                                    constituent = flexAfs[0]
+                                    return true
+                                } 
+                            }
+                            if (constituent.slice(constituent.length-flexAfs[2].length) == flexAfs[2]) {
+                                let noAfConstituent = constituent.substring(0, constituent.length - (flexAfs[2].length+1))
+                                console.log(noAfConstituent, constituent)
+                                if ((x.constituent === constituent || (x.changed === noAfConstituent))) {
+                                    xlabel = x.label
+                                    constituent = noAfConstituent
+                                    return true
+                                } 
+                            }
+                            if ((x.constituent === constituent || (x.changed === constituent))) {
+                                xlabel = x.label
+                                return true
+                            } 
                             // console.log($(this).children()[1])
-                            xlabel = x.label
                             // $(this).children()[1].attr("data-nextElLabel", x.label)
-                            return true
-                         } else {return false}})
+                         }return false})
                     // console.log(match)
                     if (match
                             //   || x.column === newIndex
@@ -1184,6 +1201,10 @@ function displayProblemRight(bracketedString) {
             let intersect = word.indexOf("#")
             word = word.slice(0, intersect)
         }
+        if (word.includes("|")) {
+            let affixIntersect = word.indexOf("|")
+            word = word.slice(0, affixIntersect)
+        }
         if (word.startsWith("'") || morphoDetecter) {
             displayString = displayString.concat(word);
         } else {
@@ -1230,6 +1251,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         leaves.push(tree.children)
         let constituent;
         [constituent, changed] = changedWordDetector(tree.children, row);
+        if (constituent&&constituent.includes("|")) {constituent = flexiableAffix(constituent)}
         // accumulator[row].push({label:tree.label, constituent:tree.children, column:index})
         let newEntry = { label: tree.label, constituent: constituent, column: index }
         if (typeof tree.mode !== 'undefined') {
@@ -1273,6 +1295,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
         let groupedConstituent;
         [groupedConstituent, changed]= changedWordDetector(constituent.join(" "), row);
+        if (groupedConstituent.includes("|")) {groupedConstituent = flexiableAffix(groupedConstituent)}
         let newEntry = { label: tree.label, constituent: groupedConstituent, column: column }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
@@ -1297,6 +1320,27 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         }
     }
 
+}
+
+function flexiableAffix(constituent) {
+    let affixIntersect = constituent.indexOf("|")
+    let displayedWord = constituent.slice(0, affixIntersect)
+    let affixes = $("#sentenceContainer").attr("data-morphologyparts")
+    let flexAf;
+    if (affixes!=undefined && affixes.includes("|")) {
+        if (affixes.includes(",")) {
+            affixes.split(',').forEach(af=> {
+                if (af.includes("|")) {
+                    flexAf = af
+                }
+            })
+        } else {flexAf = affixes}
+        let flexAfSet = flexAf.trim().split("|")
+        let flexDifference = flexAfSet[0].substring(0, flexAfSet[0].length - flexAfSet[1].length)
+        flexAfSet.push(flexDifference)
+        $("#sentenceContainer").attr("data-flexAf", flexAfSet)
+    }
+    return displayedWord
 }
 
 function changedWordDetector(constituents, row) {

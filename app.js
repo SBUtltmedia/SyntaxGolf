@@ -24,7 +24,16 @@ app.post('/problem_set', upload.none(), function(req, respond) {
  console.log(req.body.mode)
  if (req.body.mode == "admin") {
      filePath = `public/problem_sets/problem_${problem_id}.json`
- }
+ } 
+//  else {
+//     let course = JSON.parse(req.body.json)
+//     course.holes.forEach(el => { 
+//         delete el.notes
+//         delete el.expression
+//     });
+//     delete course.description
+//     req.body.json = JSON.stringify(course)
+//  }
 
     // request.on('data', function(data) {
     //     body += data;
@@ -33,7 +42,7 @@ app.post('/problem_set', upload.none(), function(req, respond) {
     // request.on('end', function (){
     //     console.log(JSON.stringify(body));
     console.log(req.body.mode);
-        fs.writeFile(filePath,  req.body.json.toString(), function() {
+        fs.writeFile(filePath,  req.body.json, function() {
             respond.end("{}");
         });
     // });

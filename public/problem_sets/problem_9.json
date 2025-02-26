@@ -14,7 +14,7 @@
       },
       {
         "expression": "(N (Adj (V comfort) (Af abil#able#able)) (Af ity))",
-        "notes": ""
+        "notes": "check for the af first"
       },
       {
         "expression": "(N (N sun) (N flower))",
@@ -37,5 +37,5 @@
         "notes": ""
       }
     ],
-    "description": ""
+    "description": "Inflection Morphology Part 2"
   }

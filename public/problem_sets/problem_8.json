@@ -25,7 +25,7 @@
         "notes": ""
       },
       {
-        "expression": "(Adv (Adj (V consider) (Af ab#able#able)) (Af ly))",
+        "expression": "(Adv (Adj (V consider) (Af ab#able#able)) (Af ly|y))",
         "notes": ""
       },
       {
@@ -33,7 +33,7 @@
         "notes": ""
       },
       {
-        "expression": "(V (V danc#dance) (Af ed))",
+        "expression": "(V (V danc#dance) (Af ed|d))",
         "notes": ""
       },
       {
@@ -41,5 +41,5 @@
         "notes": ""
       }
     ],
-    "description": ""
+    "description": "Inflection Morphology Part 1"
   }

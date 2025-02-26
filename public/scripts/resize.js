@@ -4,7 +4,7 @@ let width = $("#sentenceContainer")
 // console.log(width)
 let test = 1
 if (test = 1) {
-  aspect = 1/0.8
+  aspect = 1/0.5
 }
 if (/Android|webOS|iPhone|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
   aspect = 9/16
@@ -82,7 +82,7 @@ function fontSize(numberOfRows, charactersNum) {
   let shortest = 0.9;
   let longest = 10.5;
   let smallestFont = 0.40;
-  let longestFont = 1.5;
+  let longestFont = 1.8;
   let fontSize = (((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont))/charactersNum;
   return fontSize;
 }
