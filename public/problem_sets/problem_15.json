@@ -1,0 +1,41 @@
+{
+    "holes": [
+      {
+        "expression": "(S (NP (Det The) (N teacher) (PP (P for) (NP (N Math))) (PP (P with) (NP (Det the) (Adj yellow) (N dress)))) (VP is Miss Ross))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det Those) (N students) (PP (P with) (NP (Det a) (N report card)))) (VP are graduating this year))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det A) (N student) (PP (P in) (NP (Det the) (N area) (PP (P for) (NP (N reading)))))) (VP is playing video games))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det Some) (N students) (PP (P in) (NP (N class))) (PP (P with) (NP (Det the) (Adj red) (N shirt)))) (VP danced with the professor))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det Many) (N people) (PP (P from) (NP (Det the) (N city)))) (VP listen to music with headphones))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det The) (N students) (PP (P with) (NP (Det their) (N bookbags))) (PP (P with) (NP (Det a) (Adj blue) (N book)))) (VP reads the book))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det The) (N mascot) (PP (P of) (NP (N Stony Brook University))) (PP (P with) (NP (Det a) (Adj big) (N hat)))) (VP played in the game))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det The) (Adj fancy) (N house) (PP (P for) (NP (Det the) (N family) (PP (P of) (NP (N wonderland)))))) (VP is enormous))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det A) (Adj clean) (Adj beautiful) (N farm) (PP (P near) (NP (Det the) (N end) (PP (P of) (NP (Det the) (Adj wide) (N lake)))))) (VP is a wonderful place for my vacation))",
+        "notes": ""
+      }
+    ],
+    "description": "Inflection Morphology Part 2"
+  }

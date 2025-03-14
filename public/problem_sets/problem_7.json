@@ -25,7 +25,7 @@
         "notes": ""
       },
       {
-        "expression": "(N (V vending)*(N machine))",
+        "expression": "(N (N soda)*(N machine))",
         "notes": ""
       },
       {

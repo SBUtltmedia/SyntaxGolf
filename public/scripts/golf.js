@@ -25,7 +25,7 @@ JSON_API(undefined, problem_id)
             }
            // sendJSON(problemJSON, 1)
             loadMenu()
-            loadSentence(0)
+            hashLoadSentence()
             intro()
         })
 }
@@ -60,15 +60,22 @@ function loadMenu() {
         // let flag = $(document.createElementNS("http://www.w3.org/2000/svg", 'svg'))
         // let flag = $("<svg/>", {style:"width:2rem", xmlns:"http://www.w3.org/2000/svg"})
         // .append($("<use/>", {"xlink:href":"images/flag.svg#flag", "style":`--color_fill: ${progress}`}))
-        let flag = `<div class=problemList> 
+        let problemList = `<div class=problemList> 
         <svg style="width:3rem;" viewBox="0 0 208 334">
         <use xlink:href="images/flag.svg#flag" id="${i}" style="--color_fill: ${flagColor};"></use>
         </svg>
         <div style="font-size:1em">hole ${i + 1} <br/> Par: ${par}</div>
         </div>`
-        let link = $("<a/>", { class: "hole", href: `javascript: loadSentence(${i})`, style: `grid-column:1; grid-row:${i+1}` }).append(flag)
-            .on("mouseover", ((e) => (showProblem(e, problem)))).on("mouseout", (() => ($("#problemInfo").remove())))
+        let link = $("<a/>", { class: "hole", href: `javascript: window.location.hash = ${i}`, style: `grid-column:1; grid-row:${i+1}` }).append(problemList).on("mouseover", ((e) => {
+            mousePosition = {
+                x : e.clientX,
+                y : e.clientY
+            };
+            showProblem(e, problem)
+            $("#problemInfo").css('left', `${mousePosition.x}px`);
+            $("#problemInfo").css('top', `${mousePosition.y}px`);})).on("mouseout", (() => ($("#problemInfo").remove())))
             $("#problemSet").append([link])
+
         // if (flagColor == "white") {$(`#${i}`).parent().parent().parent().addClass("disable")}
     })
     let button = `<img src="images/questionmark.svg" alt="Tour" id="tourButton"></img>`
@@ -503,6 +510,14 @@ function totalColumn(nodeSentence) {
     })
     return totalColumn +1;
 }
+
+["hashchange" ].forEach( event=>    addEventListener(event,hashLoadSentence))
+
+function hashLoadSentence() {
+    let sentenceID = location.hash.split("#")[1] || 0
+    loadSentence(sentenceID)
+}
+
 
 function selected(el) {
     let thisBlockID = $(el).parent().parent().attr("id")
@@ -1170,11 +1185,11 @@ function treeAtNode(blockID, PCM) {
 function showProblem(event, problem) {
     // console.log(event.clientY)
     $("#problemInfo").remove()
-    let note = problem.note || "";
+    // let note = problem.note || "";
     let problemInfo = `
-    ${displayProblemRight(problem.expression)} <hr/>   ${note} 
-    `
-    $(stage).append($("<div/>", { id: "problemInfo", html: problemInfo}))
+    ${displayProblemRight(problem.expression)} `
+    // <hr/>   ${note} 
+    $(menu).append($("<div/>", { id: "problemInfo", html: problemInfo}))
 }
 
 function displayProblemRight(bracketedString) {

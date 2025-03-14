@@ -161,13 +161,14 @@
 
         #problemInfo {
             position: absolute;
-            border-radius: 0.1rem;
+            border: 2px solid black;
+            border-radius: 5px;
             background-color: var(--highlight);
-            width: 100%;
-            padding: 0 !important;
-            bottom: 0;
+            min-width: fit-content;
+            height: fit-content;
+            padding: 1rem !important;
             text-align: center;
-            font-size: 2.3rem;
+            font-size: 2.4rem;
         }
 
         #sentenceContainer div {

@@ -1,0 +1,41 @@
+{
+    "holes": [
+      {
+        "expression": "(S (NP (Det The) (Adj white) (N cats)) (VP ate their food))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det Those) (Adj green) (N vegetables)) (VP taste the best))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det The) (N teachers)) (VP prepare for their next class))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP Students) (VP wrote essays about climate change))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det Those) (Adj happy) (N students)) (VP cheered))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det This) (Adj giant) (N dog)) (VP ran to me))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP Mary) (VP biked to school))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det A) (N farmer)) (VP plants seed in the spring))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP Sarah) (VP wrote a letter to Penny))",
+        "notes": ""
+      }
+    ],
+    "description": "Inflection Morphology Part 2"
+  }

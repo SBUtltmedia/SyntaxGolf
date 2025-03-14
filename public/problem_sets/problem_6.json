@@ -1,7 +1,7 @@
 {
     "holes": [
       {
-        "expression": "(N (Af un) (N (V employ) (Af ment)))",
+        "expression": "(N (Af anti) (N (V depress) (Af ant)))",
         "notes": ""
       },
       {
@@ -21,11 +21,11 @@
         "notes": ""
       },
       {
-        "expression": "(Adv (Adj (N (Af dis) (N proportion)) (Af ate)) (Af ly))",
+        "expression": "(N (V (N hospital) (Af iza#ize#ize)) (Af tion))",
         "notes": ""
       },
       {
-        "expression": "(Adv (Adj (Af un) (Adj (V question) (Af ab#able#able#able))) (Af ly))",
+        "expression": "(Adv (Adj (Af un) (Adj (V question) (Af ab#able#able#able))) (Af ly|y))",
         "notes": ""
       },
       {
@@ -37,7 +37,7 @@
         "notes": ""
       },
       {
-        "expression": "(Adj (Af im#in#) (Adj (V measur#measure) (Af able)))",
+        "expression": "(Adj (Af im) (Adj (V measur#measure) (Af able)))",
         "notes": ""
       },
       {
@@ -49,7 +49,7 @@
         "notes": ""
       },
       {
-        "expression": "(Adj (Af un) (Adj (N comfort) (Af able)))",
+        "expression": "(Adj (Af un) (Adj (V comfort) (Af able)))",
         "notes": ""
       }
     ],

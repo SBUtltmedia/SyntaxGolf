@@ -39,5 +39,8 @@
      id="flag_color"
      style="fill:var(--color_fill);fill-opacity:1;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
      </symbol>
-</svg>
+
 </defs>
+<use href="#flag"   style="--color_fill:#FF0000"/>
+
+</svg>
