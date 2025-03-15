@@ -82,7 +82,7 @@ function fontSize(numberOfRows, charactersNum) {
   let shortest = 0.9;
   let longest = 10.5;
   let smallestFont = 0.40;
-  let longestFont = 1.8;
+  let longestFont = 1.7;
   let fontSize = (((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont))/charactersNum;
   return fontSize;
 }

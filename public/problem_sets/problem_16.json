@@ -1,0 +1,41 @@
+{
+    "holes": [
+      {
+        "expression": "(S (NP (PossNP's Sam's#Sam) (N homework)) (VP was well done))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (PossNP's (Det My) (N brother's#brother#brother)) (N pet)) (VP is super cute))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (PossNP's (Det The) (N details) (PP (P of) (NP (N Charlie's#Charlie#Charlie#Charlie#Charlie)))) (N story)) (VP are engaging))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (PossNP's (Det The) (N school's#school#school)) (Adj red) (N bus)) (VP is clean and big))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (PossNP's Noah's#Noah) (N dog)) (VP ate the homework))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (Det A) (N student) (PP (P of) (NP (PossNP's Johnny's#Johnny) (N cousin)))) (VP created this system))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (PossNP's (Det These) (N quilt's#quilt#quilt#quilt)) (N designs) (PP (P from) (NP (N Brazil)))) (VP are beautiful))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (PossNP's Cherry's#Cherry) (N mother)) (VP raised ten children))",
+        "notes": ""
+      },
+      {
+        "expression": "(S (NP (PossNP's (PossNP's Ruby's#Ruby) (N sister's#sister#sister)) (N car)) (VP is new and fancy))",
+        "notes": ""
+      }
+    ],
+    "description": "Module 16: The Possessive Noun Phrase"
+  }
