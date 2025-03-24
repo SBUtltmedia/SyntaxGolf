@@ -13,7 +13,7 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP Students) (VP wrote essays about climate change))",
+        "expression": "(S (NP (N Students)) (VP wrote essays about climate change))",
         "notes": ""
       },
       {
@@ -25,15 +25,15 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP Mary) (VP biked to school))",
+        "expression": "(S (NP (N Mary)) (VP biked to school))",
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det A) (N farmer)) (VP plants seed in the spring))",
+        "expression": "(S (NP (Det No) (N farmer)) (VP plants seeds in the spring))",
         "notes": ""
       },
       {
-        "expression": "(S (NP Sarah) (VP wrote a letter to Penny))",
+        "expression": "(S (NP (N Sarah)) (VP wrote a letter to Penny))",
         "notes": ""
       }
     ],

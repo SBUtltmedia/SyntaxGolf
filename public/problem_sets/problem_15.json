@@ -5,7 +5,7 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det Those) (N students) (PP (P with) (NP (Det a) (N report card)))) (VP are graduating this year))",
+        "expression": "(S (NP (Det Those) (N students) (PP (P with) (NP (Adj good) (N grades)))) (VP are graduating this year))",
         "notes": ""
       },
       {
@@ -13,7 +13,7 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det Some) (N students) (PP (P in) (NP (N class))) (PP (P with) (NP (Det the) (Adj red) (N shirt)))) (VP danced with the professor))",
+        "expression": "(S (NP (Det Some) (N students) (PP (P of) (NP (N linguistics))) (PP (P in) (NP (Det this) (N school)))) (VP danced at the discotheque))",
         "notes": ""
       },
       {
@@ -21,19 +21,19 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det The) (N students) (PP (P with) (NP (Det their) (N bookbags))) (PP (P with) (NP (Det a) (Adj blue) (N book)))) (VP reads the book))",
+        "expression": "(S (NP (Det The) (N students) (PP (P with) (NP (Det their) (N books))) (PP (P about) (NP (Adj invented) (N languages)))) (VP studied Esperanto))",
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det The) (N mascot) (PP (P of) (NP (N Stony Brook University))) (PP (P with) (NP (Det a) (Adj big) (N hat)))) (VP played in the game))",
+        "expression": "(S (NP (Det The) (N mascot) (PP (P of) (NP (Det that) (N university))) (VP is Baxter))",
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det The) (Adj fancy) (N house) (PP (P for) (NP (Det the) (N family) (PP (P of) (NP (N wonderland)))))) (VP is enormous))",
+        "expression": "(S (NP (Det The) (N houses) (PP (P in) (NP (Det the) (N town) (PP (P by) (NP (Det the) (N ocean)))))) (VP are overpriced))",
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det A) (Adj clean) (Adj beautiful) (N farm) (PP (P near) (NP (Det the) (N end) (PP (P of) (NP (Det the) (Adj wide) (N lake)))))) (VP is a wonderful place for my vacation))",
+        "expression": "(S (NP (Det A) (Adj clean) (Adj beautiful) (N farm) (PP (P near) (NP (Det the) (N end) (PP (P of) (NP (Det the) (Adj wide) (N lake)))))) (VP is wonderful))",
         "notes": ""
       }
     ],

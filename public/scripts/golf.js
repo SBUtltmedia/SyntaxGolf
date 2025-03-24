@@ -1311,7 +1311,7 @@ function treeToRows(tree, accumulator = [], row = 0, leaves = [], morphologyPart
         // accumulator[row].push({label:tree.label, constituent:constituent.join(" "), column:column})
         let groupedConstituent;
         [groupedConstituent, changed]= changedWordDetector(constituent.join(" "), row);
-        if (groupedConstituent.includes("|")) {groupedConstituent = flexiableAffix(groupedConstituent)}
+        if (groupedConstituent&&groupedConstituent.includes("|")) {groupedConstituent = flexiableAffix(groupedConstituent)}
         let newEntry = { label: tree.label, constituent: groupedConstituent, column: column }
         if (typeof tree.trace !== 'undefined') {
             newEntry['trace'] = tree.trace
