@@ -233,7 +233,7 @@ function makeSelectable(sentence, row, blockIndex, selectionMode=undefined, wron
 
         let columnLength = totalColumn(treeToRows(parse(bracketedSentence)))
         let gridColumnStyle = `grid-template-columns: repeat(${columnLength}, 1fr);`
-        if (thisRow.length == 1) {
+        if (row == 0) {
             gridColumnStyle = ""
         }
         $("#problemConstituent").append($("<div/>", { "data-row": row, class: "container", style:gridColumnStyle }))

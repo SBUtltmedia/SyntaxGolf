@@ -21,15 +21,15 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det The) (N students) (PP (P with) (NP (Det their) (N books))) (PP (P about) (NP (Adj invented) (N languages)))) (VP studied Esperanto))",
+        "expression": "(S (NP (Det The) (N students) (PP (P with) (NP (Det their) (N books)) (PP (P about) (NP (N invented languages))))) (VP studied Esperanto))",
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det The) (N mascot) (PP (P of) (NP (Det that) (N university))) (VP is Baxter))",
+        "expression": "(S (NP (Det The) (N mascot) (PP (P of) (NP (Det that) (N university)))) (VP is Baxter))",
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det The) (N houses) (PP (P in) (NP (Det the) (N town) (PP (P by) (NP (Det the) (N ocean)))))) (VP are overpriced))",
+        "expression": "(S (NP (Det The) (N houses) (PP (P in) (NP (Det the) (N town))) (PP (P by) (NP (Det the) (N ocean)))) (VP are overpriced))",
         "notes": ""
       },
       {

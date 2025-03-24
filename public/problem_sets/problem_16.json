@@ -1,7 +1,7 @@
 {
     "holes": [
       {
-        "expression": "(S (NP (PossNP's (PossN Sam's#Sam)) (N homework)) (VP was well done))",
+        "expression": "(S (NP (PossNP's (PossN Sam's#Sam#Sam)) (N homework)) (VP was well done))",
         "notes": ""
       },
       {
@@ -9,7 +9,7 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det The) (N details) (PP (P of) (NP (PossNP's (PossN Charlie's#Charlie#Charlie#Charlie#Charlie)) (N story))) (VP are engaging))",
+        "expression": "(S (NP (Det The) (N details) (PP (P of) (NP (PossNP's (PossN Charlie's#Charlie#Charlie)) (N story)))) (VP are engaging))",
         "notes": ""
       },
       {
@@ -17,11 +17,11 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP (PossNP's (PossN Noah's#Noah)) (N dog)) (VP ate the homework))",
+        "expression": "(S (NP (PossNP's (PossN Noah's#Noah#Noah)) (N dog)) (VP ate the homework))",
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det A) (N student) (PP (P of) (NP (PossNP's (PossN Johnny's#Johnny)) (N cousin)))) (VP created this system))",
+        "expression": "(S (NP (Det A) (N student) (PP (P of) (NP (PossNP's (PossN Johnny's#Johnny#Johnny)) (N cousin)))) (VP created this system))",
         "notes": ""
       },
       {
@@ -29,11 +29,11 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP (PossNP's (PossN Cherry's#Cherry)) (N mother)) (VP raised ten children))",
+        "expression": "(S (NP (PossNP's (PossN Cherry's#Cherry#Cherry)) (N mother)) (VP raised ten children))",
         "notes": ""
       },
       {
-        "expression": "(S (NP (PossNP's (PossNP's (PossN Ruby's#Ruby#Ruby)) (PossN sister's#sister#sister)) (N car)) (VP is new and fancy))",
+        "expression": "(S (NP (PossNP's (PossNP's (PossN Ruby's#Ruby#Ruby)) (N sister's#sister#sister#sister)) (N car)) (VP is new and fancy))",
         "notes": ""
       }
     ],

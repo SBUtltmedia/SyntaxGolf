@@ -29,7 +29,7 @@ function resizeWindow() {
   }
 
   
-  // console.log(numberOfRows);
+  console.log(numberOfRows);
   // console.log(viewport.width(),$(window).height(), $("#stage").css("height"))
 
   var w = window.innerWidth;
@@ -82,7 +82,7 @@ function fontSize(numberOfRows, charactersNum) {
   let shortest = 0.9;
   let longest = 10.5;
   let smallestFont = 0.40;
-  let longestFont = 1.7;
+  let longestFont = 1.55;
   let fontSize = (((smallestFont-longestFont)/(longest-shortest)*(numberOfRows-shortest))+(longestFont))/charactersNum;
   return fontSize;
 }
