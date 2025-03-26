@@ -7,10 +7,10 @@ if (test = 1) {
   aspect = 1/0.5
 }
 if (/Android|webOS|iPhone|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-  aspect = 9/16
+  aspect = 16/9
 }
 if (/iPad|iPod/i.test(navigator.userAgent)) {
-  aspect = 3/4
+  aspect = 4/3
 }
 // var baseFontFactor = 0.016; // make this based on number of rows
 // var baseFontFactor =  .02 - numberOfRows * 0.002;

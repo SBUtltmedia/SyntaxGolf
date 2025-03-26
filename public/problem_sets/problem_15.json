@@ -21,7 +21,7 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det The) (N students) (PP (P with) (NP (Det their) (N books)) (PP (P about) (NP (N invented languages))))) (VP studied Esperanto))",
+        "expression": "(S (NP (Det The) (N students) (PP (P with) (NP (Det their) (N books) (PP (P about) (NP (Adj invented) (N languages)))))) (VP studied Esperanto))",
         "notes": ""
       },
       {
@@ -29,7 +29,7 @@
         "notes": ""
       },
       {
-        "expression": "(S (NP (Det The) (N houses) (PP (P in) (NP (Det the) (N town))) (PP (P by) (NP (Det the) (N ocean)))) (VP are overpriced))",
+        "expression": "(S (NP (Det The) (N houses) (PP (P in) (NP (Det the) (N town))) (PP (P with) (NP (Adj white) (N shatter)) (PP (P on) (NP (Det the) (N window)))) (VP are overpriced))",
         "notes": ""
       },
       {

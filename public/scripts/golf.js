@@ -66,7 +66,7 @@ function loadMenu() {
         </svg>
         <div style="font-size:1em">hole ${i + 1} <br/> Par: ${par}</div>
         </div>`
-        let link = $("<a/>", { class: "hole", href: `javascript: window.location.hash = ${i}`, style: `grid-column:1; grid-row:${i+1}` }).append(problemList).on("mouseover", ((e) => {
+        let link = $("<a/>", { class: "hole", href: `javascript: window.location.hash = ${i+1}`, style: `grid-column:1; grid-row:${i+1}` }).append(problemList).on("mouseover", ((e) => {
             mousePosition = {
                 x : e.clientX,
                 y : e.clientY
@@ -97,7 +97,7 @@ function loadSentence(sentenceID) {
         bracketedSentence = bracketedSentence.replaceAll("[", "(").replaceAll("]", ")");
         bracketedSentence = bracketedSentence.replace(/[\r\n]/g, '').replace(/  +/g, ' ');
         bracketedSentence = bracketedSentence.replaceAll(")(", ") (");
-        bracketedSentence = bracketedSentence.replaceAll("(det ", "(Det ");
+        bracketedSentence = bracketedSentence.replaceAll("(Det ", "(det ").replaceAll("(Adj ", "(adj ").replaceAll("(Adv ", "(adv ");
         }
     $("#sentenceContainer").attr("data-currentSentenceID", sentenceID)
     $("#sentenceContainer").attr("data-bracketedSentence", bracketedSentence)
@@ -125,7 +125,7 @@ function loadSentence(sentenceID) {
     // $(foundation).append($("<div/>", { "data-row": 99, class: "container first-row" })) // start with just row 0 div
     // syntax mode or morphology mode
     let selectedMode = undefined;
-    if (bracketedSentence.startsWith(("(N ") || ("(V ") || ("(P ") || ("(Adj ") || ("(Adv "))) {
+    if (bracketedSentence.startsWith(("(N ") || ("(V ") || ("(P ") || ("(adj ") || ("(adv "))) {
         selectedMode = "morphology";
     }
     makeSelectable(sentence, 0, 0, selectedMode) // this will allow highlighting/selecting, parsing through recursion
@@ -968,9 +968,14 @@ function generateMenu(e) {
     }
     let labels = [
     ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "C", "Perf", "Prog"],
-    ["N", "V", "P", "Adj", "Adv", "Det", "Conj", "T", "S", "Deg", "Aux", "PossN", "C", "Perf", "Prog"],
-    ["N", "V", "P", "Adj", "Adv", "Af"]
+    ["N", "V", "P", "adj", "adv", "det", "T", "S", "deg", "PossN", "C", "A"],
+    ["N", "V", "P", "adj", "adv", "Af"]
     ]
+    let labelFilterSet = [{"phrase": ["S"], "non" : [], "bar": ["S"]}, 
+    {"phrase": ["S", "adj", "adv","det", "deg"], "non" : ["Aux"], "bar": ["N", "V", "P", "adj", "adv", "det", "T", "S", "deg", "PossN", "A"]}]
+
+    let symbolMap = { "'": "bar", "P": "phrase", "P's": "possPhrase"}
+
     let typeMenu = $("<div/>", { class: "typeMenu" }).append(
             [$("<div/>", { class: "typeItem", html: "'" }), $("<div/>", { class: "typeItem", html: "P" })])
 
@@ -985,16 +990,11 @@ function generateMenu(e) {
         labelDivArray.push($("<div/>", { html: i, class: "labelItem" }))
     }
 
-    let labelFilterSet = [{"phrase": ["S"], "non" : [], "bar": ["S"]}, 
-                        {"phrase": ["S", "T"], "non" : ["Aux"], "bar": ["S", "Aux"]}]
-
     $(this).append($("<div/>", { class: "labelMenu" }).append([...labelDivArray, typeMenu]))
     labelFilters($(`.labelItem`), labelFilterSet[labelArrayID], "non");
 
     // drawLines()
     resizeWindow()
-
-    let symbolMap = { "'": "bar", "P": "phrase", "P's": "possPhrase"}
 
     $(this).find(".typeItem").on({
         "click": function (e) {
